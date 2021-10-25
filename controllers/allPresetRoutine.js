@@ -1,4 +1,6 @@
-const allPresetRoutine = async (req, res) => {
+const { Routine } = require('../models');
+
+exports.allPresetRoutine = async (req, res) => {
   try {
     const routines = await Routine.findAll();
     console.log(routines);
@@ -16,5 +18,3 @@ const allPresetRoutine = async (req, res) => {
     });
   }
 };
-
-module.exports = allPresetRoutine;
