@@ -10,6 +10,15 @@ async function actionCreate (routineId, actions) {
       actionCnt
     });
   }
+  console.log('action 생성 완료')
+}
+
+//--Action 삭제 함수--
+async function actionDelete (routineId) {
+  await Action.destroy({
+    where: { routineId }
+  });
+  console.log('action 삭제 완료')
 }
 
 //--Action 수정 함수--
@@ -18,21 +27,24 @@ async function actionCreate (routineId, actions) {
 //이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
 async function actionModify (routineId, actions) {
   console.log('수정 진입@@@@@@')
-  for await (let action of actions) {
-    const {actionName, actionCnt} = action;
-    console.log(actionName,actionCnt)
-    await Action.update(
-      {
-        actionName,
-        actionCnt,
-      },
-      {
-        where: {
-          routineId: routineId,
-        },
-      }
-    );
-  }
+  await actionDelete(routineId);
+  await actionCreate(routineId, actions);
+  console.log('action 수정 완료')
+  // for await (let action of actions) {
+  //   const {actionName, actionCnt} = action;
+  //   console.log(actionName,actionCnt)
+  //   await Action.update(
+  //     {
+  //       actionName,
+  //       actionCnt,
+  //     },
+  //     {
+  //       where: {
+  //         routineId: routineId,
+  //       },
+  //     }
+  //   );
+  // }
 }
 
 
