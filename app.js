@@ -8,6 +8,7 @@ const port = process.env.EXPRESS_PORT;
 //routes imports
 const indexRouter = require("./routes/index");
 const sampleRouter = require("./routes/samples");
+const routineRouter = require("./routes/routines");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -20,6 +21,7 @@ app.set("view engine", "ejs");
 //routes
 app.use("/api", indexRouter);
 app.use("/api", sampleRouter);
+app.use("/api", routineRouter);
 
 app.listen(port, () => {
   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
