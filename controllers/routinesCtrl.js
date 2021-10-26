@@ -1,11 +1,12 @@
-const { Routine, Action } = require("../models");
+const { Routine, Action, User} = require("../models");
 
 //--Action 생성 함수--
-async function actionCreate (routineId, actions) {
+async function actionCreate (routineId, userId, actions) {
   for await (let action of actions) {
     const {actionName, actionCnt} = action;
     await Action.create({
       routineId,
+      userId,
       actionName,
       actionCnt
     });
@@ -47,8 +48,6 @@ async function actionModify (routineId, actions) {
   // }
 }
 
-
-
 //루틴 조회 API
 const routineGet = async(req, res) => {
 
@@ -58,11 +57,22 @@ const routineGet = async(req, res) => {
   try {
     const routines = await Routine.findAll({
       where: { userId },
+      attributes : {
+        // include: [ select추가할 때, 예를 들면 카운트 그룹바이 같이 하는 경우 등.
+        //   [],
+        // ]
+      },
+      include: [
+        {
+          model: Action,
+        }
+      ]
     });
     res.status(200).send({ result: routines , msg: "조회완료" });
 
   } catch (err) {
-    res.status(400).send({ msg: "조회 에러 발생" });
+    console.log(err);
+    res.status(400).send({ msg: "조회 catch 에러 발생" });
   }
 };
 
@@ -92,9 +102,7 @@ const routineCreate = async(req, res) => {
       });
 
       const { id } = routines;
-      console.log("새로운아이디시다아아아아ㅏㅇ");
-      console.log(id);
-      actionCreate(id, actions);
+      actionCreate(id, userId, actions);
 
       res.status(200).send({ msg: '루틴이 생성되었습니다.' });
     } else{
@@ -102,8 +110,7 @@ const routineCreate = async(req, res) => {
     }
   } catch (error) {
     console.log(error);
-    console.log('생성 catch 오류');
-    res.status(200).send({ msg: '루틴 생성 catch 오류.' });
+    res.status(400).send({ msg: '루틴 생성 catch 에러 발생.' });
   }
 
 };
@@ -149,16 +156,29 @@ const routineModify = async(req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(200).send({ msg: '루틴 수정 catch 오류.' });
+    res.status(400).send({ msg: '루틴 수정 catch 에러 발생.' });
   }
 };
 
 //루틴 삭제 API
 const routineDelete = async(req, res) => {
-  
   console.log("routineDelete router 진입");
+  try{
+    const {routineId} = req.params;
+    await Action.destroy({
+      where: { routineId }
+    });
+    console.log('routine종속 action 삭제완료')
 
-  res.send({ msg: '루틴이 삭제되었습니다.' });
+    await Routine.destroy({
+      where: { id : routineId }
+    });
+    res.send({ msg: '루틴이 삭제되었습니다.' });
+  }catch(error){
+    console.log(error);
+    res.send({ msg: '루틴 삭제에 실패하였습니다.' });
+  }
+  
 };
 
 module.exports = {

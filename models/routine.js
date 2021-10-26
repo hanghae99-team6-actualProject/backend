@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      //models.Routine.belongsTo(models.User, {foreignKey: 'userId', sourceKey: 'id'})
+      models.Routine.belongsTo(models.User, {foreignKey: 'userId', sourceKey: 'id'})
+      models.Routine.hasMany(models.Action, {foreignKey: 'routineId', sourceKey: 'id'})
     }
   };
   Routine.init({

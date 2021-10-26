@@ -11,9 +11,9 @@ routineModify = routinesCtrl.routineModify;
 routineDelete = routinesCtrl.routineDelete;
 
 //API
-router.get('/users/routine/:userId', routineGet);
-router.post('/users/routine/:userId', routineCreate);
-router.put('/users/routine/:routineId', routineModify);
-router.delete('/users/routine/:routineId', routineDelete);
+router.get('/routine/:userId', routineGet);
+router.post('/routine/:userId', routineCreate);
+router.put('/routine/:routineId', routineModify);
+router.delete('/routine/:routineId', routineDelete);
 
 module.exports = router;
