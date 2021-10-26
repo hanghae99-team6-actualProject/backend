@@ -27,25 +27,9 @@ async function actionDelete (routineId) {
 //루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
 //이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
 async function actionModify (routineId, actions) {
-  console.log('수정 진입@@@@@@')
   await actionDelete(routineId);
   await actionCreate(routineId, actions);
   console.log('action 수정 완료')
-  // for await (let action of actions) {
-  //   const {actionName, actionCnt} = action;
-  //   console.log(actionName,actionCnt)
-  //   await Action.update(
-  //     {
-  //       actionName,
-  //       actionCnt,
-  //     },
-  //     {
-  //       where: {
-  //         routineId: routineId,
-  //       },
-  //     }
-  //   );
-  // }
 }
 
 //루틴 조회 API
@@ -57,11 +41,6 @@ const routineGet = async(req, res) => {
   try {
     const routines = await Routine.findAll({
       where: { userId },
-      attributes : {
-        // include: [ select추가할 때, 예를 들면 카운트 그룹바이 같이 하는 경우 등.
-        //   [],
-        // ]
-      },
       include: [
         {
           model: Action,
@@ -72,7 +51,7 @@ const routineGet = async(req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "조회 catch 에러 발생" });
+    res.status(400).send({result: false, msg: "조회 catch 에러 발생" });
   }
 };
 
@@ -89,7 +68,18 @@ const routineCreate = async(req, res) => {
     isMain,
   } = req.body;
 
+  //유저 DB체크
   try {
+    const userExsist = await User.findAll({
+      where: { id: userId },
+    });
+
+    if (userExsist.length == 0) {
+      //res.status(400).send({ result: false, msg: '루틴 생성 대상 유저가 없습니다.' });
+      throw new Error('루틴 생성 대상 유저가 없습니다.');
+    }
+
+    //루틴 DB체크
     const routines = await Routine.findAll({
       where: { userId, routineName },
     });
@@ -100,28 +90,22 @@ const routineCreate = async(req, res) => {
         routineName,
         isMain,
       });
-
       const { id } = routines;
       actionCreate(id, userId, actions);
-
-      res.status(200).send({ msg: '루틴이 생성되었습니다.' });
+      res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
     } else{
-      res.send({ msg: '이미 동일한 이름으로 등록된 루틴이 있습니다.' });
+      throw new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.');
     }
-  } catch (error) {
-    console.log(error);
-    res.status(400).send({ msg: '루틴 생성 catch 에러 발생.' });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ result: false, msg: err.message });
   }
-
 };
 
 //루틴 수정 API
 const routineModify = async(req, res) => {
-  
   console.log("routineModify router 진입");
-
   const {routineId} = req.params;
-  console.log(routineId);
   const {
     routineName,
     actions,
@@ -129,11 +113,12 @@ const routineModify = async(req, res) => {
   } = req.body;
 
   try {
-    const routines = await Routine.findAll({
+    //루틴 DB체크
+    const routineExsist = await Routine.findAll({
       where: { id: routineId },
     });
-
-    if (routines.length == 1) {
+    
+    if (routineExsist.length == 1) {
       await Routine.update(
         {
           routineName,
@@ -145,18 +130,14 @@ const routineModify = async(req, res) => {
           },
         }
       );
-
-      console.log("수정 아이디 체크");
-      console.log(routineId);
       actionModify(routineId, actions);
-
       res.status(200).send({ msg: '루틴이 수정되었습니다.' });
     } else{
-      res.send({ msg: '수정 대상 루틴이 없습니다.' });
+      throw new Error('수정 대상 루틴이 없습니다..');
     }
-  } catch (error) {
-    console.log(error);
-    res.status(400).send({ msg: '루틴 수정 catch 에러 발생.' });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ result: false, msg: err.message });
   }
 };
 
@@ -173,12 +154,12 @@ const routineDelete = async(req, res) => {
     await Routine.destroy({
       where: { id : routineId }
     });
-    res.send({ msg: '루틴이 삭제되었습니다.' });
-  }catch(error){
-    console.log(error);
-    res.send({ msg: '루틴 삭제에 실패하였습니다.' });
+    res.status(200).send({ result: true, msg: '루틴이 삭제되었습니다.' });
+  }catch(err){
+    console.log(err);
+    throw new Error('루틴 삭제에 실패하였습니다.');
   }
-  
+  res.status(400).send({ result: false, msg: err.message });
 };
 
 module.exports = {

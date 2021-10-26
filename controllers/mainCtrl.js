@@ -2,7 +2,6 @@ const { Routine, Action, User, Sequelize} = require("../models");
 const Op = Sequelize.Op;
 
 const ongoingGet = async(req, res) => {
-
   console.log("routineGet router 진입");
   //const {id} = res.locals.user; //미들웨어 locals 지정 변수 체크 후 수정
   const userId = 1;
@@ -26,7 +25,6 @@ const ongoingGet = async(req, res) => {
 };
 
 const historyGet = async(req, res) => {
-
   console.log("routineGet router 진입");
   //const {id} = res.locals.user; //미들웨어 locals 지정 변수 체크 후 수정
   const userId = 1;
@@ -39,7 +37,6 @@ const historyGet = async(req, res) => {
         }
       },
     });
-
     const finActions = await Action.findAll({
       where: { 
         userId,
@@ -48,24 +45,13 @@ const historyGet = async(req, res) => {
         }
       },
     });
-
-    // let finActions = []
-    // for await (const routine of finRoutines) {
-    //   const {id} = routine;
-    //   const actions = await Action.findAll({
-    //     where: { routineId: id },
-    //   });
-    //   finActions.push(actions);
-    // }
-
-    res.status(200).send({ result: finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
+    res.status(200).send({ finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);
     res.status(400).send({ msg: "히스토리 정보 조회 에러 발생" });
   }
 };
-
 
 module.exports = {
   ongoingGet,
