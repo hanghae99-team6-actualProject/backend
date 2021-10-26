@@ -4,26 +4,50 @@ const models = require('./models');
 
 // // 가짜 데이터 만들기 - User_DB
 // models.User.create({
-//   userEmail: 'tset2@test.com',
-//   nickName: 'test2',
-//   userPw: '2222',
-//   providerId: '2222a',
+//   userEmail: 'tset1@test.com',
+//   nickName: 'test1',
+//   userPw: '1111',
+//   providerId: '1111a',
 //   provider: '',
 //   exp: 1,
 //   delType: 0,
 //   role: 'smt',
-// }).then((result) => console.log('Data is Created!'));
+// }).then((result) => console.log('Data1 is Created!'));
 
 
-// // 가짜 데이터 만들기 - Routine_DB
-// const finDate = new Date();
-// models.Routine.create({
-//   userId : 1,
-//   routineName : "루틴2",
-//   inMain : 0,
-//   preSet : 1,
-//   finDate : finDate,
-// }).then((result) => console.log('Data is Created!'));
+// 가짜 데이터 만들기 - Routine_DB
+const routineName = "PSR1";
+const inMain = 0;
+const preSet = 1;
+const finDate = new Date();
+//프리셋 데이터 만들기
+// 유저가 없어도 됌
+// 프리셋 : 1
+models.Routine.create({
+  routineName : routineName,
+  inMain : inMain,
+  preSet: preSet,
+  finDate : finDate,
+}).then((result) => console.log('Data is Created!'));
+
+const finDate = new Date();
+models.Routine.create({
+  userId : 1,
+  routineName : "R1",
+  inMain : 0,
+  preSet : 1,
+  finDate : finDate,
+}).then((result) => console.log('Data is Created!'));
+
+const finDate = new Date();
+models.Routine.create({
+  userId : 1,
+  routineName : "R2",
+  inMain : 0,
+  preSet : 1,
+  finDate : finDate,
+}).then((result) => console.log('Data is Created!'));
+
 
 // // 가짜 데이터 만들기 - Action_DB
 // const userId = 1;
