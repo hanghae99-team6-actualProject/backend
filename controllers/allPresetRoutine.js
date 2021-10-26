@@ -1,4 +1,4 @@
-const { User, Routine, Action } = require('../models');
+const { User, Routine, Action, Character } = require('../models');
 
 exports.allPresetRoutine = async (req, res) => {
   try {
@@ -12,20 +12,24 @@ exports.allPresetRoutine = async (req, res) => {
       include: [
         {
           model: User,
-        }
-      ]
+        },
+        {
+          model: Action,
+        },
+      ],
     });
     console.log(routines);
     console.log("전체 불러오기 완료!");
-    
+
     return res.status(200).send({
+      result: true,
       routines: routines,
       msg: '목록 불러오기 완료',
     });
   } catch (error) {
     console.log(error);
-
     return res.status(400).send({
+      result: false,
       msg: '알 수 없는 오류 발생',
     });
   }

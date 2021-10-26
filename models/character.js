@@ -16,7 +16,9 @@ module.exports = (sequelize, DataTypes) => {
   Character.init({
     userId: DataTypes.INTEGER,
     preSet: DataTypes.INTEGER,
-    characterName: DataTypes.STRING
+    characterName: DataTypes.STRING,
+    exp: DataTypes.INTEGER,
+    expMax: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Character',

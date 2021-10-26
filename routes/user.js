@@ -1,21 +1,17 @@
 var express = require('express');
 var router = express.Router();
-const { allPresetRoutine } = require('../controllers/allPresetRoutine');
 
-//가짜 데이터를 만드는 함수
+const { allPresetRoutine } = require('../controllers/allPresetRoutine');
+const { newCharacter } = require('../controllers/newCharacter');
+const { doneAction } = require('../controllers/doneAction');
 
 // 프리셋 루틴 전체 목록 불러오기
-router.get('/users/routines', allPresetRoutine);
+router.get('/routines', allPresetRoutine);
 
-// 캐릭터 뽑기
-router.post('/users/:userId', async (req, res) => {
+// 새로운 캐릭터 뽑기
+router.post('/:userId', newCharacter);
 
-  return;
-});
-
-// 액션 완료
-router.put('/users/:userId', async (req, res) => {
-  return;
-});
+// 액션(운동) 완료
+router.put('/:userId', doneAction);
 
 module.exports = router;

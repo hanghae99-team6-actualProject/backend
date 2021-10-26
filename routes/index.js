@@ -1,11 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const routineRouter = require('./user');
 
-//test용 시작 view page
-
-router.get("/", async (req, res) => {
-  res.render("index");
-});
-//test용 끝
+router.use('/users', routineRouter);
 
 module.exports = router;

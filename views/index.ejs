@@ -2,24 +2,66 @@
 <html>
   <head>
     <title>테스트페이지</title>
+  
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   </head>
- 
+  <script>
+    function actionComplete() {
+      let userId = 1;
+      let actionId = 12;
+
+      $.ajax({
+        type: 'put',
+        url: `/api/users/${userId}`,
+        data: {
+          actionId: actionId,
+        },
+        success: function (response) {
+          return console.log('에이젝스 완료!');
+        },
+        error: function (error) {
+          console.log(error);
+          console.log('오류발생!');
+        },
+      });
+    }
+
+
+    function newCharacter() {
+      let userId = 1;
+      let characterName = '1';
+
+      $.ajax({
+        type: 'post',
+        url: `/api/users/${userId}`,
+        data: { characterName },
+        success: function (response) {
+          console.log('에이젝스 완료!');
+          console.log(response.chkCrt);
+          return;
+        },
+        error: function (error) {
+          console.log(error);
+          console.log('오류발생!');
+          return;
+        },
+      });
+    }
+
+  </script>
+
   <body>
     <h1>제목</h1>
     <p>Welcome to 테스트페이지</p>
 
-
-
     <button>프리셋 루틴 불러오기 버튼</button>
     <p></p>
     <p></p>
-    <button>캐릭터 뽑기 버튼</button>
+    <button onclick="newCharacter()">캐릭터 뽑기 버튼</button>
     <p></p>
     <p></p>
-    <button>액션 완료 버튼</button>
+    <button onclick="actionComplete()">액션 완료 버튼</button>
     <p></p>
     <p></p>
-
   </body>
-
 </html>
