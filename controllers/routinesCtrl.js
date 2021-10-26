@@ -36,7 +36,8 @@ async function actionModify (routineId, actions) {
 const routineGet = async(req, res) => {
 
   console.log("routineGet router 진입");
-  const {userId} = req.params;
+  // const {userId} = req.locals.user;
+  const userId = 1
 
   try {
     const routines = await Routine.findAll({
@@ -60,8 +61,10 @@ const routineCreate = async(req, res) => {
   
   console.log("routineCreate router 진입");
 
-  const {userId} = req.params;
+  // const {userId} = req.locals.user;
+  const userId = 2
   console.log(userId);
+
   const {
     routineName,
     actions,

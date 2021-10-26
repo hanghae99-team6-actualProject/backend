@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       models.User.hasMany(models.Routine, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'})
+      models.User.hasMany(models.Character, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'})
     }
   };
   User.init({
@@ -19,9 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     nickName: DataTypes.STRING,
     userPw: DataTypes.STRING,
     provider: DataTypes.STRING,
-    exp: DataTypes.INTEGER,
-    delType: DataTypes.INTEGER,
-    role: DataTypes.STRING
+    role: DataTypes.STRING,
+    refreshToken: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'User',

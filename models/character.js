@@ -3,27 +3,25 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Routine extends Model {
+  class Character extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      models.Routine.belongsTo(models.User, {foreignKey: 'userId', targetKey: 'id'})
-      models.Routine.hasMany(models.Action, {foreignKey: 'routineId', sourceKey: 'id'})
+      models.Character.belongsTo(models.User, {foreignKey: 'userId', targetKey: 'id'})
     }
   };
-  Routine.init({
+  Character.init({
     userId: DataTypes.INTEGER,
-    routineName: DataTypes.STRING,
-    isMain: DataTypes.INTEGER,
     preSet: DataTypes.INTEGER,
-    finDate: DataTypes.DATE
+    characterName: DataTypes.STRING,
+    exp: DataTypes.INTEGER,
+    expMax: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Routine',
+    modelName: 'Character',
   });
-  return Routine;
+  return Character;
 };

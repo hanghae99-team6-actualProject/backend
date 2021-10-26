@@ -19,9 +19,6 @@ sequelize
 
 //routes imports
 const indexRouter = require("./routes/index");
-// const sampleRouter = require("./routes/samples");
-// const routineRouter = require("./routes/routines");
-// const mainRouter = require("./routes/main");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -11,8 +11,8 @@ routineModify = routinesCtrl.routineModify;
 routineDelete = routinesCtrl.routineDelete;
 
 //API
-router.get('/routine/:userId', routineGet);
-router.post('/routine/:userId', routineCreate);
+router.get('/routine', routineGet);
+router.post('/routine', routineCreate);
 router.put('/routine/:routineId', routineModify);
 router.delete('/routine/:routineId', routineDelete);
 
