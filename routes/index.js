@@ -1,13 +1,16 @@
 var express = require('express');
 var router = express.Router();
+
 const authRouter = require("./auth");
 const usersRouter = require("./users");
+const routineRouter = require('./routines')
+const mainRouter = require('./main')
 
 
+router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
-
-//test용 시작 view page
+router.use('/routines', routineRouter)
 
 router.get("/", async (req, res) => {
   if (req.user) {

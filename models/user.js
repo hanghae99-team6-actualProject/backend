@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     static associate(models) {
-      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.Routine, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
     }
   };
   User.init({
