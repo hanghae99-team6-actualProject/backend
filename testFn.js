@@ -10,7 +10,7 @@
 // console.log(newcrtInfo);
 
 
-crtPreSetList = ['1','2','3'];
+crtPreSetList = ['1', '2', '3'];
 collcetionMaxCrt = ['3'];
 
 // collcetionMaxCrt.sort();

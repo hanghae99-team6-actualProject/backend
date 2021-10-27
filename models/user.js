@@ -9,24 +9,41 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+
     static associate(models) {
-      models.User.hasMany(models.Routine, {foreignKey: 'userId', sourceKey: 'id'});
-      models.User.hasMany(models.Action, {foreignKey: 'userId', sourceKey: 'id'});
-      models.User.hasMany(models.Character, {foreignKey: 'userId', sourceKey: 'id'});
+      models.User.hasMany(models.Routine, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
     }
   };
   User.init({
-    userEmail: DataTypes.STRING,
+    providerId: {
+      allowNull: false,
+      unique: true,
+      type: DataTypes.STRING,
+    },
+    userEmail: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      require: true,
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
+    },
     nickName: DataTypes.STRING,
     userPw: DataTypes.STRING,
-    providerId: DataTypes.STRING,
-    provider: DataTypes.STRING,
+    provider: DataTypes.ENUM('local', 'google', 'naver', 'kakao'),
     exp: DataTypes.INTEGER,
-    delType: DataTypes.INTEGER,
-    role: DataTypes.STRING
+    role: DataTypes.ENUM('admin', 'base_user', 'guest'),
+    deletedAt: {
+      allowNull: true,
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
     modelName: 'User',
+    paranoid: true,
+    timestamps: true,
   });
   return User;
 };

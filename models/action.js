@@ -10,15 +10,16 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Action.belongsTo(models.User, {foreignKey: 'userId', targetKey: 'id'});
-      models.Action.belongsTo(models.Routine, {foreignKey: 'routineId', targetKey: 'id'});
+      // define association here
+      models.Action.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
+      models.Action.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
     }
   };
   Action.init({
     userId: DataTypes.INTEGER,
     routineId: DataTypes.INTEGER,
     actionName: DataTypes.STRING,
-    actionCount: DataTypes.INTEGER,
+    actionCnt: DataTypes.INTEGER,
     finDate: DataTypes.DATE
   }, {
     sequelize,
