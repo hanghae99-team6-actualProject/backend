@@ -4,16 +4,22 @@ const models = require('./models');
 
 // // 가짜 데이터 만들기 - User_DB
 // models.User.create({
-//   providerId: "1",
-//   userEmail: 'tset1@test.com',
-//   nickName: 'test1',
-//   userPw: '1111',
+//   providerId: "3",
+//   userEmail: 'tset3@test.com',
+//   nickName: 'test3',
+//   userPw: '3333',
 // }).then((result) => console.log('Data1 is Created!'));
 // models.User.create({
-//   providerId: "2",
-//   userEmail: 'tset2@test.com',
-//   nickName: 'test2',
-//   userPw: '2222',
+//   providerId: "4",
+//   userEmail: 'tset4@test.com',
+//   nickName: 'test4',
+//   userPw: '4444',
+// }).then((result) => console.log('Data1 is Created!'));
+// models.User.create({
+//   providerId: "5",
+//   userEmail: 'tset5@test.com',
+//   nickName: 'test5',
+//   userPw: '5555',
 // }).then((result) => console.log('Data1 is Created!'));
 
 
@@ -460,11 +466,23 @@ const models = require('./models');
 //   expMax : expMax,
 // }).then((result) => console.log('Data is Created!'));
 
-// var userId = 1;
+// var userId = 2;
 // var preSet = 1;
 // var characterName = "2"
+// var expMax = 1;
+// var exp = 0;
+// models.Character.create({
+//   userId: userId,
+//   preSet: preSet,
+//   characterName: characterName,
+//   exp: exp,
+//   expMax: expMax,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 2;
+// var preSet = 1;
+// var characterName = "1"
 // var expMax = 0;
-// var exp = 27;
+// var exp = 15;
 // models.Character.create({
 //   userId: userId,
 //   preSet: preSet,
