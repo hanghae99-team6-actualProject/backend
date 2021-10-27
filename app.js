@@ -1,38 +1,39 @@
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
 const app = express();
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 const port = process.env.EXPRESS_PORT;
 const { sequelize } = require("./models");
 
-
-//sequelize
-sequelize
-  .sync({ force: false }) // 데이터 구조 바꿀 때만 true
-  .then(() => {
-    console.log('DB 생성 완료');
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-
 //routes imports
-const indexRouter = require("./routes/index");
+const indexRouter = require('./routes/index');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static("public"));
+app.use(express.static('public'));
 
-app.set("views", __dirname + "/views");
-app.set("view engine", "ejs");
+//REMOVEME
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
 //routes
-app.use("/api", indexRouter);
-// app.use("/api", sampleRouter);
-// app.use("/api", routineRouter);
-// app.use("/api", mainRouter);
+app.use('/api', indexRouter);
+
+//REMOVEME
+app.get("/", async (req, res) => {
+  res.render("index");
+});
+
+sequelize
+  .sync({ force: false }) //데이터 구조 변경하고 싶을 때, true
+  .then(() => {
+    console.log('------ SQL Restructure Complete ------');
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 app.listen(port, () => {
   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);

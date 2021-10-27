@@ -11,8 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.User.hasMany(models.Routine, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'})
-      models.User.hasMany(models.Character, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'})
+      models.User.hasMany(models.Routine, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'});
+      models.User.hasMany(models.Action, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'});
+      models.User.hasMany(models.Character, {foreignKey: 'userId', sourceKey: 'id', onDelete:'cascade'});
     }
   };
   User.init({
@@ -26,6 +27,5 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
   });
-  
   return User;
 };
