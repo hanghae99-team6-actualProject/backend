@@ -1,15 +1,14 @@
 {
-  "name": "sample_name",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
@@ -20,13 +19,21 @@
     "mysql2": "^2.3.2",
     "passport": "^0.5.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-jwt": "^4.0.0",
     "passport-kakao": "^1.0.1",
-    "passport-local": "^1.0.0",
     "passport-naver": "^1.0.6",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0"
   },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanghae99-team6-actualProject/backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hanghae99-team6-actualProject/backend/issues"
+  },
+  "homepage": "https://github.com/hanghae99-cloneProject-neverSeries/backend#readme",
   "devDependencies": {
     "jest": "^27.3.1",
     "nodemon": "^2.0.14"

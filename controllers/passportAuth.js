@@ -10,9 +10,12 @@ const googleLogin = passport.authenticate('google', {
   scope: ['profile', 'email']
 });
 
-const naverCallbackMiddleware = passport.authenticate('naver', { failureRedirect: '/' });
-const kakaoCallbackMiddleware = passport.authenticate('kakao', { failureRedirect: '/' });
-const googleCallbackMiddleware = passport.authenticate('google', { failureRedirect: '/' });
+const naverCallbackMiddleware = passport.authenticate('naver',
+  { failureRedirect: '/' });
+const kakaoCallbackMiddleware = passport.authenticate('kakao',
+  { failureRedirect: '/' });
+const googleCallbackMiddleware = passport.authenticate('google',
+  { failureRedirect: '/' });
 
 const naverCallbackResult = (rea, res) => {
   res.redirect('/')

@@ -1,5 +1,4 @@
 'use strict';
-const Sequelize = require("sequelize");
 const {
   Model
 } = require('sequelize');
@@ -10,8 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+
     static associate(models) {
-      // define association here
+      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id' });
     }
   };
   User.init({
@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING,
       require: true,
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
     },
     nickName: DataTypes.STRING,
     userPw: DataTypes.STRING,

@@ -1,17 +1,19 @@
 const express = require('express');
-const { localSignup } = require('../controllers/localUser')
+const authMiddleware = require('../middlewares/authMiddleware')
+const { logout, localSignup, me, localLogin } = require('../controllers/auth')
+const {
+  naverLogin,
+  kakaoLogin,
+  googleLogin,
+  naverCallbackMiddleware,
+  kakaoCallbackMiddleware,
+  googleCallbackMiddleware,
+  naverCallbackResult,
+  kakaoCallbackResult,
+  googleCallbackResult
+} = require('../controllers/passportAuth');
+
 const router = express.Router();
-
-router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log(err);
-    }
-    req.logout()
-    res.redirect('/')
-  })
-})
-
 
 router.get("/debug", (req, res) => {
   res.json({
@@ -23,6 +25,22 @@ router.get("/debug", (req, res) => {
   })
 })
 
-// router.get('/signup', localSignup)
+router.get('/me', authMiddleware, me);
+router.get('/logout', logout);
+router.get('/signup', localSignup)
+
+
+//아래부터 로그인
+router.get('/local', localLogin);
+
+router.get('/naver', naverLogin);
+router.get('/naver/callback', naverCallbackMiddleware, naverCallbackResult)
+
+router.get('/kakao', kakaoLogin);
+router.get('/kakao/callback', kakaoCallbackMiddleware, kakaoCallbackResult)
+
+router.get('/google', googleLogin);
+router.get('/google/callback', googleCallbackMiddleware, googleCallbackResult)
+
 
 module.exports = router;
