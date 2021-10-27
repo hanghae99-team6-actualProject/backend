@@ -26,9 +26,13 @@ async function actionDelete(routineId) {
 //해당 루틴 아이디 기준 다 지우고 만든다. 왜?
 //루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
 //이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
-async function actionModify(routineId, actions) {
-  await actionDelete(routineId);
-  await actionCreate(routineId, actions);
+async function actionModify(routineId, userId, actions) {
+  try{
+    await actionDelete(routineId);
+    await actionCreate(routineId, userId, actions);
+  }catch(err){
+    console.log(err);
+  }
   console.log('action 수정 완료')
 }
 
@@ -62,7 +66,7 @@ const routineCreate = async (req, res) => {
   console.log("routineCreate router 진입");
 
   // const {userId} = req.locals.user;
-  const userId = 2
+  const userId = 1
   console.log(userId);
 
   const {
@@ -108,6 +112,9 @@ const routineCreate = async (req, res) => {
 //루틴 수정 API
 const routineModify = async (req, res) => {
   console.log("routineModify router 진입");
+
+  // const {userId} = req.locals.user;
+  const userId = 1
   const { routineId } = req.params;
   const {
     routineName,
@@ -133,7 +140,7 @@ const routineModify = async (req, res) => {
           },
         }
       );
-      actionModify(routineId, actions);
+      actionModify(routineId, userId, actions);
       res.status(200).send({ msg: '루틴이 수정되었습니다.' });
     } else {
       throw new Error('수정 대상 루틴이 없습니다..');
