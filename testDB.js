@@ -218,15 +218,15 @@ const models = require('./models');
 
 // models.Users.findAll().then(console.log);
 // models.Users.findOne({ where: { userId: 'test88' } }).then(console.log);
-const userId = 1;
-const routineId = 5;
+// const userId = 1;
+// const routineId = 5;
 
-models.Action.findOne({ 
-  where: { userId: userId, routineId: routineId },
-  attributes: ['actionNum'],
-  order: [['actionNum', 'DESC']],
-  limit : 1,    
-}).then((result) => console.log(result));
+// models.Action.findOne({ 
+//   where: { userId: userId, routineId: routineId },
+//   attributes: ['actionNum'],
+//   order: [['actionNum', 'DESC']],
+//   limit : 1,    
+// }).then((result) => console.log(result));
 
 // // -----------------------------------------------------------------------------
 
