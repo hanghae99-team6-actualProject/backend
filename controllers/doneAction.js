@@ -72,11 +72,19 @@ exports.doneAction = async (req, res) => {
   });
   console.log(doneLastAction);
   console.log(doneLastAction.finDate);
+
+  let currentExp = await Character.findOne({
+    where: { userId, expMax: 0},
+    attributes: ['exp']
+  });
+  console.log(currentExp);
+  console.log(currentExp.exp, "여기가 현재 exp");
+
   // 마지막액션이 완료되면 루틴도 완료되면서 루틴의 finDate와 경험치를 부여
   if (doneLastAction.finDate !== null) {
-    await Routine.update({ finDate: finDate }, { where: { id: routineId } });
+    await Routine.update({ finDate: finDate }, { where: { id: routineId } }); 
     await Character.update(
-      { exp: routineExpGrowth },
+      { exp: currentExp.exp + routineExpGrowth }, //누적값을 더하는 것
       { where: { userId: userId, characterName: targetCharacterName } }
     );
     return res.status(200).send({
