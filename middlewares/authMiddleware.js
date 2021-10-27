@@ -1,7 +1,7 @@
 // 사용자 인증 미들웨어
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
-require('dotenv').config();
+const env = require('../env')
 
 module.exports = async (req, res, next) => {
   try {
@@ -36,7 +36,7 @@ module.exports = async (req, res, next) => {
       return;
     }
 
-    const { providerId } = jwt.verify(tokenValue, process.env.JWT_SECRET_KEY);
+    const { providerId } = jwt.verify(tokenValue, env.JWT_SECRET_KEY);
     const user = await User.findOne({ where: { providerId } })
 
     res.locals.user = user;

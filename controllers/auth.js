@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
+const env = require('../env')
 const { User } = require('../models');
 const userValidation = require('../utils/joi')
 
@@ -23,7 +23,7 @@ const logout = (req, res) => {
       console.log(err);
     }
     req.logout()
-    res.redirect('/')
+    res.redirect('/api')
   })
 };
 
@@ -40,16 +40,16 @@ const localLogin = async (req, res, next) => {
     if (!(await bcrypt.compare(userPw, user.userPw))) {
       throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
     }
-    const token = jwt.sign({ providerId: user.providerId }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
 
     // refresh token 발급 (2주)
-    const refreshToken = jwt.sign({ providerId: user.providerId }, process.env.JWT_SECRET_KEY, {
+    const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "14d",
     });
 
 
     // access token 발급 (24시간)
-    const accessToken = jwt.sign({ providerId: user.providerId }, process.env.JWT_SECRET_KEY, {
+    const accessToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "24h",
     });
 
@@ -80,7 +80,7 @@ const localSignup = async (req, res, next) => {
     }
 
     // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성
-    const encryptPw = bcrypt.hashSync(userPw, Number(process.env.SALT));
+    const encryptPw = bcrypt.hashSync(userPw, Number(env.SALT));
 
     //추가 정보
     const provider = 'local';
