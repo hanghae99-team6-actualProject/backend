@@ -8,7 +8,6 @@ const { sequelize } = require("./models");
 //routes imports
 const indexRouter = require("./routes/index");
 
-
 const app = express()
 const port = process.env.EXPRESS_PORT;
 

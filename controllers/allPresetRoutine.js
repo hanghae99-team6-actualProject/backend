@@ -3,8 +3,8 @@ const { User, Routine, Action, Character } = require('../models');
 exports.allPresetRoutine = async (req, res) => {
   try {
     const routines = await Routine.findAll({
-      where: { },
-      attributes : {
+      where: {},
+      attributes: {
         // include: [ select추가할 때, 예를 들면 카운트 그룹바이 같이 하는 경우 등.
         //   [],
         // ]

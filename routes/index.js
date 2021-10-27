@@ -1,18 +1,16 @@
 var express = require('express');
 var router = express.Router();
+
 const authRouter = require("./auth");
 const usersRouter = require("./users");
-
-
-router.use('/auth', authRouter);
-router.use('/users', usersRouter);
-
-const userRouter = require('./user');
 const routineRouter = require('./routines')
 const mainRouter = require('./main')
 
-router.use('/users', userRouter)
+
 router.use('/main', mainRouter)
+router.use('/auth', authRouter);
+router.use('/users', usersRouter);
+router.use('/routines', routineRouter)
 
 router.get("/", async (req, res) => {
   if (req.user) {

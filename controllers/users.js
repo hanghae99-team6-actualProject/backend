@@ -1,6 +1,9 @@
 require('dotenv').config();
 const { User, Character } = require('../models');
 
+//TODO
+//paranoid세팅으로 임시 삭제이기 때문에 moment(아마) 시간 다루는 api에서 주기적으로 실제 삭제 예정
+//https://runebook.dev/ko/docs/sequelize/manual/paranoid
 const bye = async (req, res) => {
   try {
     const { id } = res.locals.user;

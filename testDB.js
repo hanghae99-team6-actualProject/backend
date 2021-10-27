@@ -166,11 +166,11 @@ var characterName = "2"
 var expMax = 0;
 var exp = 27;
 models.Character.create({
-  userId : userId,
-  preSet : preSet,
-  characterName : characterName,
+  userId: userId,
+  preSet: preSet,
+  characterName: characterName,
   exp: exp,
-  expMax : expMax,
+  expMax: expMax,
 }).then((result) => console.log('Data is Created!'));
 
 // // -----------------------------------------------------------------------------
