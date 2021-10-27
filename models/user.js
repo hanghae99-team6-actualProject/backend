@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     nickName: DataTypes.STRING,
     userPw: DataTypes.STRING,
     provider: DataTypes.ENUM('local', 'google', 'naver', 'kakao'),
-    exp: DataTypes.INTEGER,
+    exp: DataTypes.INTEGER, //지워야함
     role: DataTypes.ENUM('admin', 'base_user', 'guest'),
     deletedAt: {
       allowNull: true,

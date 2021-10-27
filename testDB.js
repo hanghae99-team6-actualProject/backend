@@ -4,14 +4,16 @@ const models = require('./models');
 
 // // 가짜 데이터 만들기 - User_DB
 // models.User.create({
+//   providerId: "1",
+//   userEmail: 'tset1@test.com',
+//   nickName: 'test1',
+//   userPw: '1111',
+// }).then((result) => console.log('Data1 is Created!'));
+// models.User.create({
+//   providerId: "2",
 //   userEmail: 'tset2@test.com',
 //   nickName: 'test2',
 //   userPw: '2222',
-//   providerId: '2222a',
-//   provider: '',
-//   exp: 1,
-//   delType: 0,
-//   role: 'smt',
 // }).then((result) => console.log('Data1 is Created!'));
 
 
@@ -61,17 +63,315 @@ const models = require('./models');
 
 // // 가짜 데이터 만들기 - Action_DB
 // var userId = 1;
-// var routineId = 5;
+// var routineId = 1;
 // var actionName = "앉았다 일어나기";
-// var actionCount = 5;
+// var actionCnt = 5;
 // var finDate = new Date();
+// var actionNum = 1;
 // models.Action.create({
 //   userId : userId,
 //   routineId : routineId,
 //   actionName : actionName,
-//   actionCount : actionCount,
-//   finDate : finDate,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
 // }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "팔굽혀 펴기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 2;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 3;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 4;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 5;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 6;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 7;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 8;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 9;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 10;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 11;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 12;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 13;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 14;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 15;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 16;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 17;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 18;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 19;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 20;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 21;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 1;
+// var actionName = "고개돌리기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 22;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+
+
 // var userId = 1;
 // var routineId = 5;
 // var actionName = "발목 돌리기";
@@ -160,18 +460,18 @@ const models = require('./models');
 //   expMax : expMax,
 // }).then((result) => console.log('Data is Created!'));
 
-var userId = 1;
-var preSet = 1;
-var characterName = "2"
-var expMax = 0;
-var exp = 27;
-models.Character.create({
-  userId: userId,
-  preSet: preSet,
-  characterName: characterName,
-  exp: exp,
-  expMax: expMax,
-}).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var preSet = 1;
+// var characterName = "2"
+// var expMax = 0;
+// var exp = 27;
+// models.Character.create({
+//   userId: userId,
+//   preSet: preSet,
+//   characterName: characterName,
+//   exp: exp,
+//   expMax: expMax,
+// }).then((result) => console.log('Data is Created!'));
 
 // // -----------------------------------------------------------------------------
 
@@ -186,6 +486,15 @@ models.Character.create({
 
 // models.Users.findAll().then(console.log);
 // models.Users.findOne({ where: { userId: 'test88' } }).then(console.log);
+// const userId = 1;
+// const routineId = 5;
+
+// models.Action.findOne({ 
+//   where: { userId: userId, routineId: routineId },
+//   attributes: ['actionNum'],
+//   order: [['actionNum', 'DESC']],
+//   limit : 1,    
+// }).then((result) => console.log(result));
 
 // // -----------------------------------------------------------------------------
 
@@ -220,10 +529,10 @@ models.Character.create({
 
 // // Delete -----------------------------------------------------------------------
 
-// const targetUserId = 3; 
-// models.Routine.destroy({ where: { userId: targetUserId } }).then((result) =>
+// const target = 50; 
+// models.Action.destroy({ where: { id: target } }).then((result) =>
 //   console.log(result,"결과"),
-//   console.log(`${targetUserId} data was deleted!`),
+//   console.log(`${target} data was deleted!`),
 // );
 
 // // -----------------------------------------------------------------------------
