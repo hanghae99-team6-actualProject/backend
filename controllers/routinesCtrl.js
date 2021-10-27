@@ -26,9 +26,13 @@ async function actionDelete(routineId) {
 //해당 루틴 아이디 기준 다 지우고 만든다. 왜?
 //루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
 //이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
-async function actionModify(routineId, actions) {
-  await actionDelete(routineId);
-  await actionCreate(routineId, actions);
+async function actionModify(routineId, userId, actions) {
+  try{
+    await actionDelete(routineId);
+    await actionCreate(routineId, userId, actions);
+  }catch(err){
+    console.log(err);
+  }
   console.log('action 수정 완료')
 }
 
@@ -36,12 +40,12 @@ async function actionModify(routineId, actions) {
 const routineGet = async (req, res) => {
 
   console.log("routineGet router 진입");
-  // const {userId} = req.locals.user;
-  const userId = 1
+  const { id } = res.locals.user;
+  const authId = id
 
   try {
     const routines = await Routine.findAll({
-      where: { userId },
+      where: { userId : authId },
       include: [
         {
           model: Action,
@@ -61,9 +65,8 @@ const routineCreate = async (req, res) => {
 
   console.log("routineCreate router 진입");
 
-  // const {userId} = req.locals.user;
-  const userId = 2
-  console.log(userId);
+  const { id } = res.locals.user;
+  const authId = id
 
   const {
     routineName,
@@ -74,27 +77,26 @@ const routineCreate = async (req, res) => {
   //유저 DB체크
   try {
     const userExsist = await User.findAll({
-      where: { id: userId },
+      where: { id: authId },
     });
 
     if (userExsist.length == 0) {
-      //res.status(400).send({ result: false, msg: '루틴 생성 대상 유저가 없습니다.' });
       throw new Error('루틴 생성 대상 유저가 없습니다.');
     }
 
     //루틴 DB체크
     const routines = await Routine.findAll({
-      where: { userId, routineName },
+      where: { userId : authId, routineName },
     });
 
     if (routines.length == 0) {
       const routines = await Routine.create({
-        userId,
+        userId : authId,
         routineName,
         isMain,
       });
       const { id } = routines;
-      actionCreate(id, userId, actions);
+      actionCreate(id, authId, actions);
       res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
     } else {
       throw new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.');
@@ -108,6 +110,10 @@ const routineCreate = async (req, res) => {
 //루틴 수정 API
 const routineModify = async (req, res) => {
   console.log("routineModify router 진입");
+
+  const { id } = res.locals.user;
+  const authId = id
+
   const { routineId } = req.params;
   const {
     routineName,
@@ -133,7 +139,7 @@ const routineModify = async (req, res) => {
           },
         }
       );
-      actionModify(routineId, actions);
+      actionModify(routineId, authId, actions);
       res.status(200).send({ msg: '루틴이 수정되었습니다.' });
     } else {
       throw new Error('수정 대상 루틴이 없습니다..');
@@ -147,6 +153,10 @@ const routineModify = async (req, res) => {
 //루틴 삭제 API
 const routineDelete = async (req, res) => {
   console.log("routineDelete router 진입");
+
+  // const { id } = res.locals.user;
+  // const authId = id
+
   try {
     const { routineId } = req.params;
     await Action.destroy({
