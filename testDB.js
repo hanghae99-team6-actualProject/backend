@@ -65,13 +65,45 @@ const models = require('./models');
 // var actionName = "앉았다 일어나기";
 // var actionCount = 5;
 // var finDate = new Date();
+// var actionNum = 1;
 // models.Action.create({
 //   userId : userId,
 //   routineId : routineId,
 //   actionName : actionName,
 //   actionCount : actionCount,
 //   finDate : finDate,
+//   actionNum : actionNum,
 // }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 5;
+// var actionName = "앉았다 일어나기";
+// var actionCount = 5;
+// var finDate = new Date();
+// var actionNum = 2;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCount : actionCount,
+//   finDate : finDate,
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var routineId = 5;
+// var actionName = "앉았다 일어나기";
+// var actionCount = 5;
+// var finDate = new Date();
+// var actionNum = 3;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCount : actionCount,
+//   finDate : finDate,
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+
+
 // var userId = 1;
 // var routineId = 5;
 // var actionName = "발목 돌리기";
@@ -160,18 +192,18 @@ const models = require('./models');
 //   expMax : expMax,
 // }).then((result) => console.log('Data is Created!'));
 
-var userId = 1;
-var preSet = 1;
-var characterName = "2"
-var expMax = 0;
-var exp = 27;
-models.Character.create({
-  userId: userId,
-  preSet: preSet,
-  characterName: characterName,
-  exp: exp,
-  expMax: expMax,
-}).then((result) => console.log('Data is Created!'));
+// var userId = 1;
+// var preSet = 1;
+// var characterName = "2"
+// var expMax = 0;
+// var exp = 27;
+// models.Character.create({
+//   userId: userId,
+//   preSet: preSet,
+//   characterName: characterName,
+//   exp: exp,
+//   expMax: expMax,
+// }).then((result) => console.log('Data is Created!'));
 
 // // -----------------------------------------------------------------------------
 
@@ -186,6 +218,15 @@ models.Character.create({
 
 // models.Users.findAll().then(console.log);
 // models.Users.findOne({ where: { userId: 'test88' } }).then(console.log);
+const userId = 1;
+const routineId = 5;
+
+models.Action.findOne({ 
+  where: { userId: userId, routineId: routineId },
+  attributes: ['actionNum'],
+  order: [['actionNum', 'DESC']],
+  limit : 1,    
+}).then((result) => console.log(result));
 
 // // -----------------------------------------------------------------------------
 
