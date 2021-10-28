@@ -11,6 +11,9 @@ const { sequelize } = require("./models");
 //routes imports
 const indexRouter = require("./routes/index");
 
+//crons imports
+const userCron = require("./crons/user");
+
 const port = env.EXPRESS_PORT;
 const app = express()
 
@@ -73,5 +76,7 @@ app.use('/api', indexRouter);
 app.listen(port, () => {
   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
 });
+
+userCron.destroyUser();
 
 module.exports = app;
