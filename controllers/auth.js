@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const env = require('../env')
 const { User } = require('../models');
-const userValidation = require('../utils/joi')
+const userValidation = require('./utils/joi')
 
+//본인 정보 확인 API
 const me = async (req, res) => {
   try {
     const { user } = res.locals;
@@ -17,16 +18,29 @@ const me = async (req, res) => {
   }
 }
 
+//로그아웃 API
 const logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.log(err);
-    }
-    req.logout()
-    res.redirect('/api')
-  })
+  try {
+    const { id } = res.locals.user;
+    if (!id) throw new Error('유저 id없음');
+
+    User.update({ refreshToken: "" }, { where: { id } })
+      .catch((err) => { throw new Error('User.update refreshToken 실패') })
+
+    req.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+      }
+      req.logout()
+    })
+
+    res.json({ result: true, msg: "로그아웃되었습니다." });
+  } catch (error) {
+    res.status(400).json({ msg: "fail" });
+  }
 };
 
+//로컬 로그인 API
 const localLogin = async (req, res, next) => {
   try {
     const { userEmail, userPw } = req.body;
@@ -40,7 +54,7 @@ const localLogin = async (req, res, next) => {
     if (!(await bcrypt.compare(userPw, user.userPw))) {
       throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
     }
-    const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
+    // const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
 
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
@@ -53,6 +67,10 @@ const localLogin = async (req, res, next) => {
       expiresIn: "24h",
     });
 
+    await User.update(
+      { refreshToken },
+      { where: { providerId } }
+    ).catch((err) => { throw new Error('User.update refreshToken 실패') });
 
     return res.send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
@@ -61,6 +79,7 @@ const localLogin = async (req, res, next) => {
   }
 }
 
+//로컬 회원가입 API
 const localSignup = async (req, res, next) => {
   try {
     const { userEmail, userPw, userPwChk, nickName } = await userValidation.validateAsync(req.body);

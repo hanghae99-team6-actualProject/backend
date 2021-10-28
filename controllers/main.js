@@ -37,7 +37,7 @@ const historyGet = async (req, res) => {
   try {
     const finRoutines = await Routine.findAll({
       where: {
-        userId : authId,
+        userId: authId,
         findate: {
           [Op.not]: null
         }
@@ -45,13 +45,13 @@ const historyGet = async (req, res) => {
     });
     const finActions = await Action.findAll({
       where: {
-        userId : authId,
+        userId: authId,
         findate: {
           [Op.not]: null
         }
       },
     });
-    res.status(200).send({ result : true, finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
+    res.status(200).send({ result: true, finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);

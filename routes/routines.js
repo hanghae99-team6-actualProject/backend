@@ -3,8 +3,7 @@ var router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware')
 
 //controller import
-const { routineGet, routineCreate, routineModify, routineDelete } = require('../controllers/routinesCtrl');
-const { allPresetRoutine } = require('../controllers/allPresetRoutine');
+const { routineGet, routineCreate, routineModify, routineDelete, allPresetRoutine } = require('../controllers/routines');
 
 //API
 router.get('/', authMiddleware, routineGet);
