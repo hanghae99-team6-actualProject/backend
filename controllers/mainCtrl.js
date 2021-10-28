@@ -21,7 +21,7 @@ const ongoingGet = async (req, res) => {
         }]
       }]
     });
-    res.status(200).send({ result: users, msg: "진행중 루틴 및 액션 조회완료" });
+    res.status(200).send({ result: true, users, msg: "진행중 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);
@@ -51,7 +51,7 @@ const historyGet = async (req, res) => {
         }
       },
     });
-    res.status(200).send({ finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
+    res.status(200).send({ result : true, finRoutines, finActions, msg: "히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);
