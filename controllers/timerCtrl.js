@@ -1,7 +1,6 @@
 const { User, Sequelize } = require("../models");
 const Op = Sequelize.Op;
 
-//메인 루틴, 액션, 유저 조회
 const userTimer = async (req, res) => {
   console.log("userTimer router 진입");
 
