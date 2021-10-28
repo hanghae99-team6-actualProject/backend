@@ -6,12 +6,14 @@ const authRouter = require("./auth");
 const usersRouter = require("./users");
 const routineRouter = require('./routines')
 const mainRouter = require('./main')
+const scheduleRouter = require('./schedule')
 
 
 router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/routines', routineRouter)
+router.use('/timer', scheduleRouter)
 
 router.get("/", async (req, res) => {
   if (req.user) {
