@@ -27,11 +27,11 @@ router.get("/debug", (req, res) => {
 
 router.get('/me', authMiddleware, me);
 router.get('/logout', logout);
-router.get('/signup', localSignup)
+router.post('/signup', localSignup)
 
 
 //아래부터 로그인
-router.get('/local', localLogin);
+router.post('/local', localLogin);
 
 router.get('/naver', naverLogin);
 router.get('/naver/callback', naverCallbackMiddleware, naverCallbackResult)
