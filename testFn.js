@@ -10,8 +10,8 @@
 // console.log(newcrtInfo);
 
 
-crtPreSetList = ['1', '2', '3'];
-collcetionMaxCrt = ['3'];
+// crtPreSetList = ['1', '2', '3'];
+// collcetionMaxCrt = ['3'];
 
 // collcetionMaxCrt.sort();
 // crtPreSetList.sort();
@@ -26,5 +26,15 @@ collcetionMaxCrt = ['3'];
 //   }
 // };
 
-let result = crtPreSetList.filter(x => !collcetionMaxCrt.includes(x));
-console.log(result);
+// let result = crtPreSetList.filter(x => !collcetionMaxCrt.includes(x));
+// console.log(result);
+
+
+
+
+//라우터 끌고오기 실험
+const { routers } = require('./routes');
+const router = require('./routes');
+
+console.log( {routers} );
+console.log(router);

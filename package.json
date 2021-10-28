@@ -4,7 +4,7 @@
   "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
     "dev": "nodemon app.js"
   },
   "dependencies": {

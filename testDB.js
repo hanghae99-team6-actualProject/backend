@@ -534,20 +534,18 @@ const models = require('./models');
 //   }
 // });
 
-let finDate = new Date();
-models.Action.update(
-  { finDate: finDate },
-  {where: { id: 31 },
-  returning: true,
-  plain: true,
-})
-  .then((action, val) =>{
-    console.log("이것이 액션", action);
-    console.log("이것이 val", val);
-    
-  })
-;
-console.log("완료");
+// let finDate = new Date();
+// models.Action.update(
+//   { finDate: finDate },
+//   {where: { id: 31 },
+//   returning: true,
+// })
+//   .then((action, val) =>{
+//     console.log("이것이 액션", action);
+//     console.log("이것이 val", val);
+//   })
+// ;
+// console.log("완료");
 
 // // -----------------------------------------------------------------------------
 
