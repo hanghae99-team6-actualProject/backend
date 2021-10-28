@@ -42,8 +42,12 @@ exports.doneAction = async (req, res) => {
       { finDate: finDate },
       { where: { id: actionId } }
     );
+    let currentExp = await Character.findOne({
+      where: { userId, expMax: 0},
+      attributes: ['exp']
+    });
     await Character.update(
-      { exp: actionExpGrowth },
+      { exp: currentExp + actionExpGrowth },
       { where: { characterName: targetCharacterName } }
     );
     console.log('액션의 완료 처리 완료');
