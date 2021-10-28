@@ -2,11 +2,9 @@ const passport = require('passport');
 const NaverStrategy = require('passport-naver').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const env = require('./env')
 
 const { User } = require('./models');
-
-const dotenv = require("dotenv");
-dotenv.config();
 
 module.exports = (app) => {
   app.use(passport.initialize());
@@ -21,9 +19,9 @@ module.exports = (app) => {
   })
 
   passport.use(new NaverStrategy({
-    clientID: process.env.NAVER_CLIENT_ID,
-    clientSecret: process.env.NAVER_CLIENT_SECRET,
-    callbackURL: '/api/auth/naver/callback'
+    clientID: env.NAVER_CLIENT_ID,
+    clientSecret: env.NAVER_CLIENT_SECRET,
+    callbackURL: `${env.DOMAIN}/api/auth/naver/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const providerId = profile?.id;
@@ -47,8 +45,8 @@ module.exports = (app) => {
   }))
 
   passport.use(new KakaoStrategy({
-    clientID: process.env.KAKAO_CLIENT_ID,
-    callbackURL: '/api/auth/kakao/callback'
+    clientID: env.KAKAO_CLIENT_ID,
+    callbackURL: `${env.DOMAIN}/auth/kakao/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const providerId = profile?.id;
@@ -72,9 +70,9 @@ module.exports = (app) => {
   }))
 
   passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback'
+    clientID: env.GOOGLE_CLIENT_ID,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${env.DOMAIN}/api/auth/google/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const providerId = profile?.id;

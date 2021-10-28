@@ -4,8 +4,8 @@ const Op = Sequelize.Op;
 //메인 루틴, 액션, 유저 조회
 const ongoingGet = async (req, res) => {
   console.log("routineGet router 진입");
-  //const {id} = res.locals.user; //미들웨어 locals 지정 변수 체크 후 수정
-  const id = 1;
+  const { id } = res.locals.user;
+
   try {
     const users = await User.findAll({
       where: { id },
@@ -31,12 +31,13 @@ const ongoingGet = async (req, res) => {
 
 const historyGet = async (req, res) => {
   console.log("routineGet router 진입");
-  //const {id} = res.locals.user; //미들웨어 locals 지정 변수 체크 후 수정
-  const userId = 1;
+  const { id } = res.locals.user;
+  const authId = id
+
   try {
     const finRoutines = await Routine.findAll({
       where: {
-        userId,
+        userId: authId,
         findate: {
           [Op.not]: null
         }
@@ -44,7 +45,7 @@ const historyGet = async (req, res) => {
     });
     const finActions = await Action.findAll({
       where: {
-        userId,
+        userId: authId,
         findate: {
           [Op.not]: null
         }
