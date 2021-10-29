@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     routineId: DataTypes.INTEGER,
     actionName: DataTypes.STRING,
+    actionType: DataTypes.STRING,
     actionCnt: DataTypes.INTEGER,
     finDate: DataTypes.DATE,
     actionNum: DataTypes.INTEGER,
