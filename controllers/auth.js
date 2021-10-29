@@ -21,10 +21,10 @@ const me = async (req, res) => {
 //로그아웃 API
 const logout = (req, res) => {
   try {
-    const { id } = res.locals.user;
-    if (!id) throw new Error('유저 id없음');
+    const { providerId } = res.locals.user;
+    if (!providerId) throw new Error('유저 id없음');
 
-    User.update({ refreshToken: "" }, { where: { id } })
+    User.update({ refreshToken: "" }, { where: { providerId } })
       .catch((err) => { throw new Error('User.update refreshToken 실패') })
 
     req.session.destroy((err) => {
