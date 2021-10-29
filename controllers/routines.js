@@ -4,27 +4,18 @@ const { Routine, Action, User } = require("../models");
 async function actionCreate(routineId, userId, actions) {
   for await (const [index, value] of actions.entries()) {
     console.log(index, value);
-    const { actionName, actionCnt } = value;
+    const { actionName, actionCnt, actionType } = value;
+
     await Action.create({
       routineId,
       userId,
       actionName,
       actionCnt,
+      actionType,
       actionNum : index
   });
   }
 
-  // for await (let action of actions) {
-  //   const { actionName, actionCnt } = action;
-  //   let actionNum
-  //   await Action.create({
-  //     routineId,
-  //     userId,
-  //     actionName,
-  //     actionCnt,
-  //     actionNum
-  //   });
-  // }
   console.log('action 생성 완료')
 }
 
@@ -181,7 +172,7 @@ const routineDelete = async (req, res) => {
     await Routine.destroy({
       where: { id: routineId }
     });
-    res.status(200).send({ result: true, msg: '루틴이 삭제되었습니다.' });
+    res.status(200).send({ result: true, routineId, msg: '루틴이 삭제되었습니다.' });
   } catch (err) {
     console.log(err);
     throw new Error('루틴 삭제에 실패하였습니다.');
