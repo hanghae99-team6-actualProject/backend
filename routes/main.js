@@ -3,7 +3,7 @@ var router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware')
 
 //controller import
-const mainCtrl = require('../controllers/mainCtrl');
+const mainCtrl = require('../controllers/main');
 
 ongoingGet = mainCtrl.ongoingGet;
 historyGet = mainCtrl.historyGet;
