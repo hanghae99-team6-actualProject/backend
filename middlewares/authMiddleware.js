@@ -1,23 +1,24 @@
 // 사용자 인증 미들웨어
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
-require('dotenv').config();
+const env = require('../env')
 
 module.exports = async (req, res, next) => {
   try {
-    console.log(req.headers);
+    console.log('req.headers', req.headers);
     if (!req.headers) {
       res.locals.user = null;
-      console.log('!req.headers')
+      console.log('미들웨어 !req.headers')
       next();
       return;
     }
 
-    const { refreshtoken: refreshToken, accesstoken: accessToken } = req.headers
-
+    const { refreshtoken: refreshToken, accesstoken: accessToken } = req.headers;
+    console.log('req.headers.refreshtoken', refreshToken);
+    console.log('req.headers.accesstoken', accessToken);
     if (!accessToken) {
       res.locals.user = null;
-      console.log('!accessToken')
+      console.log('미들웨어 !accessToken')
       next();
       return;
     }
@@ -25,21 +26,22 @@ module.exports = async (req, res, next) => {
     const tokenValue = accessToken.split(' ')[1];
 
     if (tokenType !== "Bearer") {
-      console.log('tokenType !== "Bearer"')
+      console.log('미들웨어 tokenType !== "Bearer"')
       next();
       return;
     }
 
     if (tokenValue === null || !tokenValue || tokenValue === 'undefined') {
-      console.log('tokenValue === null || !tokenValue || tokenValue === "undefined"')
+      console.log('미들웨어 tokenValue === null || !tokenValue || tokenValue === "undefined"')
       next();
       return;
     }
 
-    const { providerId } = jwt.verify(tokenValue, process.env.JWT_SECRET_KEY);
+    const { providerId } = jwt.verify(tokenValue, env.JWT_SECRET_KEY);
     const user = await User.findOne({ where: { providerId } })
 
     res.locals.user = user;
+    console.log('미들웨어 통과')
     next();
     return;
   }
