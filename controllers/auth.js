@@ -21,10 +21,10 @@ const me = async (req, res) => {
 //로그아웃 API
 const logout = (req, res) => {
   try {
-    const { id } = res.locals.user;
-    if (!id) throw new Error('유저 id없음');
+    const { providerId } = res.locals.user;
+    if (!providerId) throw new Error('유저 id없음');
 
-    User.update({ refreshToken: "" }, { where: { id } })
+    User.update({ refreshToken: "" }, { where: { providerId } })
       .catch((err) => { throw new Error('User.update refreshToken 실패') })
 
     req.session.destroy((err) => {
@@ -59,12 +59,14 @@ const localLogin = async (req, res, next) => {
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "14d",
+      issuer: 'mingijuk'
     });
 
 
     // access token 발급 (24시간)
     const accessToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "24h",
+      issuer: 'mingijuk'
     });
 
     await User.update(
