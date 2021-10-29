@@ -26,7 +26,7 @@ router.get("/debug", (req, res) => {
 })
 
 router.get('/me', authMiddleware, me);
-router.get('/logout', logout);
+router.get('/logout', authMiddleware, logout);
 router.post('/signup', localSignup)
 
 
