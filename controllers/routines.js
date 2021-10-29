@@ -2,15 +2,29 @@ const { Routine, Action, User } = require("../models");
 
 //--Action 생성 함수--
 async function actionCreate(routineId, userId, actions) {
-  for await (let action of actions) {
-    const { actionName, actionCnt } = action;
+  for await (const [index, value] of actions.entries()) {
+    console.log(index, value);
+    const { actionName, actionCnt } = value;
     await Action.create({
       routineId,
       userId,
       actionName,
-      actionCnt
-    });
+      actionCnt,
+      actionNum : index
+  });
   }
+
+  // for await (let action of actions) {
+  //   const { actionName, actionCnt } = action;
+  //   let actionNum
+  //   await Action.create({
+  //     routineId,
+  //     userId,
+  //     actionName,
+  //     actionCnt,
+  //     actionNum
+  //   });
+  // }
   console.log('action 생성 완료')
 }
 
