@@ -5,15 +5,14 @@ async function actionCreate(routineId, userId, actions) {
   for await (const [index, value] of actions.entries()) {
     console.log(index, value);
     const { actionName, actionCnt, actionType } = value;
-
     await Action.create({
       routineId,
       userId,
       actionName,
       actionCnt,
       actionType,
-      actionNum : index
-  });
+      actionNum: index
+    });
   }
 
   console.log('action 생성 완료')
