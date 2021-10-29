@@ -3,7 +3,10 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const env = require('../env')
 
-module.exports = async (req, res, next) => {
+
+//현재 게스트 로그인을 지원하지 않기 때문에 비로그인 상태에서는 next()로 보내지 않고 모두 에러처리합니다.
+//만약 게스트 로그인이 지원된다면 next와 res.status 주석상태를 변경하면 됩니다.
+const authMiddleware = async (req, res, next) => {
   try {
     console.log('req.headers', req.headers);
     if (!req.headers) {
@@ -19,33 +22,106 @@ module.exports = async (req, res, next) => {
     if (!accessToken) {
       res.locals.user = null;
       console.log('미들웨어 !accessToken')
-      next();
+      // next();
+      res.status(401).json({ result: false, msg: "미들웨어 !accessToken" });
       return;
     }
-    const tokenType = accessToken.split(' ')[0];
-    const tokenValue = accessToken.split(' ')[1];
+    const accessTokenType = accessToken.split(' ')[0];
+    const accessTokenValue = accessToken.split(' ')[1];
+    const refreshTokenType = refreshToken.split(' ')[0];
+    const refreshTokenValue = refreshToken.split(' ')[1];
 
-    if (tokenType !== "Bearer") {
-      console.log('미들웨어 tokenType !== "Bearer"')
-      next();
+    if (accessTokenType !== "Bearer" || refreshTokenType !== "Bearer") {
+      console.log('미들웨어 TokenType !== "Bearer"')
+      // next();
+      res.status(401).json({ result: false, msg: '미들웨어 accessTokenType !== "Bearer"' });
       return;
     }
 
-    if (tokenValue === null || !tokenValue || tokenValue === 'undefined') {
-      console.log('미들웨어 tokenValue === null || !tokenValue || tokenValue === "undefined"')
-      next();
+    if (accessTokenValue === null || !accessTokenValue || accessTokenValue === 'undefined'
+      || refreshTokenValue === null || !refreshTokenValue || refreshTokenValue === 'undefined') {
+      console.log('미들웨어 TokenValue === null || !TokenValue || TokenValue === "undefined"')
+      // next();
+      res.status(401).json({ result: false, msg: '미들웨어 TokenValue === null || !TokenValue || TokenValue === "undefined"' });
       return;
     }
 
-    const { providerId } = jwt.verify(tokenValue, env.JWT_SECRET_KEY);
-    const user = await User.findOne({ where: { providerId } })
+    let accessVerified = null;
+    let refreshVerified = null;
 
-    res.locals.user = user;
-    console.log('미들웨어 통과')
-    next();
-    return;
+    try {
+      accessVerified = jwt.verify(accessTokenValue, env.JWT_SECRET_KEY)
+    } catch (err) {
+      accessVerified = null;
+    }
+    try {
+      refreshVerified = jwt.verify(refreshTokenValue, env.JWT_SECRET_KEY)
+    } catch (err) {
+      refreshVerified = null;
+    }
+
+    try {
+      if (!accessVerified && !refreshVerified) {
+        return res.status(401).send({ result: false, msg: "로그인되지 않았습니다" });
+      }
+      if (!accessVerified && refreshVerified) {
+        const thisUser = await User.findOne({ where: { refreshToken: refreshTokenValue } })
+        if (!thisUser) throw new Error('refreshVerified에러, db에 유저가 없습니다.');
+        //accessToken 발급
+        const providerId = thisUser?.providerId;
+
+        const newAccessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+          expiresIn: "24h",
+          issuer: 'mingijuk'
+        });
+
+        return res.status(418).send({
+          result: false,
+          accessToken: newAccessToken,
+          msg: 'accessToken이 재발급되었습니다. 다시 로그인해주세요'
+        });
+      }
+      if (accessVerified && !refreshVerified) {
+        const providerId = accessVerified?.providerId;
+
+        const thisUser = await User.findOne({ where: { providerId } })
+        if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')
+        console.log(providerId);
+        //refreshToken 발급
+        const newRefreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+          expiresIn: "14d",
+          issuer: 'mingijuk'
+        });
+
+        //refreshToken은 발급 후 db에도 넣어주어야 한다.
+        await User.update({ refreshToken: newRefreshToken }, { where: { providerId } })
+          .then(() => {
+            return res.status(418).send({
+              result: false,
+              refreshToken: newRefreshToken,
+              msg: 'refreshToken이 재발급되었습니다. 다시 로그인해주세요'
+            });
+          })
+          .catch((err) => { if (err) throw new Error('user refreshToken update 에러') })
+      }
+      if (accessVerified && refreshVerified) {
+        const providerId = accessVerified.providerId;
+        console.log(providerId);
+
+        const thisUser = await User.findOne({ where: { providerId } })
+        if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')
+        res.locals.user = thisUser;
+        console.log('미들웨어 통과')
+        next();
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(400).send({ result: false, msg: err.message });
+    }
   }
   catch (error) {
-    return res.status(400).send({ msg: "알수없는 오류가 발생했습니다." });
   }
 };
+
+module.exports = authMiddleware;

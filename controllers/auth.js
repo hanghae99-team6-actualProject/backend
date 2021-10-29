@@ -59,12 +59,14 @@ const localLogin = async (req, res, next) => {
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "14d",
+      issuer: 'mingijuk'
     });
 
 
     // access token 발급 (24시간)
     const accessToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "24h",
+      issuer: 'mingijuk'
     });
 
     await User.update(
