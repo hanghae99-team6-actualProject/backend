@@ -52,7 +52,7 @@ const routineGet = async (req, res) => {
         }
       ]
     });
-    res.status(200).send({ result: routines, msg: "조회완료" });
+    res.status(200).send({ result: true, routines, msg: "조회완료" });
 
   } catch (err) {
     console.log(err);
@@ -140,9 +140,9 @@ const routineModify = async (req, res) => {
         }
       );
       actionModify(routineId, authId, actions);
-      res.status(200).send({ msg: '루틴이 수정되었습니다.' });
+      res.status(200).send({ result: true, msg: '루틴이 수정되었습니다.' });
     } else {
-      throw new Error('수정 대상 루틴이 없습니다..');
+      throw new Error('수정 대상 루틴이 없습니다.');
     }
   } catch (err) {
     console.log(err);
