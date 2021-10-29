@@ -7,7 +7,6 @@ const usersRouter = require("./users");
 const routineRouter = require('./routines')
 const mainRouter = require('./main')
 
-
 router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
