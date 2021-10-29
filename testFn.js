@@ -28,13 +28,3 @@
 
 // let result = crtPreSetList.filter(x => !collcetionMaxCrt.includes(x));
 // console.log(result);
-
-
-
-
-//라우터 끌고오기 실험
-const { routers } = require('./routes');
-const router = require('./routes');
-
-console.log( {routers} );
-console.log(router);
