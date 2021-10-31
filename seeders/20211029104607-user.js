@@ -1,10 +1,10 @@
 'use strict';
+const { encryptPw } = require('../controllers/utils/bcrypt')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
 
     //  Add seed commands here.
-
     //  Example:
     await queryInterface.bulkInsert('users', [
       {
@@ -12,7 +12,7 @@ module.exports = {
         userEmail: 'test@testmail.com',
         refreshToken: '',
         nickName: 'testtest',
-        userPw: 'test1234!',
+        userPw: encryptPw('test1234!'),
         provider: 'local',
         exp: 0,
         role: 'base_user',
@@ -25,7 +25,7 @@ module.exports = {
         userEmail: 'tmp@testmail.com',
         refreshToken: '',
         nickName: 'tmp',
-        userPw: 'tmp1234!',
+        userPw: encryptPw('test1234!'),
         provider: 'local',
         exp: 0,
         role: 'base_user',
