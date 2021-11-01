@@ -1,9 +1,11 @@
 const { Routine, Action, User, Character, Sequelize } = require("../models");
+const myError = require("./utils/httpErrors");
 const Op = Sequelize.Op;
 
 //메인 루틴, 액션, 유저 조회
-const ongoingGet = async (req, res) => {
+const ongoingGet = async (req, res, next) => {
   console.log("routineGet router 진입");
+  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
 
   try {
@@ -25,12 +27,13 @@ const ongoingGet = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "진행중 정보 조회 에러 발생" });
+    return next(myError(400, "진행중 정보 조회 에러 발생"));
   }
 };
 
-const historyGet = async (req, res) => {
+const historyGet = async (req, res, next) => {
   console.log("routineGet router 진입");
+  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
 
@@ -55,7 +58,7 @@ const historyGet = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "히스토리 정보 조회 에러 발생" });
+    return next(myError(400, "히스토리 정보 조회 에러 발생"));
   }
 };
 

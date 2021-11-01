@@ -10,6 +10,7 @@ const configurePassport = require('./passport')
 const { sequelize } = require("./models");
 //routes imports
 const indexRouter = require("./routes/index");
+const { errorHandler, error404, asyncErrorHandeler } = require('./middlewares/errorMiddleware');
 
 //crons imports
 const userCron = require("./crons/user");
@@ -71,7 +72,12 @@ app.use(cors());
 app.use(express.static('public'));
 
 //routes
+// app.get('*', asyncErrorHandeler) 이것의 작동 방식을 모르겠습니다
 app.use('/api', indexRouter);
+
+//error handling
+app.use(error404);
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
