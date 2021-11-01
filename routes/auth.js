@@ -15,7 +15,7 @@ const {
 
 const router = express.Router();
 
-router.get("/debug", (req, res) => {
+router.get("/debug", (req, res, next) => {
   res.json({
     "req.session": req.session,
     "req.user": req.user,

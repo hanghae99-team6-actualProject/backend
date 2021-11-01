@@ -6,13 +6,15 @@ const authRouter = require("./auth");
 const usersRouter = require("./users");
 const routineRouter = require('./routines')
 const mainRouter = require('./main')
+const likeRouter = require('./like')
 
 router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/routines', routineRouter)
+router.use('/like', likeRouter)
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   if (req.user) {
     res.send(`
     <h3>Login Success</h3>
