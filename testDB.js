@@ -59,40 +59,41 @@ const models = require('./models');
 //   preSet : 0,
 // }).then((result) => console.log('Data is Created!'));
 // var finDate = new Date();
-// models.Routine.create({
-//   userId : 1,
-//   routineName : "PSR1",
-//   inMain : 0,
-//   preSet : 1,
-// }).then((result) => console.log('Data is Created!'));
+models.Routine.create({
+  userId : 1,
+  routineName : "99",
+  inMain : 0,
+  preSet : 1,
+}).then((result) => console.log('Data is Created!'));
 
 
-// // 가짜 데이터 만들기 - Action_DB
-// var userId = 1;
-// var routineId = 1;
-// var actionName = "앉았다 일어나기";
-// var actionCnt = 5;
-// var finDate = new Date();
-// var actionNum = 1;
-// models.Action.create({
-//   userId : userId,
-//   routineId : routineId,
-//   actionName : actionName,
-//   actionCnt : actionCnt,
+// 가짜 데이터 만들기 - Action_DB
+var userId = 1;
+var routineId = 1;
+var actionName = "앉았다 일어나기";
+var actionCnt = 5;
+var finDate = new Date();
+var actionNum = 1;
+models.Action.create({
+  userId : userId,
+  routineId : routineId,
+  actionName : actionName,
+  actionCnt : actionCnt,
 
-//   actionNum : actionNum,
-// }).then((result) => console.log('Data is Created!'));
-// var userId = 1;
-// var routineId = 1;
-// var actionName = "팔굽혀 펴기";
-// var actionCnt = 5;
-// var finDate = new Date();
-// var actionNum = 2;
-// models.Action.create({
-//   userId : userId,
-//   routineId : routineId,
-//   actionName : actionName,
-//   actionCnt : actionCnt,
+  actionNum : actionNum,
+}).then((result) => console.log('Data is Created!'));
+var userId = 1;
+var routineId = 1;
+var actionName = "팔굽혀 펴기";
+var actionCnt = 5;
+var finDate = new Date();
+var actionNum = 2;
+models.Action.create({
+  userId : userId,
+  routineId : routineId,
+  actionName : actionName,
+  actionCnt : actionCnt,
+});
 
 //   actionNum : actionNum,
 // }).then((result) => console.log('Data is Created!'));

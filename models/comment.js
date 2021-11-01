@@ -3,7 +3,7 @@
 //   Model
 // } = require('sequelize');
 // module.exports = (sequelize, DataTypes) => {
-//   class Like extends Model {
+//   class Comment extends Model {
 //     /**
 //      * Helper method for defining associations.
 //      * This method is not a part of Sequelize lifecycle.
@@ -11,16 +11,17 @@
 //      */
 //     static associate(models) {
 //       // define association here
-//       models.Like.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
-//       models.Like.belongsTo(models.Board, { foreignKey: 'boardId', targetKey: 'id' });
+//       models.Comment.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
+//       models.Comment.belongsTo(models.Board, { foreignKey: 'moimId', targetKey: 'id' });
 //     }
 //   };
-//   Like.init({
+//   Comment.init({
 //     userId: DataTypes.INTEGER,
-//     boardId: DataTypes.INTEGER
+//     moimId: DataTypes.INTEGER,
+//     content: DataTypes.STRING,
 //   }, {
 //     sequelize,
-//     modelName: 'Like',
+//     modelName: 'Comment',
 //   });
-//   return Like;
+//   return Comment;
 // };
