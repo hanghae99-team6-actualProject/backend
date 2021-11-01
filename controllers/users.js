@@ -4,34 +4,35 @@ const { User, Character } = require('../models');
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {
   try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id } = res.locals.user;
-    console.log(id)
     User.destroy({ where: { id } })
       .then(() => {
         res.send({ result: true, msg: "회원 탈퇴가 완료되었습니다" })
       })
       .catch((err) => {
-        if (err) return next(new Error('db삭제 오류'))
+        if (err) return next(new Error('User db삭제 에러'))
       })
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 }
 
 const collection = async (req, res, next) => {
   try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id } = res.locals.user;
     const usersCharacter = await Character.findAll({
       where: {
         userId: id,
         exp: 1000,
       },
+    }).catch((err) => {
+      console.log(err);
+      if (err) return next(new Error('Character db 검색 에러'));
     })
-      .then(() => {
-        return res.send({ result: true, character: usersCharacter, msg: '성공' });
-      }).catch((err) => {
-        if (err) return next(new Error('db검색 오류'));
-      })
+    return res.send({ result: true, character: usersCharacter, msg: '성공' });
   } catch (err) {
     return next(err);
   }
@@ -50,9 +51,10 @@ const updateUser = async (req, res, next) => {
         return res.send({ result: true, msg: '유저 정보가 수정되었습니다' });
       })
       .catch((err) => {
-        if (err) return next(new Error('유저 정보 수정 db 오류'));
+        if (err) return next(new Error('유저 정보 수정 db 에러'));
       })
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 }

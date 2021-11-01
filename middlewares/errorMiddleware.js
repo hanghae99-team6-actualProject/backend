@@ -8,7 +8,7 @@ const wrapAsync = (func) => {
   }
 }
 
-const asyncErrorHandeler = wrapAsync(async function (req, res) {
+const asyncErrorHandeler = wrapAsync(async function (req, res, next) {
   await new Promise((resolve) => setTimeout(() => resolve(), 50));
   throw new Error("비동기 에러 발생!");
 })
