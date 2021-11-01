@@ -13,9 +13,11 @@ const month = today.getMonth(); // 월
 const date = today.getDate();  // 날짜
 const fromToday = new Date(year,month,date,0,0,0);
 
-//액션 루틴 완료 시 지급 경험치를 추가해서 주는 로직
+//루틴완료 경험치 계산 시 활용
+let routineExp = 0;
+
+//액션 루틴 완료 시 오늘 날짜 + 계정 기준으로 레코드 생성
 const dayLogChk = async (userId,res) => {
-  //입력되는 finDate기준으로 디비에 있는지 체크 후 없으면 생성
   try {
     const dayLogExist = ExpDayLog.findOrCreate({
       where: {
@@ -36,6 +38,7 @@ const dayLogChk = async (userId,res) => {
   }
 }
 
+//단일 액션 완료 시 당일 한계 경험치 업데이트
 const upDayActionExp = async (userId) => {
 
   await dayLogChk(userId);
@@ -44,13 +47,10 @@ const upDayActionExp = async (userId) => {
     where: {
       userId,
       totalExp: {
-        [Op.lt]: `${expLimitPerDay}`
+        [Op.lt]: `${expLimitPerDay}` //최대값보다 이하인 데이터 탐색
       }
     },
   });
-
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@')
-  await console.log(totalExpChk)
 
   if (await totalExpChk.length == 0) {
     return false;
@@ -63,7 +63,7 @@ const upDayActionExp = async (userId) => {
         where: {
           userId,
           date:{
-            [Op.gte]: fromToday,
+            [Op.gte]: fromToday, //오늘 시작일자보다 이후인 날짜 값에 업데이트
           }
         }
       }
@@ -72,26 +72,49 @@ const upDayActionExp = async (userId) => {
   }
 }
 
-//FIX : 루틴 계산식 변경에 따라 함께 변경되어야함
-const upDayRoutineExp = async (userId) => {
-  if (dayLogChk(userId)[0].totalExp > 1000) {
-    return false;
-  } else {
-    await ExpDayLog.update(
-      {
-        totalExp : Sequelize.literal(`totalExp + ${actionExpGrowth} + ${routineExpGrowth}`)
-      },
-      {
-        where: {
-          userId,
-          date:{
-            [Op.gte]: fromToday,
+//액션 + 루틴완료 시 당일 한계 경험치 업데이트
+const upDayRoutineExp = async (userId,routineId) => {
+
+  await dayLogChk(userId);
+
+  const totalExpChk = await ExpDayLog.findAll({
+    where: {
+      userId,
+      totalExp: {
+        [Op.lt]: `${expLimitPerDay}`
+      }
+    },
+  });
+
+  try {
+    console.log('액션 + 루틴 한계 경험치 진입');
+    if (await totalExpChk.length == 0) {
+      return false;
+    } else {
+      console.log('액션 + 루틴 엘스로 진입');
+      await routineExpCalc(userId,routineId);
+      await console.log('루틴exp계산 결과 : ' + routineExp);
+
+      await ExpDayLog.update(
+        {
+          totalExp : Sequelize.literal(`totalExp + ${actionExpGrowth} + ${routineExp}`) 
+        },
+        {
+          where: {
+            userId,
+            date:{
+              [Op.gte]: fromToday,
+            }
           }
         }
-      }
-    );
-    return true;
+      );
+      return true;
+    }
+  } catch (err) {
+    console.log(err)
+    return false;
   }
+  
 }
 
 
@@ -127,14 +150,26 @@ const upDayRoutineExp = async (userId) => {
 
 
 //루틴 경험치 작업 영역 시작 - yjh
-
+const routineExpCalc = async (userId, routineId) => {
+  //당일 한계 경험치 체크함수
+  await Action.findAndCountAll({
+    where: { userId, routineId }
+  })
+  .then(result => {
+    routineExp = result.count * `${routineExpGrowth}`;
+    console.log('루틴 경험치 계산 진입');
+    console.log(routineExp + ' ----- ' + result.count);
+    return;
+  });
+}
 
 //루틴 경험치 작업 영역 끝 - yjh
 
 // 루틴완료 x 액션완료 일때 경험치 획득 + actionExpGrowth
 const upExpFinOneAction = async (userId) => {
   //당일 한계 경험치 체크함수
-  if (upDayActionExp(userId)) {
+  if (await upDayActionExp(userId)) {
+    console.log('캐릭 액션 경험치 함수 진입')
     await Character.update(
       { exp: Sequelize.literal(`exp + ${actionExpGrowth}`) },// add도 없는 sequelize수준..
       { where: { userId, expMax: 0 } }
@@ -151,11 +186,15 @@ const upExpFinOneAction = async (userId) => {
 }
 
 // 루틴완료 o 액션완료 일때 경험치 획득 + actionExpGrowth + routineExpGrowth
-const upExpAllAction = async (userId) => {
-  //당일 한계 경험치 체크함수
-  if (upDayRoutineExp(userId)) {
+const upExpAllAction = async (userId, routineId) => {
+  //당일 한계 경험치 체크함수 - routineId 같이 던지고 해당 함수 내에서 처리
+
+  if (await upDayRoutineExp(userId, routineId)) {
+    console.log('캐릭 루틴 경험치 함수 진입')
+    await routineExpCalc(userId,routineId);
     await Character.update(
-      { exp: Sequelize.literal(`exp + ${actionExpGrowth} + ${routineExpGrowth}`) },// add도 없는 sequelize수준..
+      //아래에서 routine경험치 상수로 박아주는게아니라, 별도로 변수 지정값 리턴 받아서 합산
+      { exp: Sequelize.literal(`exp + ${actionExpGrowth} + ${routineExp}`) },// add도 없는 sequelize수준..
       { where: { userId, expMax: 0 } }
     ).catch((err) => {
       console.log(err);
@@ -188,11 +227,11 @@ const setRoutineFinDate = async (routineId, finDate) => {
 
 const doneAction = async (req, res) => {
   try {
+
     // 1. 프론트로부터 완료된 액션에 대한 정보 획득, 파라미터로 유저정보 획득
     // const { userId } = req.params;// -> res.locals.user
     const userId = res.locals.user.id;
     const { actionId, routineId } = req.body;
-    console.log('여긴 오나?');
 
     // 2. 유저정보와 액션이 정말 일치하는 데이터인지 확인
     console.log(userId, '이것이 유저아이디!');
@@ -209,7 +248,7 @@ const doneAction = async (req, res) => {
       })
       //액션에 finDate추가
       .then(async () => {
-        setActionFinDate(actionId, finDate)
+        await setActionFinDate(actionId, finDate)
       })
       .then(async () => {
         await Action.findAndCountAll({ where: { userId, routineId, finDate: null } })
@@ -229,7 +268,8 @@ const doneAction = async (req, res) => {
             else {
               console.log('액션과 루틴이 함께 완료된 경우');
               //액션과 루틴이 함께 완료되었을때 경험치
-              upExpAllAction(userId);
+              upExpAllAction(userId, routineId); //루틴아이디 함께 넘기도록 변경
+
               //루틴에는 finDate추가
               setRoutineFinDate(routineId, finDate);
 
