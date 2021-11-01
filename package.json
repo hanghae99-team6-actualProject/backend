@@ -4,7 +4,7 @@
   "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon app.js",
     "start": "cross-env NODE_ENV=production node app.js"
   },
@@ -27,7 +27,6 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-kakao": "^1.0.1",
     "passport-naver": "^1.0.6",
-    "pm2": "^5.1.2",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0"
   },
