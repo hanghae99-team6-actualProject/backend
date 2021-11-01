@@ -52,10 +52,10 @@ const doneAction = async (req, res, next) => {
       })
       //3. 액션에 finDate추가
       .then(async () => {
-        setActionFinDate(actionId, finDate)
-          .catch((err) => {
-            if (err) next(new Error('setActionFinDate db 에러'));
-          });
+        await setActionFinDate(actionId, finDate)
+              .catch((err) => {
+                if (err) next(new Error('setActionFinDate db 에러'));
+              });
       })
       .then(async () => {
         //4. finDate가 추가되지 않은 액션의 숫자를 검색

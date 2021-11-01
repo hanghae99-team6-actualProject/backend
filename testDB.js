@@ -2,12 +2,12 @@ const models = require('./models');
 
 // // Creat ------------------------------------------------------------------------
 
-// // 가짜 데이터 만들기 - User_DB
+// 가짜 데이터 만들기 - User_DB
 // models.User.create({
-//   providerId: "3",
-//   userEmail: 'tset3@test.com',
-//   nickName: 'test3',
-//   userPw: '3333',
+//   providerId: "1",
+//   userEmail: 'tset1@test.com',
+//   nickName: 'test1',
+//   userPw: '1111',
 // }).then((result) => console.log('Data1 is Created!'));
 // models.User.create({
 //   providerId: "4",
@@ -53,27 +53,55 @@ const models = require('./models');
 //  // 그냥 유저가 만든 루틴
 // var finDate = new Date();
 // models.Routine.create({
-//   userId : 1,
-//   routineName : "R1",
+//   userId : 2,
+//   routineName : "2",
 //   inMain : 0,
 //   preSet : 0,
 // }).then((result) => console.log('Data is Created!'));
 // var finDate = new Date();
-models.Routine.create({
-  userId : 1,
-  routineName : "99",
-  inMain : 0,
-  preSet : 1,
-}).then((result) => console.log('Data is Created!'));
+// models.Routine.create({
+//   userId : 1,
+//   routineName : "PSR1",
+//   inMain : 0,
+//   preSet : 1,
+// }).then((result) => console.log('Data is Created!'));
 
 
-// 가짜 데이터 만들기 - Action_DB
-var userId = 1;
-var routineId = 1;
-var actionName = "앉았다 일어나기";
+// // 가짜 데이터 만들기 - Action_DB
+// var userId = 2;
+// var routineId = 2;
+// var actionName = "앉았다 일어나기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 1;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+// var userId = 2;
+// var routineId = 2;
+// var actionName = "팔굽혀 펴기";
+// var actionCnt = 5;
+// var finDate = new Date();
+// var actionNum = 2;
+// models.Action.create({
+//   userId : userId,
+//   routineId : routineId,
+//   actionName : actionName,
+//   actionCnt : actionCnt,
+
+//   actionNum : actionNum,
+// }).then((result) => console.log('Data is Created!'));
+var userId = 2;
+var routineId = 2;
+var actionName = "고개돌리기";
 var actionCnt = 5;
 var finDate = new Date();
-var actionNum = 1;
+var actionNum = 3;
 models.Action.create({
   userId : userId,
   routineId : routineId,
@@ -82,49 +110,20 @@ models.Action.create({
 
   actionNum : actionNum,
 }).then((result) => console.log('Data is Created!'));
-var userId = 1;
-var routineId = 1;
-var actionName = "팔굽혀 펴기";
+var userId = 2;
+var routineId = 2;
+var actionName = "고개돌리기";
 var actionCnt = 5;
 var finDate = new Date();
-var actionNum = 2;
+var actionNum = 4;
 models.Action.create({
   userId : userId,
   routineId : routineId,
   actionName : actionName,
   actionCnt : actionCnt,
-});
 
-//   actionNum : actionNum,
-// }).then((result) => console.log('Data is Created!'));
-// var userId = 1;
-// var routineId = 1;
-// var actionName = "고개돌리기";
-// var actionCnt = 5;
-// var finDate = new Date();
-// var actionNum = 3;
-// models.Action.create({
-//   userId : userId,
-//   routineId : routineId,
-//   actionName : actionName,
-//   actionCnt : actionCnt,
-
-//   actionNum : actionNum,
-// }).then((result) => console.log('Data is Created!'));
-// var userId = 1;
-// var routineId = 1;
-// var actionName = "고개돌리기";
-// var actionCnt = 5;
-// var finDate = new Date();
-// var actionNum = 4;
-// models.Action.create({
-//   userId : userId,
-//   routineId : routineId,
-//   actionName : actionName,
-//   actionCnt : actionCnt,
-
-//   actionNum : actionNum,
-// }).then((result) => console.log('Data is Created!'));
+  actionNum : actionNum,
+}).then((result) => console.log('Data is Created!'));
 // var userId = 1;
 // var routineId = 1;
 // var actionName = "고개돌리기";
@@ -536,16 +535,7 @@ models.Action.create({
 // });
 
 // let finDate = new Date();
-// models.Action.update(
-//   { finDate: finDate },
-//   {where: { id: 31 },
-//   returning: true,
-// })
-//   .then((action, val) =>{
-//     console.log("이것이 액션", action);
-//     console.log("이것이 val", val);
-//   })
-// ;
+// models.Action.update({ finDate: finDate }, {where: { id: 12 } });
 // console.log("완료");
 
 // // -----------------------------------------------------------------------------
