@@ -12,7 +12,7 @@ router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/routines', routineRouter)
-router.use('/like', likeRouter)
+router.use('/moim/like', likeRouter)
 
 router.get("/", async (req, res, next) => {
   if (req.user) {
