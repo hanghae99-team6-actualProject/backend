@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Routine, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
       models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
       models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.ExpDayLog, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
     }
   };
   User.init({
