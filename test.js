@@ -1,4 +1,4 @@
-exports.doneAction = async (req, res) => {
+exports.doneAction = async (req, res, next) => {
   try {
     // 1. 프론트로부터 완료된 액션에 대한 정보 획득, 파라미터로 유저정보 획득
     const { userId } = req.params;

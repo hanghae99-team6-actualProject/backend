@@ -6,27 +6,26 @@ const { encryptPw, pwCompare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
 
 //본인 정보 확인 API
-const me = async (req, res) => {
+const me = async (req, res, next) => {
   try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { user } = res.locals;
-    if (!user || user === null) {
-      return next(new Error('로그인되어있지 않습니다! 현재 로그인상태에서만 사용가능하니 이 에러는 발생하면 안됩니다'))
-    }
     console.log(user);
-    res.send({ user });
+    res.send({ result: true, user });
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 }
 
 //로그아웃 API
-const logout = (req, res) => {
+const logout = (req, res, next) => {
   try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { providerId } = res.locals.user;
-    if (!providerId) throw new Error('유저 id없음');
 
     User.update({ refreshToken: "" }, { where: { providerId } })
-      .catch((err) => { return next(new Error('User.update refreshToken 실패')) })
+      .catch((err) => { return next(new Error('User.update refreshToken db 에러')) })
 
     req.session.destroy((err) => {
       if (err) {
@@ -37,6 +36,7 @@ const logout = (req, res) => {
 
     res.json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
+    console.log(err);
     return next(err);
   }
 };
@@ -63,7 +63,6 @@ const localLogin = async (req, res, next) => {
       issuer: 'mingijuk'
     });
 
-
     // access token 발급 (24시간)
     const accessToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "24h",
@@ -73,7 +72,7 @@ const localLogin = async (req, res, next) => {
     await User.update(
       { refreshToken },
       { where: { providerId } }
-    ).catch((err) => { if (err) return next(myError(401, 'User.update refreshToken 실패')) });
+    ).catch((err) => { if (err) return next(myError(401, 'User.update refreshToken db 에러')) });
 
     return res.send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
@@ -112,7 +111,7 @@ const localSignup = async (req, res, next) => {
         return res.send({ msg: '회원 가입을 축하드립니다.' });
       })
       .catch((err) => {
-        if (err) return next(new Error("db생성 실패에러, 개발팀에 문의해주세요"));
+        if (err) return next(new Error("User 생성 db 에러"));
       });
   } catch (err) {
     console.log(err);

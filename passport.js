@@ -17,6 +17,7 @@ module.exports = (app) => {
   passport.deserializeUser((profile, done) => {
     done(null, profile);
   })
+  console.log(env.NAVER_CLIENT_ID);
 
   passport.use(new NaverStrategy({
     clientID: env.NAVER_CLIENT_ID,
