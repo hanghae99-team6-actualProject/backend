@@ -4,11 +4,15 @@ const models = require('./models');
 
 // 가짜 데이터 만들기 - User_DB
 // models.User.create({
-//   providerId: "1",
-//   userEmail: 'tset1@test.com',
-//   nickName: 'test1',
-//   userPw: '1111',
-// }).then((result) => console.log('Data1 is Created!'));
+//   providerId: "2",
+//   userEmail: 'tset2@test.com',
+//   nickName: 'test2',
+//   userPw: '1112',
+// }).then((result) => {
+//   console.log('Data1 is Created!');
+//   console.log(result.id);
+//   console.log("============여기까지!======================");
+// });
 // models.User.create({
 //   providerId: "4",
 //   userEmail: 'tset4@test.com',
