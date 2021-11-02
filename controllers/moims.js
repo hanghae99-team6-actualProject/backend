@@ -128,6 +128,50 @@ const createMoim = async (req, res, next) => {
   }
 };
 
+const detailMoim = async (req, res, next) => {
+  try {
+    console.log('detailMoim router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId } = req.params;
+
+    const targetMoim = await Moim.findOne({
+      where: {id: moimId},
+      include: [
+        {
+        model: MoimUser
+        },
+        {
+          model: Comment
+        },
+        {
+          model: Like
+        },
+      ]
+    }).catch((err) => {
+      if (err) next(new Error("타겟 모임 조회 db 에러"))
+    })
+
+    console.log('디테일이 필요한 모임 정보',targetMoim)
+    if(targetMoim === null){
+      return next(new Error('모임 정보가 존재하지 않습니다. 먼저 모임 등록을 하시기바랍니다.'))
+    }
+
+    console.log('타겟 모임 조회 완료')
+    return res.status(200).send({
+      result: true,
+      targetMoim,
+      msg: '특정 모임의 정보 불러오기에 성공했습니다.'
+    })
+
+  } catch (err) {
+    console.log(err);
+    console.log('catch에서 에러감지');
+    return next(myError(400, err.message));
+  }
+}
+
 const updateMoim = async (req, res, next) => {
   try {
     console.log('updateMoim router 진입');
@@ -258,4 +302,4 @@ const enterMoim = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllMoim, createMoim, updateMoim, deleteMoim, enterMoim };
+module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim };
