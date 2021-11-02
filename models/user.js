@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
       models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
       models.User.hasMany(models.Like, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.MoimUser, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Comment, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
     }
   };
   User.init({
