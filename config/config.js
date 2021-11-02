@@ -5,7 +5,8 @@ const development = {
   "password": env.DB_PASSWORD,
   "database": env.DB_NAME,
   "host": env.DB_END_POINT,
-  "dialect": "mysql"
+  "dialect": "mysql",
+  "timezone": "+09:00"
 };
 
 const test = {
@@ -13,7 +14,8 @@ const test = {
   "password": env.DB_PASSWORD,
   "database": env.DB_NAME,
   "host": env.DB_END_POINT,
-  "dialect": "mysql"
+  "dialect": "mysql",
+  "timezone": "+09:00"
 };
 
 const production = {
@@ -21,7 +23,8 @@ const production = {
   "password": env.DB_PASSWORD,
   "database": env.DB_NAME,
   "host": env.DB_END_POINT,
-  "dialect": "mysql"
+  "dialect": "mysql",
+  "timezone": "+09:00"
 };
 
 module.exports = { development, production, test };
