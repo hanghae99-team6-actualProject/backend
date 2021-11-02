@@ -8,7 +8,8 @@
     "dev": "nodemon app.js",
     "start": "cross-env NODE_ENV=production node app.js",
     "seedon": "npx sequelize-cli db:seed:all",
-    "seeddown": "npx sequelize-cli db:seed:undo:all"
+    "seeddown": "npx sequelize-cli db:seed:undo:all",
+    "artillery": "npx artillery run __test__/artilery/loadtest.json"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
