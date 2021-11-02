@@ -21,6 +21,5 @@ const multerAvatar = multer({
 });
 const uploadAvatar = multerAvatar.single("formData");
 
-console.log(uploadAvatar);
 module.exports = { uploadAvatar }
 

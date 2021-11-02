@@ -40,15 +40,13 @@ const collection = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   try {
-    console.log(req.file);
     const { id } = res.locals.user;
-    if (Object.keys(req.body).length === 0 || !req.file) {
+    if (Object.keys(req.body).length === 0) {
       return next(new Error('수정할 정보가 없습니다.'));
     }
     const { userEmail, nickName, userPw } = req.body;
-    const file = req.file;
 
-    User.update({ userEmail, nickName, userPw, avatarUrl: file?.location }, { where: { id } })
+    User.update({ userEmail, nickName, userPw }, { where: { id } })
       .then(() => {
         return res.send({ result: true, msg: '유저 정보가 수정되었습니다' });
       })

@@ -34,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     nickName: DataTypes.STRING,
     userPw: DataTypes.STRING,
-    avatarUrl: DataTypes.STRING,
     provider: DataTypes.ENUM('local', 'google', 'naver', 'kakao'),
     role: DataTypes.ENUM('admin', 'base_user', 'guest'),
     deletedAt: {
