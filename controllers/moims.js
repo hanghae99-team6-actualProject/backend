@@ -86,7 +86,7 @@ const createMoim = async (req, res, next) => {
       title,
       contents,
     })
-      .then((result) => {
+      .then( async (result) => {
         console.log(result);
         console.log(result.id);
         // 2. 생성된 모임의 호스트 데이터 생성
