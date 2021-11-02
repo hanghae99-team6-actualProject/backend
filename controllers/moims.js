@@ -35,6 +35,11 @@ const getAllMoim = async (req, res, next) => {
       include: [
         {
           model: MoimUser,
+          include: [
+            {
+              model: User
+            }
+          ]
         },
         {
           model: Comment,
@@ -94,12 +99,12 @@ const createMoim = async (req, res, next) => {
         contents: contents,
       }
     })
-    .catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('모임 중복 생성 검사 중 db 에러'))
-    });
+      .catch((err) => {
+        console.log("에러에러")
+        if (err) next(new Error('모임 중복 생성 검사 중 db 에러'))
+      });
     console.log('0이면 모임생성가능', isMoim.length)
-    if (isMoim.length > 0 ) {
+    if (isMoim.length > 0) {
       return next(new Error('동일한 모임이 있습니다.'));
     }
 
@@ -137,10 +142,10 @@ const detailMoim = async (req, res, next) => {
     const { moimId } = req.params;
 
     const targetMoim = await Moim.findOne({
-      where: {id: moimId},
+      where: { id: moimId },
       include: [
         {
-        model: MoimUser
+          model: MoimUser
         },
         {
           model: Comment
@@ -153,8 +158,8 @@ const detailMoim = async (req, res, next) => {
       if (err) next(new Error("타겟 모임 조회 db 에러"))
     })
 
-    console.log('디테일이 필요한 모임 정보',targetMoim)
-    if(targetMoim === null){
+    console.log('디테일이 필요한 모임 정보', targetMoim)
+    if (targetMoim === null) {
       return next(new Error('모임 정보가 존재하지 않습니다. 먼저 모임 등록을 하시기바랍니다.'))
     }
 
@@ -285,7 +290,7 @@ const enterMoim = async (req, res, next) => {
       if (err) next(new Error('모임 참가 유저 중복검색 중 db 에러'))
     });
     console.log('0이면 유저생성가능', isUser.length)
-    if (isUser.length > 0 ) {
+    if (isUser.length > 0) {
       return next(new Error('이미 참가중인 모임입니다.'));
     }
 
