@@ -12,6 +12,7 @@
     "artillery": "npx artillery run __test__/artilery/loadtest.json"
   },
   "dependencies": {
+    "aws-sdk": "^2.1019.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
@@ -26,6 +27,8 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.3",
+    "multer-s3": "^2.10.0",
     "mysql2": "^2.3.2",
     "node-cron": "^3.0.0",
     "passport": "^0.5.0",
