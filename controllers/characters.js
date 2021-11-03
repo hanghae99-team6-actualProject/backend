@@ -66,9 +66,10 @@ exports.newCharacter = async (req, res, next) => {
         exp: 0,
         expMax: 0,
       })
-        .then(() => {
+        .then((r) => {
           return res.status(200).send({
             result: true,
+            characterName: r.characterName,
             msg: '신규 캐릭터가 생성되었습니다.',
           });
         }).catch((err) => {
