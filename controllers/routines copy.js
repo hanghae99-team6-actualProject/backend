@@ -62,8 +62,16 @@ const routineGet = async (req, res, next) => {
       where: { userId: authId },
       include: [
         {
+          model: RoutineFin
+        },
+        {
           model: Action,
-        }
+          include: [
+            {
+              model: ActionFin
+            },
+          ]
+        },
       ]
     });
     res.status(200).send({ result: true, routines, msg: "조회완료" });
@@ -99,12 +107,17 @@ const routineCreate = async (req, res, next) => {
       where: { userId: authId, routineName },
     });
 
-    if (routines.length == 0) {
+    if (routines.length == 0) { // 중복된 것이 없다면 루틴 및 루틴핀 데이터를 생성
       const routines = await Routine.create({
         userId: authId,
         routineName,
         isMain,
-      });
+      }).catch((err) => { next(new Error('Routine 생성 중 db 에러'))})
+      
+      await RoutineFin.create({
+        routineId: routines.id
+      }).catch((err) => { next(new Error('RoutineFin 생성 중 db 에러'))}) //이것이 실패하면 116번째 줄부터 .then으로 해보자
+
       const { id } = routines;
       actionCreate(id, authId, actions)
         .then(() => {
@@ -171,17 +184,20 @@ const routineDelete = async (req, res, next) => {
     const { routineId } = req.params;
     await Action.destroy({
       where: { routineId }
-    });
-    console.log('routine종속 action 삭제완료')
+    }).catch((err) => { if (err) next(new Error('actionDelete 중 db 에러')) })
+    console.log('routine 종속 action 및 actionFin 삭제완료')
 
     await Routine.destroy({
       where: { id: routineId }
-    }).then(() => {
+    })
+    .then(() => {
       res.status(200).send({ result: true, routineId, msg: '루틴이 삭제되었습니다.' });
     })
+    .catch((err) => { if (err) next(new Error('routineDelete 중 db 에러')) })
+
   } catch (err) {
     console.log(err);
-    return next(myError(400, '루틴 삭제에 실패하였습니다.'));
+    return next(myError(500, err.message ));
   }
 };
 
@@ -197,12 +213,12 @@ const allPresetRoutine = async (req, res, next) => {
       ],
     });
     console.log(routines);
-    console.log("전체 불러오기 완료!");
+    console.log("전체 프리셋 루틴 불러오기 완료!");
 
     return res.status(200).send({
       result: true,
-      routines: routines,
-      msg: '목록 불러오기 완료',
+      routines,
+      msg: '프리셋 루틴 목록 불러오기 완료',
     });
   } catch (error) {
     console.log(error);
