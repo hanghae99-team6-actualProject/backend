@@ -1,4 +1,4 @@
-const { Moim, MoimUser, Comment, Like } = require('../models');
+const { Moim, MoimUser, Comment, Like, User } = require('../models');
 const myError = require('./utils/httpErrors');
 
 const getAllComments = async (req, res, next) => {
@@ -6,7 +6,14 @@ const getAllComments = async (req, res, next) => {
     console.log('getAllComments router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
-    const allComments = await Comment.findAll({}).catch((err) => {
+    const allComments = await Comment.findAll({
+      include: [
+        {
+          model: User,
+          attributes: [ 'nickName' ],
+        }
+      ]
+    }).catch((err) => {
       if (err) next(new Error('전체 댓글 불러오기 중 db 에러'));
     });
 
@@ -32,18 +39,18 @@ const getTargetMoimComments = async (req, res, next) => {
 
     const targetMoimComments = await Comment.findAll({
       where: { moimId },
+      include: [
+        {
+          model: User,
+          attributes: [ 'nickName' ],
+        }
+      ]
     }).catch((err) => {
       if (err) next(new Error('특정 모임 댓글 불러오기 중 db 에러'));
     });
 
-    if (targetMoimComments.lengh > 0) {
-      console.log('특정 모임 전체 댓글 불러오기 완료');
-      return res.status(200).send({
-        result: 'true1',
-        targetMoimComments,
-        msg: '특정 모임 전체 댓글 불러오기에 성공했습니다.',
-      });
-    } else {
+    console.log('타겟',targetMoimComments.length);
+    if (targetMoimComments.length === 0) {
       console.log('특정 모임에 댓글이 없음');
       return res.status(200).send({
         result: 'true2',
@@ -51,6 +58,13 @@ const getTargetMoimComments = async (req, res, next) => {
         msg: '특정 모임에 댓글이 존재하지 않습니다.',
       });
     }
+    console.log('특정 모임 전체 댓글 불러오기 완료');
+    return res.status(200).send({
+      result: 'true1',
+      targetMoimComments,
+      msg: '특정 모임 전체 댓글 불러오기에 성공했습니다.',
+    });
+
   } catch (err) {
     console.log(err);
     console.log('catch에서 에러감지');
@@ -77,6 +91,7 @@ const createComment = async (req, res, next) => {
         console.log('댓글 작성 완료');
         return res.status(200).send({
           result: true,
+          newCommentId: result.id,
           msg: '댓글 작성에 성공했습니다.',
         });
       })
@@ -172,27 +187,7 @@ const deleteComment = async (req, res, next) => {
       .catch((err) => {
         if (err) next(new Error('댓글 삭제 중 db 에러'));
       });
-
-    // .then(async (result) => {
-    //   console.log('찾은 Comment', result);
-    //   console.log('찾은 데이터의 commentId 값', result.id);
-    //   await Comment.destroy({
-    //     where: { id: result.id },
-    //   })
-    //     .then(() => {
-    //       console.log('댓글 삭제완료');
-    //       return res.status(200).send({
-    //         result: true,
-    //         msg: '댓글 삭제에 성공했습니다.',
-    //       });
-    //     })
-    //     .catch((err) => {
-    //       if (err) next(new Error('댓글 삭제 중 db 에러'));
-    //     });
-    // })
-    // .catch((err) => {
-    //   if (err) next(new Error('target 댓글 찾기 중 db 에러'));
-    // });
+      
   } catch (err) {
     console.log(err);
     console.log('catch에서 에러감지');
