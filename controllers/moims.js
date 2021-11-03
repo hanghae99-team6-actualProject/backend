@@ -1,4 +1,4 @@
-const { Moim, MoimUser, Comment, Like } = require('../models');
+const { Moim, MoimUser, Comment, Like, User } = require('../models');
 const myError = require('./utils/httpErrors');
 
 const makeMoimUser = async (userId, moimId, userType, next) => {
