@@ -106,6 +106,7 @@ const setMainRoutine = async (req, res, next) => {
     return next(myError(400, "메인 루틴 설정 update 에러 발생"));
   }
 };
+
 const myMoim = async (req, res, next) => {
   try {
     console.log('myMoin 라우터 진입');
@@ -120,6 +121,10 @@ const myMoim = async (req, res, next) => {
     const allMyMoim = await MoimUser.findAll({
       where: { userId: userId, host: hostType },
       include: [
+        {
+          model: User,
+          attributes: ['nickName'],
+        },
         {
           model: Moim,
           include: [{
@@ -194,6 +199,12 @@ const myComments = async (req, res, next) => {
     const myCommentList = await Comment.findAll({
       where: { userId: userId },
       atrribute: ['id', 'userId', 'moimId', 'contents'],
+      include: [
+        {
+          model: User,
+          atrribute: ['nickName'],
+        }
+      ],
     }).catch((err) => {
       if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });

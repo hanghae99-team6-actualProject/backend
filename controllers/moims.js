@@ -219,6 +219,10 @@ const updateMoim = async (req, res, next) => {
     console.log('target 모임', targetMoim);
     console.log('target 모임의 lengh', targetMoim.length);
 
+    if( targetMoim.userId !== userId ) {
+      return next(new Error('모임의 작성자만 수정이 가능합니다.'))
+    }
+
     if (targetMoim.length > 0) {
       //2. update 실행
       await Moim.update(
@@ -266,6 +270,10 @@ const deleteMoim = async (req, res, next) => {
     }).catch((err) => {
       if (err) next(new Error('delete의 targetMoim find 중 db 에러'));
     });
+
+    if( targetMoim.userId !== userId ) {
+      return next(new Error('모임의 작성자만 삭제가 가능합니다.'))
+    }
 
     if (targetMoim.length > 0) {
       await Moim.destroy({
