@@ -71,11 +71,10 @@ const routineCreate = async (req, res, next) => {
 
   const { id } = res.locals.user;
   const authId = id
-
+  const isMain = 0
   const {
     routineName,
-    actions,
-    isMain,
+    actions
   } = req.body;
 
   //유저 DB체크
@@ -126,7 +125,6 @@ const routineModify = async (req, res, next) => {
   const {
     routineName,
     actions,
-    isMain,
   } = req.body;
 
   try {
@@ -139,7 +137,6 @@ const routineModify = async (req, res, next) => {
       await Routine.update(
         {
           routineName,
-          isMain,
         },
         {
           where: {
