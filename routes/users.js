@@ -15,7 +15,7 @@ router.put('/mainRoutine', authMiddleware, setMainRoutine);
 router.post('/character', authMiddleware, newCharacter);
 // 액션(운동) 완료
 router.put('/action', authMiddleware, doneAction);
-router.get('/moims', authMiddleware, myMoim);
+router.post('/moims', authMiddleware, myMoim);
 router.get('/comments', authMiddleware, myComments);
 
 module.exports = router;
