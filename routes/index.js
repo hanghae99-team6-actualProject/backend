@@ -4,15 +4,19 @@ const env = require('../env')
 
 const authRouter = require("./auth");
 const usersRouter = require("./users");
-const routineRouter = require('./routines')
-const mainRouter = require('./main')
-const likeRouter = require('./like')
+const routineRouter = require('./routines');
+const mainRouter = require('./main');
+const likeRouter = require('./like');
+const moimRouter = require('./moims');
+const commentRouter = require('./comments');
 
 router.use('/main', mainRouter)
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/routines', routineRouter)
+router.use('/moims', moimRouter)
 router.use('/moim/like', likeRouter)
+router.use('/comments', commentRouter)
 
 router.get("/", async (req, res, next) => {
   if (req.user) {

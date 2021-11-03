@@ -12,6 +12,9 @@ env = {
 
   DOMAIN: nodeenv ? process.env.DEV_DB_USER : process.env.PRODUCT_DOMAIN,
 
+  AWS_S3_KEY: process.env.AWS_S3_KEY,
+  AWS_S3_PRIVATE_KEY: process.env.AWS_S3_PRIVATE_KEY,
+
   KAKAO_CLIENT_ID: process.env.KAKAO_CLIENT_ID,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
