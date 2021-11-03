@@ -121,6 +121,10 @@ const myMoim = async (req, res, next) => {
       where: { userId: userId, host: hostType },
       include: [
         {
+          model: User,
+          attributes: ['nickName'],
+        },
+        {
           model: Moim,
           include: [{
             model: MoimUser,
@@ -194,6 +198,12 @@ const myComments = async (req, res, next) => {
     const myCommentList = await Comment.findAll({
       where: { userId: userId },
       atrribute: ['id', 'userId', 'moimId', 'contents'],
+      include: [
+        {
+          model: User,
+          atrribute: ['nickName'],
+        }
+      ]
     }).catch((err) => {
       if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });
