@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   Moim.init({
     title: DataTypes.STRING,
     contents: DataTypes.STRING,
+    imgSrc: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Moim',

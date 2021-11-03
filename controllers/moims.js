@@ -1,4 +1,4 @@
-const { Moim, MoimUser, Comment, Like } = require('../models');
+const { Moim, MoimUser, Comment, Like, User } = require('../models');
 const myError = require('./utils/httpErrors');
 
 const makeMoimUser = async (userId, moimId, userType, next) => {
@@ -29,12 +29,19 @@ const makeMoimUser = async (userId, moimId, userType, next) => {
 const getAllMoim = async (req, res, next) => {
   try {
     console.log('getAllMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+    // if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+    // 로그인 없이 둘러볼 수 있는 페이지화
 
     const allMoims = await Moim.findAll({
       include: [
         {
           model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: [ 'nickName' ],
+            }
+          ]
         },
         {
           model: Comment,
@@ -72,7 +79,7 @@ const getAllMoim = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(myError(500, err.message));
   }
 };
 
@@ -82,10 +89,11 @@ const createMoim = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { title, contents } = req.body;
+    const { title, contents, imgSrc } = req.body;
     console.log(userId);
     console.log(title);
     console.log(contents);
+    console.log(imgSrc);
 
     // 생성 중복검사
     const isMoim = await Moim.findAll({
@@ -107,15 +115,15 @@ const createMoim = async (req, res, next) => {
     await Moim.create({
       title,
       contents,
+      imgSrc,
     })
       .then(async (result) => {
         console.log(result);
         console.log(result.id);
         // 2. 생성된 모임의 호스트 데이터 생성
         await makeMoimUser(userId, result.id, 1);
-        res
-          .status(200)
-          .send({ result: true, msg: '모임과 호스트가 생성되었습니다.' });
+        return res.status(200)
+                  .send({ result: true, msg: '모임과 호스트가 생성되었습니다.' });
       })
       .catch((err) => {
         console.log('create 중 db 에러');
@@ -135,12 +143,19 @@ const detailMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
+    const { write } = req.body; // 어떤 용도일 것인가!!
 
     const targetMoim = await Moim.findOne({
       where: {id: moimId},
       include: [
         {
-        model: MoimUser
+        model: MoimUser,
+        include: [
+          {
+            model: User,
+            attributes: [ 'nickName' ],
+          },
+        ]
         },
         {
           model: Comment

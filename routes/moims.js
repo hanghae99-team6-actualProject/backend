@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim } = require('../controllers/moims');
 
 //API
-router.get('/', authMiddleware, getAllMoim);
+router.get('/', getAllMoim); //미들웨어 제거
 router.post('/', authMiddleware, createMoim);
 router.get('/:moimId', authMiddleware, detailMoim);
 router.put('/:moimId', authMiddleware, updateMoim);
