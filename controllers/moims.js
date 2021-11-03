@@ -45,6 +45,12 @@ const getAllMoim = async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: [ 'nickName' ],
+            }
+          ]
         },
         {
           model: Like,
@@ -143,7 +149,6 @@ const detailMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { write } = req.body; // 어떤 용도일 것인가!!
 
     const targetMoim = await Moim.findOne({
       where: {id: moimId},
@@ -158,7 +163,13 @@ const detailMoim = async (req, res, next) => {
         ]
         },
         {
-          model: Comment
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: [ 'nickName' ],
+            }
+          ]
         },
         {
           model: Like
