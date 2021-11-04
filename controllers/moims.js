@@ -205,7 +205,7 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents } = req.body;
+    const { title, contents, imgSrc } = req.body;
     console.log(moimId);
 
     //1. find?
@@ -240,6 +240,7 @@ const updateMoim = async (req, res, next) => {
         {
           title: title,
           contents: contents,
+          imgSrc: imgSrc,
         },
         {
           where: { id: moimId },
