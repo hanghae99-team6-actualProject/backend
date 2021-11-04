@@ -60,31 +60,6 @@ const updateUser = async (req, res, next) => {
   }
 }
 
-
-//메인 루틴 조회 API
-const getMainRoutine = async (req, res, next) => {
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-  console.log("getMainRoutine router 진입");
-  const { id: userId } = res.locals.user;
-
-  try {
-    const mainRoutine = await Routine.findOne({
-      where: { userId, isMain: 1 },
-      include: [
-        {
-          model: Action,
-        }
-      ]
-    });
-    res.send({ result: true, mainRoutine, msg: "메인 루틴 조회완료" });
-
-  } catch (err) {
-    console.log(err);
-    return next(myError(400, "조회 catch 에러 발생"));
-  }
-};
-
-
 //메인 루틴 설정 API
 const setMainRoutine = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))

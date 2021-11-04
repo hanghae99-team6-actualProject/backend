@@ -1,0 +1,42 @@
+config:
+  target: "http://localhost:8080/api"
+  payload:
+    -
+      path: "./payload/token.csv"
+      fields:
+        - "accessToken"
+        - "refreshToken"
+    -
+      path: "./payload/routine.csv"
+      fields:
+        - "routineCase"
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: Routine Create & Get Mainpage
+  defaults:
+    headers:
+        accessToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx0ZXh0NTVAbmF2ZXIuY29tIiwiaWF0IjoxNjM1OTUxOTY4LCJleHAiOjE2MzYwMzgzNjgsImlzcyI6Im1pbmdpanVrIn0.71NM0JzN3h73__r3pY3vPnT3Ewb7C4Gq9qwtaCt-UlQ"
+        refreshToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx0ZXh0NTVAbmF2ZXIuY29tIiwiaWF0IjoxNjM1OTUxOTY4LCJleHAiOjE2MzcxNjE1NjgsImlzcyI6Im1pbmdpanVrIn0.GvDfop2HWAQbKqrYuKoHiZup6hkeYQAKMI6-I0MGLq8"
+scenarios:
+  - name: "Get Mainpage Data"
+    flow:
+      - get:
+          url: "/routines"
+      - get:
+          url: "/main/trackerHistory"
+
+  - name: "Make & Delete Routine and Actions"
+    flow:
+      - post:
+          url: "/routines"
+          json:
+            routineName : "테스트 루틴 넘버 test-{{routineCase}}"
+            actions : 
+              - actionName: "데드리프트"
+                actionType: "맨몸운동"
+                actionCnt: "10"
+              - actionName: "사이드레터럴레이즈"
+                actionType: "스트레칭"
+                actionCnt: "20"
+            isMain" : false
