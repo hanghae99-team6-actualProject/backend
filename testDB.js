@@ -1,8 +1,63 @@
+const Sequelize = require('sequelize');
 const models = require('./models');
+const Op = Sequelize.Op;
 
 // // Creat ------------------------------------------------------------------------
 
-// 가짜 데이터 만들기 - User_DB
+// // -----------------------------------------------------------------------------
+
+// async function actionCreate(routineId, userId, actions) {
+//   for await (const [index, value] of actions.entries()) {
+//     console.log(index, value);
+//     const { actionName, actionCnt, actionType } = value;
+//     await models.Action.create({
+//       routineId,
+//       userId,
+//       actionName,
+//       actionCnt,
+//       actionType,
+//       actionNum: index
+//     })
+//     .then( async (result) => {
+//       console.log( (result.actionNum+1) + '번째 AnctionFin 생성');
+//       await models.ActionFin.create({
+//         actionId: result.id,
+//       })
+//       .then(() => console.log('ActionFin 생성완료'))
+//       .catch((err) => { if(err) next(new Error('ActionFin 생성 db 에러')) });
+//     })
+//   }
+//   console.log('action 생성 완료')
+// }
+
+// var routineName = "점심루틴";
+
+// const actions = [
+//   {
+//     actionName : "스쿼트",
+//     actionCnt : "10",
+//     actionType : "스트레칭",
+//   },{
+//     actionName : "팔굽혀펴기",
+//     actionCnt : "10",
+//     actionType : "스트레칭",
+//   },{
+//     actionName : "플랭크",
+//     actionCnt : "3",
+//     actionType : "스트레칭",
+//   },
+// ]
+// const routineId = 2;
+// const userId = 2;
+
+// actionCreate(routineId, userId, actions)
+
+
+// // -----------------------------------------------------------------------------
+
+
+
+// // 가짜 데이터 만들기 - User_DB
 // models.User.create({
 //   providerId: "2",
 //   userEmail: 'tset2@test.com',
@@ -13,6 +68,8 @@ const models = require('./models');
 //   console.log(result.id);
 //   console.log("============여기까지!======================");
 // });
+
+
 // models.User.create({
 //   providerId: "4",
 //   userEmail: 'tset4@test.com',
@@ -54,10 +111,10 @@ const models = require('./models');
 //   preSet: preSet,
 // }).then((result) => console.log('Data is Created!'));
 
-//  // 그냥 유저가 만든 루틴
+ // 그냥 유저가 만든 루틴
 // var finDate = new Date();
 // models.Routine.create({
-//   userId : 2,
+//   userId : 1,
 //   routineName : "2",
 //   inMain : 0,
 //   preSet : 0,
@@ -72,20 +129,23 @@ const models = require('./models');
 
 
 // // 가짜 데이터 만들기 - Action_DB
-// var userId = 2;
-// var routineId = 2;
-// var actionName = "앉았다 일어나기";
-// var actionCnt = 5;
-// var finDate = new Date();
-// var actionNum = 1;
-// models.Action.create({
-//   userId : userId,
-//   routineId : routineId,
-//   actionName : actionName,
-//   actionCnt : actionCnt,
+// for(let i=0; i < 6; i++){
+//   var userId = 2;
+//   var routineId = 2;
+//   var actionName = "앉았다 일어나기";
+//   var actionCnt = 5;
+//   var finDate = new Date();
+//   var actionNum = i;
+//   models.Action.create({
+//     userId : userId,
+//     routineId : routineId,
+//     actionName : actionName,
+//     actionCnt : actionCnt,
+  
+//     actionNum : actionNum,
+//   })
+// }
 
-//   actionNum : actionNum,
-// }).then((result) => console.log('Data is Created!'));
 // var userId = 2;
 // var routineId = 2;
 // var actionName = "팔굽혀 펴기";
@@ -497,7 +557,51 @@ const models = require('./models');
 
 // // -----------------------------------------------------------------------------
 
+// async function actionCreate(routineId, userId, actions) {
+//   for await (const [index, value] of actions.entries()) {
+//     console.log(index, value);
+//     const { actionName, actionCnt, actionType } = value;
+//     await models.Action.create({
+//       routineId,
+//       userId,
+//       actionName,
+//       actionCnt,
+//       actionType,
+//       actionNum: index
+//     })
+//     .then( async (result) => {
+//       console.log( result.actionCnt + '번째 AnctionFin 생성');
+//       await models.ActionFin.create({
+//         actionId: result.id,
+//       })
+//       .then(() => console.log('ActionFin 생성완료'))
+//       .catch((err) => { if(err) next(new Error('ActionFin 생성 db 에러')) });
+//     })
+//   }
+//   console.log('action 생성 완료')
+// }
 
+// var routineName = "점심루틴";
+
+// const actions = [
+//   {
+//     actionName : "스쿼트",
+//     actionCnt : "10",
+//     actionType : "스트레칭",
+//   },{
+//     actionName : "팔굽혀펴기",
+//     actionCnt : "10",
+//     actionType : "스트레칭",
+//   },{
+//     actionName : "플랭크",
+//     actionCnt : "3",
+//     actionType : "스트레칭",
+//   },
+// ]
+// const routineId = 1;
+// const userId = 1;
+
+// actionCreate(routineId, userId, actions)
 
 
 
@@ -551,10 +655,23 @@ const models = require('./models');
 
 // // Delete -----------------------------------------------------------------------
 
-// const target = 50; 
-// models.Action.destroy({ where: { id: target } }).then((result) =>
+// const target = 2; 
+// models.ActionFin.destroy({ where: { actionid: { [Op.gte]: 4 } }}).then((result) =>
 //   console.log(result,"결과"),
 //   console.log(`${target} data was deleted!`),
 // );
+
+// async function actionDelete(routineId) {
+//   await models.Action.destroy({
+//     where: { routineId }
+//   })
+//   console.log('action 및 actionFin 삭제 완료')
+//   // 액션이 삭제되면서 ActionFin에 있는 데이터도 같이 삭제되길 기대함
+//   // 안삭제되면 문제!
+//   // 테스트 필요
+// };
+
+// const routineId = 2;
+// actionDelete(routineId);
 
 // // -----------------------------------------------------------------------------

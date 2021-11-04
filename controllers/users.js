@@ -179,7 +179,7 @@ const myComments = async (req, res, next) => {
           model: User,
           atrribute: ['nickName'],
         }
-      ],
+      ]
     }).catch((err) => {
       if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });

@@ -205,12 +205,18 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents } = req.body;
+    const { title, contents, imgSrc } = req.body;
     console.log(moimId);
 
     //1. find?
     const targetMoim = await Moim.findAll({
       where: { id: moimId },
+      include: [
+        {
+          model: MoimUser,
+          attributes: ['userId']
+        }
+      ]
     }).catch((err) => {
       console.log('update의 targetMoim find 중 db 에러');
       if (err) next(new Error('update의 targetMoim find 중 db 에러'));
@@ -218,6 +224,15 @@ const updateMoim = async (req, res, next) => {
 
     console.log('target 모임', targetMoim);
     console.log('target 모임의 lengh', targetMoim.length);
+    
+    
+    console.log('target 모임의 host userId', targetMoim[0].MoimUsers[0].userId);
+    // ㄴ 모임에 속한 유저를 나열했을 때 따로 필터링을 하지 않고서는 가장 처음 데이터가 호스트의 데이터이다
+    // 왜냐하면, 모임을 생성할때 같이 생성되기 때문
+    // 필요시 필터를 적용하여 검색하는 방식으로 진행
+    if( targetMoim[0].MoimUsers[0].userId !== userId ) {
+      return next(new Error('모임의 작성자만 수정이 가능합니다.'))
+    }
 
     if( targetMoim.userId !== userId ) {
       return next(new Error('모임의 작성자만 수정이 가능합니다.'))
@@ -229,6 +244,7 @@ const updateMoim = async (req, res, next) => {
         {
           title: title,
           contents: contents,
+          imgSrc: imgSrc,
         },
         {
           where: { id: moimId },
@@ -265,13 +281,24 @@ const deleteMoim = async (req, res, next) => {
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
-    const targetMoim = await Moim.findAll({
+    const targetMoim = await await Moim.findAll({
       where: { id: moimId },
+      include: [
+        {
+          model: MoimUser,
+          attributes: ['userId']
+        }
+      ]
     }).catch((err) => {
       if (err) next(new Error('delete의 targetMoim find 중 db 에러'));
     });
 
-    if( targetMoim.userId !== userId ) {
+    
+    console.log('target 모임의 host userId', targetMoim[0].MoimUsers[0].userId);
+    // ㄴ 모임에 속한 유저를 나열했을 때 따로 필터링을 하지 않고서는 가장 처음 데이터가 호스트의 데이터이다
+    // 왜냐하면, 모임을 생성할때 같이 생성되기 때문
+    // 필요시 필터를 적용하여 검색하는 방식으로 진행
+        if( targetMoim[0].MoimUsers[0].userId !== userId ) {
       return next(new Error('모임의 작성자만 삭제가 가능합니다.'))
     }
 
