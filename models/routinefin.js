@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.RoutineFin.belongsTo(models.Routine, { foreignKey: 'actionId', targetKey: 'id' });
+      models.RoutineFin.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
       
     }
   };
   RoutineFin.init({
     routineId: DataTypes.INTEGER,
-    Date: DataTypes.DATE
+    date: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'RoutineFin',

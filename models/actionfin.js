@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   ActionFin.init({
     actionId: DataTypes.INTEGER,
-    Date: DataTypes.DATE
+    date: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'ActionFin',
