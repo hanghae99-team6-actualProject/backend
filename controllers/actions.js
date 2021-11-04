@@ -188,36 +188,47 @@ const setRoutineFinDate = async (routineId, finDate) => {
   console.log('RoutineFin의 date 업데이트 완료');
 };
 
+const resetRoutineAction = async (req, res, next) => {
+  try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+    const userId = res.locals.user.id;
+    const { routineId } = res.body;
+
+    console.log('리셋 true, 리셋 실행');
+    // 리셋1. 바꿔줘야할 대상을 찾는다
+    const target = await Action.findAll({
+      where: {
+        routineId,
+        userId,
+      },
+      include: [
+        {
+          model: ActionFin,
+          attributes: ['date'],
+        },
+      ],
+    }).catch((err) => {
+      if (err) return next(new Error('리셋 대상 찾기 db 에러'));
+    });
+  }
+  catch (err) {
+    return next(err);
+  }
+}
+
 const doneAction = async (req, res, next) => {
   try {
     // 1. 프론트로부터 완료된 액션에 대한 정보 획득, 파라미터로 유저정보 획득
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
-    const { actionId, routineId, isReset } = req.body;
+    const { actionId, routineId } = req.body;
 
     console.log('userId', userId);
     console.log('actionId', actionId);
-    console.log(isReset);
 
     let finDate = new Date();
 
     if (isReset == 1) {
-      console.log('리셋 true, 리셋 실행');
-      // 리셋1. 바꿔줘야할 대상을 찾는다
-      const target = await Action.findAll({
-        where: {
-          routineId,
-          userId,
-        },
-        include: [
-          {
-            model: ActionFin,
-            attributes: ['date'],
-          },
-        ],
-      }).catch((err) => {
-        if (err) return next(new Error('리셋 대상 찾기 db 에러'));
-      });
 
       // console.log("타겟 액션들의 정보", target);
       // console.log("타겟 액션의 액션Id값", target[0].id);
@@ -244,16 +255,16 @@ const doneAction = async (req, res, next) => {
     } else if (isReset == 0) {
 
       // 2. 유저정보와 액션이 정말 일치하는 데이터인지 확인
-    const action = await Action.findOne({
-      where: { id: actionId },
-      include: [
-        {
-          model: ActionFin,
-        },
-      ],
-    }).catch((err) => {
-      if (err) return next(new Error('db 에러'));
-    });
+      const action = await Action.findOne({
+        where: { id: actionId },
+        include: [
+          {
+            model: ActionFin,
+          },
+        ],
+      }).catch((err) => {
+        if (err) return next(new Error('db 에러'));
+      });
 
       // isReset === false 일때, 무조건 해당 액션은 findate가 null이어야 한다.
       if (action.ActionFins[0].date !== null && action.ActionFins[0].date) {
