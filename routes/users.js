@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware')
-const { bye, collection, updateUser, setMainRoutine, getMainRoutine, myMoim, enterMoimList, myComments } = require('../controllers/users')
+const { bye, collection, updateUser, setMainRoutine, myMoim, enterMoimList, myComments } = require('../controllers/users')
 const { newCharacter } = require('../controllers/characters');
 const { doneAction } = require('../controllers/actions');
 

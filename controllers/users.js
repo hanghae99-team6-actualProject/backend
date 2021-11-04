@@ -206,4 +206,4 @@ const myComments = async (req, res, next) => {
   }
 }
 
-module.exports = { bye, collection, updateUser, setMainRoutine, getMainRoutine, myMoim, myComments };
+module.exports = { bye, collection, updateUser, setMainRoutine, myMoim, myComments };
