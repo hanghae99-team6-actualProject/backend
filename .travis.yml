@@ -3,7 +3,7 @@ node_js:
   - "14.15.1" # node_js에 버전 10.14
 branches:
   only:
-    - stage
+    - main
 notifications: # 성공 실패 여부 알림
   email:
     recipients:
