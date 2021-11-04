@@ -1,0 +1,22 @@
+config:
+  target: "http://localhost:8080/api"
+  payload:
+    path: "payload/account.csv"
+    fields:
+      - "userId"
+      - "userPw"
+      - "userNick"
+  phases:
+    - duration: 5
+      arrivalRate: 2
+      name: makeUserMax
+
+scenarios:
+  - name: "register"
+    flow:
+      - post:
+          url: "/auth/signup"
+          json:
+            userEmail : "{{userId}}"
+            userPw : "{{userPw}}"
+            nickName : "{{userNick}}"

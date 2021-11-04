@@ -9,7 +9,6 @@ const router = express.Router();
 router.delete('/bye', authMiddleware, bye);
 router.get('/collection', authMiddleware, collection);
 router.put('/info', authMiddleware, updateUser);
-router.get('/mainRoutine', authMiddleware, getMainRoutine);
 router.put('/mainRoutine', authMiddleware, setMainRoutine);
 // 새로운 캐릭터 뽑기
 router.post('/character', authMiddleware, newCharacter);
