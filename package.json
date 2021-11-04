@@ -9,7 +9,7 @@
     "start": "cross-env NODE_ENV=production node app.js",
     "seedon": "npx sequelize-cli db:seed:all",
     "seeddown": "npx sequelize-cli db:seed:undo:all",
-    "artillery": "npx artillery run __test__/artilery/loadtest.json"
+    "artillery": "npx artillery run __test__/artilery/loadtest.json",
   },
   "dependencies": {
     "aws-sdk": "^2.1019.0",
