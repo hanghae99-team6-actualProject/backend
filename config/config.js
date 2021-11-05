@@ -10,10 +10,10 @@ const development = {
 };
 
 const test = {
-  "username": env.DB_USER,
-  "password": env.DB_PASSWORD,
-  "database": env.DB_NAME,
-  "host": env.DB_END_POINT,
+  "username": "root",
+  "password": "test1234",
+  "database": "testTest",
+  "host": "127.0.0.1",
   "dialect": "mysql",
   "timezone": "+09:00"
 };

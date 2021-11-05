@@ -4,12 +4,11 @@
   "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon app.js",
     "start": "cross-env NODE_ENV=production node app.js",
     "seedon": "npx sequelize-cli db:seed:all",
-    "seeddown": "npx sequelize-cli db:seed:undo:all",
-    "artillery": "npx artillery run __test__/artilery/loadtest.json"
+    "seeddown": "npx sequelize-cli db:seed:undo:all"
   },
   "dependencies": {
     "aws-sdk": "^2.1019.0",
@@ -51,6 +50,7 @@
   "devDependencies": {
     "artillery": "^2.0.0-4",
     "jest": "^27.3.1",
-    "nodemon": "^2.0.14"
+    "nodemon": "^2.0.14",
+    "supertest": "^6.1.6"
   }
 }
