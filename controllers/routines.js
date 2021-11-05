@@ -32,7 +32,7 @@ const routineGet = async (req, res, next) => {
 
   try {
     const routines = await Routine.findAll({
-      where: { userId: authId },
+      where: { userId: authId, preSet: 0 },
       include: [
         {
           model: RoutineFin
