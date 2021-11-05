@@ -107,7 +107,12 @@ const myMoim = async (req, res, next) => {
           include: [
             {
             model: MoimUser,
-            // separate: true,
+            include: [
+              {
+                model: User,
+                attributes: ['nickName'],
+              }
+            ]
             },
             {
               model: Comment,
