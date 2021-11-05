@@ -12,7 +12,7 @@ const destroyUser = () => {
       },
       force: true
     });
-    console.log('매 시간 마다 작업 실행 :', new Date().toString());
+    console.log('한 시간 마다 작업 실행 :', new Date().toString());
   });
 }
 

@@ -6,35 +6,41 @@ const today = new Date();
 const year = today.getFullYear(); // 년도
 const month = today.getMonth(); // 월
 const date = today.getDate();  // 날짜
-const fromToday = new Date(year,month,1,0,0,0);
-const fromYearAgo = new Date(year-1,month,date,0,0,0);
+const fromToday = new Date(year, month, 1, 0, 0, 0);
+const fromYearAgo = new Date(year - 1, month, date, 0, 0, 0);
 
 //메인 루틴, 액션, 유저 조회
 const ongoingGet = async (req, res, next) => {
   console.log("routineGet router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-  const { id } = res.locals.user;
+  const { id: userId } = res.locals.user;
 
   try {
-    const users = await User.findAll({
-      where: { id },
-      attributes: {
-      },
+    const presetMainRoutine = await Routine.findAll({
+      where: { userId: null, isMain: 1 },
       include: [{
-        model: Character,
-      }, {
-        model: Routine,
-        where: { isMain: 1 },
+        model: Action
+      }]
+    });
+    if (presetMainRoutine.length === 1) {
+      return res.status(200).send({ result: true, mainRoutine: presetMainRoutine, msg: "진행중 루틴 및 액션 조회완료" });
+    }
+    else if (presetMainRoutine.length === 0) {
+      const userMainRoutine = await Routine.findAll({
+        where: { userId, isMain: 1 },
         include: [{
           model: Action
         }]
-      }]
-    });
-    res.status(200).send({ result: true, users, msg: "진행중 루틴 및 액션 조회완료" });
+      })
+      return res.status(200).send({ result: true, mainRoutine: userMainRoutine, msg: "진행중 루틴 및 액션 조회완료" });
+    }
+    else {
+      return next(new Error('2개 이상의 루틴이 mainRoutine인 상황, 서버 에러'))
+    }
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, "진행중 정보 조회 에러 발생"));
+    return next(new Error("진행중 정보 조회 에러 발생"));
   }
 };
 

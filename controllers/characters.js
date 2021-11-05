@@ -2,7 +2,7 @@ const { Character } = require('../models');
 const crtConst = require('../constants/characters')
 const myError = require('./utils/httpErrors')
 
-exports.newCharacter = async (req, res, next) => {
+const newCharacter = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
@@ -83,3 +83,5 @@ exports.newCharacter = async (req, res, next) => {
     return next(myError(400, error.message));
   }
 }
+
+module.exports = { newCharacter }
