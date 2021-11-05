@@ -34,7 +34,7 @@ const logout = (req, res, next) => {
       req.logout()
     })
 
-    res.json({ result: true, msg: "로그아웃되었습니다." });
+    res.status(200).json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
     console.log(err);
     return next(err);
