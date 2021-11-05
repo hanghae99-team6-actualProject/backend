@@ -1,4 +1,4 @@
-const { Routine, Action, User, Character, Sequelize } = require("../models");
+const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize} = require("../models");
 const myError = require("./utils/httpErrors");
 const Op = Sequelize.Op;
 
@@ -51,22 +51,35 @@ const trackerHistoryGet = async (req, res, next) => {
 
   try {
     const finRoutines = await Routine.findAll({
-      where: {
-        userId: authId,
-        findate: {
-          [Op.not]: null,
-          [Op.gte]: fromToday
+      attributes: ['userId'],
+      where: { userId: authId },
+      include: [
+        {
+          model: RoutineFin,
+          where: {
+            date: {
+              [Op.not]: null,
+              [Op.gte]: fromToday
+            }
+          }
         }
-      },
+      ]
     });
+
     const finActions = await Action.findAll({
-      where: {
-        userId: authId,
-        findate: {
-          [Op.not]: null,
-          [Op.gte]: fromToday
+      attributes: ['userId'],
+      where: { userId: authId },
+      include: [
+        {
+          model: ActionFin,
+          where: {
+            date: {
+              [Op.not]: null,
+              [Op.gte]: fromToday
+            }
+          }
         }
-      },
+      ]
     });
     
     res.status(200).send({ result: true, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
@@ -81,25 +94,41 @@ const graphHistoryGet = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
+  console.log('아이디체크체크');
+  console.log(authId);
 
   try {
+
     const finRoutines = await Routine.findAll({
-      where: {
-        userId: authId,
-        findate: {
-          [Op.not]: null,
-          [Op.gte]: fromYearAgo
+      attributes: ['userId'],
+      where: { userId: authId },
+      include: [
+        {
+          model: RoutineFin,
+          where: {
+            date: {
+              [Op.not]: null,
+              [Op.gte]: fromYearAgo
+            }
+          }
         }
-      },
+      ]
     });
+
     const finActions = await Action.findAll({
-      where: {
-        userId: authId,
-        findate: {
-          [Op.not]: null,
-          [Op.gte]: fromYearAgo
+      attributes: ['userId'],
+      where: { userId: authId },
+      include: [
+        {
+          model: ActionFin,
+          where: {
+            date: {
+              [Op.not]: null,
+              [Op.gte]: fromYearAgo
+            }
+          }
         }
-      },
+      ]
     });
     res.status(200).send({ result: true, finRoutines, finActions, msg: "그래프 히스토리 루틴 및 액션 조회완료" });
 
