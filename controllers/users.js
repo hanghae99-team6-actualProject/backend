@@ -96,6 +96,7 @@ const myMoim = async (req, res, next) => {
 
     const allMyMoim = await MoimUser.findAll({
       where: { userId: userId, host: hostType },
+      attributes: ['id', 'userId', 'moimId', 'host'],
       // attributes: { include:[[Sequelize.fn('COUNT', Sequelize.col('User.id')), 'User_count'] ] },
       include:[
         {
@@ -104,9 +105,11 @@ const myMoim = async (req, res, next) => {
         },
         {
           model: Moim,
+          attributes: ['id', 'title', 'contents', 'createdAt'],
           include: [
             {
             model: MoimUser,
+            attributes: ['id', 'userId', 'moimId', 'host'],
             include: [
               {
                 model: User,
@@ -203,11 +206,15 @@ const myComments = async (req, res, next) => {
 
     const myCommentList = await Comment.findAll({
       where: { userId: userId },
-      atrribute: ['id', 'userId', 'moimId', 'contents'],
+      attributes: ['id', 'userId', 'moimId', 'contents', 'createdAt'],
       include: [
         {
+          model: Moim,
+          attributes: ['title', 'contents'],
+        },
+        {
           model: User,
-          atrribute: ['nickName'],
+          attributes: ['nickName'],
         }
       ]
     }).catch((err) => {
