@@ -39,7 +39,7 @@ const getAllMoim = async (req, res, next) => {
           include: [
             {
               model: User,
-              attributes: [ 'nickName' ],
+              attributes: ['nickName'],
             }
           ]
         },
@@ -48,7 +48,7 @@ const getAllMoim = async (req, res, next) => {
           include: [
             {
               model: User,
-              attributes: [ 'nickName' ],
+              attributes: ['nickName'],
             }
           ]
         },
@@ -129,7 +129,7 @@ const createMoim = async (req, res, next) => {
         // 2. 생성된 모임의 호스트 데이터 생성
         await makeMoimUser(userId, result.id, 1);
         return res.status(200)
-                  .send({ result: true, msg: '모임과 호스트가 생성되었습니다.' });
+          .send({ result: true, msg: '모임과 호스트가 생성되었습니다.' });
       })
       .catch((err) => {
         console.log('create 중 db 에러');
@@ -154,20 +154,20 @@ const detailMoim = async (req, res, next) => {
       where: { id: moimId },
       include: [
         {
-        model: MoimUser,
-        include: [
-          {
-            model: User,
-            attributes: [ 'nickName' ],
-          },
-        ]
+          model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            },
+          ]
         },
         {
           model: Comment,
           include: [
             {
               model: User,
-              attributes: [ 'nickName' ],
+              attributes: ['nickName'],
             }
           ]
         },
@@ -205,12 +205,18 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents } = req.body;
+    const { title, contents, imgSrc } = req.body;
     console.log(moimId);
 
     //1. find?
     const targetMoim = await Moim.findAll({
       where: { id: moimId },
+      include: [
+        {
+          model: MoimUser,
+          attributes: ['userId']
+        }
+      ]
     }).catch((err) => {
       console.log('update의 targetMoim find 중 db 에러');
       if (err) next(new Error('update의 targetMoim find 중 db 에러'));
@@ -219,7 +225,12 @@ const updateMoim = async (req, res, next) => {
     console.log('target 모임', targetMoim);
     console.log('target 모임의 lengh', targetMoim.length);
 
-    if( targetMoim.userId !== userId ) {
+
+    console.log('target 모임의 host userId', targetMoim[0].MoimUsers[0].userId);
+    // ㄴ 모임에 속한 유저를 나열했을 때 따로 필터링을 하지 않고서는 가장 처음 데이터가 호스트의 데이터이다
+    // 왜냐하면, 모임을 생성할때 같이 생성되기 때문
+    // 필요시 필터를 적용하여 검색하는 방식으로 진행
+    if (targetMoim[0].MoimUsers[0].userId !== userId) {
       return next(new Error('모임의 작성자만 수정이 가능합니다.'))
     }
 
@@ -229,6 +240,7 @@ const updateMoim = async (req, res, next) => {
         {
           title: title,
           contents: contents,
+          imgSrc: imgSrc,
         },
         {
           where: { id: moimId },
@@ -265,13 +277,24 @@ const deleteMoim = async (req, res, next) => {
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
-    const targetMoim = await Moim.findAll({
+    const targetMoim = await await Moim.findAll({
       where: { id: moimId },
+      include: [
+        {
+          model: MoimUser,
+          attributes: ['userId']
+        }
+      ]
     }).catch((err) => {
       if (err) next(new Error('delete의 targetMoim find 중 db 에러'));
     });
 
-    if( targetMoim.userId !== userId ) {
+
+    console.log('target 모임의 host userId', targetMoim[0].MoimUsers[0].userId);
+    // ㄴ 모임에 속한 유저를 나열했을 때 따로 필터링을 하지 않고서는 가장 처음 데이터가 호스트의 데이터이다
+    // 왜냐하면, 모임을 생성할때 같이 생성되기 때문
+    // 필요시 필터를 적용하여 검색하는 방식으로 진행
+    if (targetMoim[0].MoimUsers[0].userId !== userId) {
       return next(new Error('모임의 작성자만 삭제가 가능합니다.'))
     }
 
@@ -336,4 +359,56 @@ const enterMoim = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim };
+const exitMoim = async (req, res, next) => {
+  try {
+    console.log('enterMoim router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId } = req.params;
+    console.log(userId);
+    console.log(moimId);
+
+    const isEnterMoim = await MoimUser.findOne({
+      where : { userId: userId, moimId },
+      include: [
+        {
+          model: User,
+          attributes: ['nickName']
+        },
+      ]
+    }).catch((err) => { if (err) next(new Error('모임 참가 유저 검색 중 db 에러')) });
+
+    // console.log('참여 여부 확인', isEnterMoim);
+    // console.log('참여 여부 확인', isEnterMoim.User.nickName);
+    
+    const exitUserNickName = isEnterMoim.User.nickName;
+
+    if (isEnterMoim.length === null) {
+      return next(new Error('이미 비참가중인 모임입니다.'));
+    }
+
+    const exitMoim = await MoimUser.destroy({
+      where: {userId: userId, moimId}
+    }).catch((err) => { if (err) next(new Error('모임 참가 취소 중 db 에러')) });
+
+    console.log(exitMoim); //삭제된 것이 있다면 1
+
+    if( exitMoim !== 1) {
+      return next(new Error('모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'));
+    }
+
+    return res.send({
+      result: true,
+      msg: '참가 취소 성공',
+      exitUserNickName
+    })
+
+  } catch (err) {
+    console.log(err);
+    console.log('catch에서 에러감지');
+    return next(myError(400, err.message));
+  }
+}
+
+module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim };
