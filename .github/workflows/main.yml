@@ -21,18 +21,42 @@ jobs:
     name: hello github action         # Job 이름
     runs-on: ubuntu-18.04
     
+    strategy:
+      matrix:
+        node-version: [14.18.1]
+        
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout source code    # Step 이름
         uses: actions/checkout@v2
+        
+      - name: node.js 12 설치 ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: npm 설치
+        run: npm install
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      # 기존에 생성한 IAM 유저로 로그인
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET }}
+          aws-region: ap-northeast-2
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # 배포 생성
+      - name: Create CodeDeploy Deployment
+        id: deploy
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          aws deploy create-deployment \
+            --application-name ${{ secrets.AWS_DEPLOY_APP_NAME }} \
+            --deployment-group-name ${{ secrets.AWS_DEPLOY_GROUP }}  \
+            --deployment-config-name ${{ secrets.AWS_DEPLOY_CONFIG }} \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
