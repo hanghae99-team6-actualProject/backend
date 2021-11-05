@@ -5,7 +5,8 @@ const { findLastRoutineFinId, thisCycle, countNullAction } = require('./utils/ro
 
 
 //--Action 생성,  함수--
-async function actionCreate(routineId, routineFinId, userId, actions) {
+async function actionCreate(routineId, userId, routineFinId, actions) {
+  console.log(actions);
   for await (const [index, value] of actions.entries()) {
     console.log(index, value);
     const { actionName, actionCnt, actionType } = value;
@@ -123,7 +124,7 @@ const routineCreate = async (req, res, next) => {
 
       const { id: routineId } = routines;
       const { id: routineFinId } = routineFin;
-      actionCreate(routineId, authId, routineFinId, actions)
+      await actionCreate(routineId, authId, routineFinId, actions)
         .then(() => {
           res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
         })

@@ -253,7 +253,7 @@ const doneAction = async (req, res, next) => {
     } else {
       console.log('액션과 루틴이 함께 완료된 경우');
       //5. 루틴에는 finDate추가
-      setRoutineFinDate(routineId, finDate).catch((err) => {
+      await setRoutineFinDate(routineId, finDate).catch((err) => {
         if (err) return next(new Error('setRoutineFinDate db 에러'));
       });
 
