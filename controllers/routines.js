@@ -75,7 +75,7 @@ const routineCreate = async (req, res, next) => {
     if (routines.length > 0) {
       return next(new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.'));
     }
-    await createRoutineFn(authId, routineName, actions, isMain)
+    await createRoutineFn(authId, routineName, isMain, 0, actions)
       .then(() => {
         res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
       })
@@ -232,8 +232,10 @@ const resetNowRoutineActions = async (req, res, next) => {
 // 프리셋 루틴 불러오기 API
 const allPresetRoutine = async (req, res, next) => {
   try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+    const userId = res.locals.user.id;
     const routines = await Routine.findAll({
-      where: { preSet: 1 },
+      where: { userId, preSet: 1 },
       include: [
         {
           model: RoutineFin,

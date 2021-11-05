@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
     actionName: DataTypes.STRING,
     actionType: DataTypes.STRING,
     actionCnt: DataTypes.INTEGER,
-    finDate: DataTypes.DATE,
     actionNum: DataTypes.INTEGER,
     actionType: DataTypes.STRING,
   }, {

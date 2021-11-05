@@ -4,6 +4,10 @@ const { User } = require('../models');
 const userValidation = require('./utils/joi');
 const { encryptPw, pwCompare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
+const {
+  createRoutineFn
+} = require('./utils/routineFn');
+const presetConst = require('../constants/presetRoutines')
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {
@@ -107,12 +111,20 @@ const localSignup = async (req, res, next) => {
 
     // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encryptPw(userPw)
     await User.create({ providerId, userEmail, userPw: encryptPw(userPw), nickName, provider, exp, role })
-      .then(() => {
+      .then(async (result) => {
+        const userId = result.id;
+        const presetRoutine1 = presetConst.presetRoutine1;
+        const presetRoutine2 = presetConst.presetRoutine2;
+
+        await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
+        await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
+
         return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
       })
       .catch((err) => {
         if (err) return next(new Error("User 생성 db 에러"));
       });
+    //회원가입시 프리셋 루틴을 모든 유저에게 생성해주기!
   } catch (err) {
     console.log(err);
     return next(myError(400, err.message));

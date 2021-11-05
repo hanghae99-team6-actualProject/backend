@@ -70,12 +70,13 @@ const deleteActionFn = async (routineId) => {
 }
 
 
-const createRoutineFn = async (authId, routineName, actions, isMain) => {
+const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => {
 
   const routines = await Routine.create({
     userId: authId,
     routineName,
     isMain,
+    preSet
   }).catch((err) => { next(new Error('Routine 생성 중 db 에러')) })
 
   const routineFin = await RoutineFin.create({

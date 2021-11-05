@@ -82,20 +82,20 @@ const setMainRoutine = async (req, res, next) => {
       where: { userId, isMain: 1 }
     })
     //프리셋 루틴을 메인 루틴으로 만드려는 상황
-    if (thisRoutine.preSet === 1) {
-      //프리셋 루틴을 메인 루틴으로 만들 때에만 예외적으로 루틴 이름의 중복을 허용합니다.
-      console.log('프리셋 루틴을 메인 루틴으로 만드려는 상황')
-      const { routineName, Actions } = thisRoutine;
-      await createRoutineFn(userId, routineName, Actions, 1)
-        .catch((err) => { if (err) return next(err) })
-      return res.send({ result: true, msg: "프리셋 루틴을 메인 루틴으로 설정하였습니다" });
-    }
-    else {
-      await Routine.update({ isMain: 1 }, {
-        where: { id: routineId }
-      });
-      return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
-    }
+    // if (thisRoutine.preSet === 1) {
+    //   //프리셋 루틴을 메인 루틴으로 만들 때에만 예외적으로 루틴 이름의 중복을 허용합니다.
+    //   console.log('프리셋 루틴을 메인 루틴으로 만드려는 상황')
+    //   const { routineName, Actions } = thisRoutine;
+    //   await createRoutineFn(userId, routineName, 1, 0, Actions)
+    //     .catch((err) => { if (err) return next(err) })
+    //   return res.send({ result: true, msg: "프리셋 루틴을 메인 루틴으로 설정하였습니다" });
+    // }
+    // else {
+    await Routine.update({ isMain: 1 }, {
+      where: { id: routineId }
+    });
+    return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
+    // }
   } catch (err) {
     console.log(err);
     return next(myError(400, "메인 루틴 설정 update 에러 발생"));
