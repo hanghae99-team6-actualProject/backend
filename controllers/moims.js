@@ -359,4 +359,56 @@ const enterMoim = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim };
+const exitMoim = async (req, res, next) => {
+  try {
+    console.log('enterMoim router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId } = req.params;
+    console.log(userId);
+    console.log(moimId);
+
+    const isEnterMoim = await MoimUser.findOne({
+      where : { userId: userId, moimId },
+      include: [
+        {
+          model: User,
+          attributes: ['nickName']
+        },
+      ]
+    }).catch((err) => { if (err) next(new Error('모임 참가 유저 검색 중 db 에러')) });
+
+    // console.log('참여 여부 확인', isEnterMoim);
+    // console.log('참여 여부 확인', isEnterMoim.User.nickName);
+    
+    const exitUserNickName = isEnterMoim.User.nickName;
+
+    if (isEnterMoim.length === null) {
+      return next(new Error('이미 비참가중인 모임입니다.'));
+    }
+
+    const exitMoim = await MoimUser.destroy({
+      where: {userId: userId, moimId}
+    }).catch((err) => { if (err) next(new Error('모임 참가 취소 중 db 에러')) });
+
+    console.log(exitMoim); //삭제된 것이 있다면 1
+
+    if( exitMoim !== 1) {
+      return next(new Error('모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'));
+    }
+
+    return res.send({
+      result: true,
+      msg: '참가 취소 성공',
+      exitUserNickName
+    })
+
+  } catch (err) {
+    console.log(err);
+    console.log('catch에서 에러감지');
+    return next(myError(400, err.message));
+  }
+}
+
+module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim };
