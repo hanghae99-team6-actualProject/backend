@@ -17,15 +17,15 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    name: hello github action         # Job 이름
     # The type of runner that the job will run on
+    name: hello github action         # Job 이름
     runs-on: ubuntu-18.04
-
+    
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: checkout source code    # Step 이름
-      - uses: actions/checkout@main
+        uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
