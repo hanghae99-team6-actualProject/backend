@@ -11,7 +11,7 @@ const me = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { user } = res.locals;
     console.log(user);
-    res.send({ result: true, user });
+    res.status(200).send({ result: true, user });
   } catch (err) {
     console.log(err);
     return next(err);
@@ -74,7 +74,7 @@ const localLogin = async (req, res, next) => {
       { where: { providerId } }
     ).catch((err) => { if (err) return next(myError(401, 'User.update refreshToken db 에러')) });
 
-    return res.send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
+    return res.status(200).send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
     console.log(err);
     return next(myError(401, err.message));
@@ -108,7 +108,7 @@ const localSignup = async (req, res, next) => {
     // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encryptPw(userPw)
     await User.create({ providerId, userEmail, userPw: encryptPw(userPw), nickName, provider, exp, role })
       .then(() => {
-        return res.send({ msg: '회원 가입을 축하드립니다.' });
+        return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
       })
       .catch((err) => {
         if (err) return next(new Error("User 생성 db 에러"));

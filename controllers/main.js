@@ -62,6 +62,7 @@ const trackerHistoryGet = async (req, res, next) => {
         }
       },
     });
+    
     res.status(200).send({ result: true, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {

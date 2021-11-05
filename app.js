@@ -15,7 +15,8 @@ const { errorHandler, error404, asyncErrorHandeler } = require('./middlewares/er
 //crons imports
 const userCron = require("./crons/user");
 
-const port = env.EXPRESS_PORT;
+//서버리슨 분리로 주석처리
+// const port = env.EXPRESS_PORT;
 const app = express()
 
 
@@ -79,9 +80,10 @@ app.use('/api', indexRouter);
 app.use(error404);
 app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
-});
+//서버리슨 분리로 주석처리
+// app.listen(port, () => {
+//   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
+// });
 
 userCron.destroyUser();
 
