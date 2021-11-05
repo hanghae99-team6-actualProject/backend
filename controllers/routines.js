@@ -1,54 +1,24 @@
 const { Routine, Action, User, RoutineFin, ActionFin } = require("../models");
 const actionfin = require("../models/actionfin");
 const myError = require('./utils/httpErrors');
-const { findLastRoutineFinId, thisCycle, countNullAction } = require('./utils/routine');
-
-
-//--Action 생성,  함수--
-async function actionCreate(routineId, userId, routineFinId, actions) {
-  console.log(actions);
-  for await (const [index, value] of actions.entries()) {
-    console.log(index, value);
-    const { actionName, actionCnt, actionType } = value;
-    await Action.create({
-      routineId,
-      userId,
-      actionName,
-      actionCnt,
-      actionType,
-      actionNum: index
-    })
-      .then(async (result) => {
-        console.log((result.actionCnt + 1) + '번째 AnctionFin 생성');
-        await ActionFin.create({
-          actionId: result.id,
-          routineFinId
-        })
-          .then(() => console.log('ActionFin 생성완료'))
-          .catch((err) => { if (err) next(new Error('ActionFin 생성 db 에러')) });
-      })
-  }
-  console.log('action 생성 완료')
-}
-
-//--Action 삭제 함수--
-async function actionDelete(routineId) {
-  await Action.destroy({
-    where: { routineId }
-  })
-  console.log('action 및 연관 actionfin 삭제 완료')
-  // 액션이 삭제되면서 ActionFin에 있는 데이터도 같이 삭제됨
-}
+const {
+  findLastRoutineFinId,
+  thisCycle,
+  countNullAction,
+  createActionFn,
+  deleteActionFn,
+  createRoutineFn
+} = require('./utils/routineFn');
 
 //--Action 수정 함수--
 //해당 루틴 아이디 기준 다 지우고 만든다. 왜?
 //루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
 //이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
 async function actionModify(routineId, userId, routineFinId, actions) {
-  await actionDelete(routineId)
-    .catch((err) => { if (err) next(new Error('actionDelete db 에러')) })
-  await actionCreate(routineId, userId, routineFinId, actions)
-    .catch((err) => { if (err) next(new Error('actionCreate db 에러')) })
+  await deleteActionFn(routineId)
+    .catch((err) => { if (err) next(new Error('deleteAction db 에러')) })
+  await createActionFn(routineId, userId, routineFinId, actions)
+    .catch((err) => { if (err) next(new Error('createAction db 에러')) })
 
   console.log('action 수정 완료')
 }
@@ -97,44 +67,22 @@ const routineCreate = async (req, res, next) => {
 
   //유저 DB체크
   try {
-    const userExsist = await User.findAll({
-      where: { id: authId },
-    });
-
-    if (userExsist.length == 0) {
-      throw new Error('루틴 생성 대상 유저가 없습니다.');
-    }
-
     //루틴 DB체크
     const routines = await Routine.findAll({
       where: { userId: authId, routineName },
     });
-
-    if (routines.length == 0) { // 중복된 것이 없다면 루틴 및 루틴핀 데이터를 생성
-      const routines = await Routine.create({
-        userId: authId,
-        routineName,
-        isMain,
-      }).catch((err) => { next(new Error('Routine 생성 중 db 에러')) })
-
-      const routineFin = await RoutineFin.create({
-        routineId: routines.id,
-        cycle: 1
-      }).catch((err) => { next(new Error('RoutineFin 생성 중 db 에러')) }) //이것이 실패하면 116번째 줄부터 .then으로 해보자
-
-      const { id: routineId } = routines;
-      const { id: routineFinId } = routineFin;
-      await actionCreate(routineId, authId, routineFinId, actions)
-        .then(() => {
-          res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
-        })
-        .catch((err) => { if (err) next(new Error('actionCreate db 에러')) })
-    } else {
-      throw new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.');
+    // 중복된 것이 없다면 루틴 및 루틴핀 데이터를 생성
+    if (routines.length > 0) {
+      return next(new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.'));
     }
+    await createRoutineFn(authId, routineName, actions, isMain)
+      .then(() => {
+        res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
+      })
+      .catch((err) => { if (err) next(new Error('actionCreate db 에러')) })
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
