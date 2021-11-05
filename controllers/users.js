@@ -1,6 +1,7 @@
 require('dotenv').config();
-const { User, Character, Moim, MoimUser, Comment, Routine, Action } = require('../models');
+const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../models');
 const myError = require('./utils/httpErrors')
+const Sequelize = require('sequelize');
 
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {
@@ -106,6 +107,7 @@ const setMainRoutine = async (req, res, next) => {
     return next(myError(400, "메인 루틴 설정 update 에러 발생"));
   }
 };
+
 const myMoim = async (req, res, next) => {
   try {
     console.log('myMoin 라우터 진입');
@@ -119,20 +121,44 @@ const myMoim = async (req, res, next) => {
 
     const allMyMoim = await MoimUser.findAll({
       where: { userId: userId, host: hostType },
-      include: [
+      // attributes: { include:[[Sequelize.fn('COUNT', Sequelize.col('User.id')), 'User_count'] ] },
+      include:[
         {
           model: User,
           attributes: ['nickName'],
         },
         {
           model: Moim,
-          include: [{
+          include: [
+            {
             model: MoimUser,
-          }]
+            // separate: true,
+            },
+            {
+              model: Comment,
+              attributes: ['id', 'contents'],
+              include: [
+                {
+                  model: User,
+                  attributes: ['nickName'],
+                }
+              ]
+            },
+            {
+              model: Like,
+              attributes: ['id'],
+              include: [
+                {
+                  model: User,
+                  attributes: ['nickName'],
+                }
+              ]
+            }
+          ]
         },
       ]
     }).catch((err) => {
-      if (err) next(new Error('나의 모임 리스트 조회 db 에러'));
+      if (err) next(err);
     })
 
     if (hostType === 1) {
