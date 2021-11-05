@@ -2,6 +2,7 @@ const { actionExpGrowth, routineExpGrowth, expLimitPerDay } = require('../consta
 const { User, Routine, Action, Character, ExpDayLog, ActionFin, RoutineFin } = require('../models');
 const Sequelize = require('sequelize');
 const myError = require('./utils/httpErrors');
+const { thisCycle, findLastRoutineFinId, countNullAction } = require('./utils/routine');
 
 const Op = Sequelize.Op;
 
@@ -175,9 +176,9 @@ const upExpAllAction = async (userId, routineId, res) => {
 };
 
 //액션 완료시 액션에 finDate 업데이트
-const setActionFinDate = async (actionId, finDate) => {
+const setActionFinDate = async (actionId, routineFinId, finDate) => {
   // await Action.update({ finDate }, { where: { id: actionId } })
-  await ActionFin.update({ date: finDate }, { where: { actionId } });
+  await ActionFin.update({ date: finDate }, { where: { actionId, routineFinId } });
   console.log('ActionFin의 date 업데이트 완료');
 };
 
@@ -188,33 +189,6 @@ const setRoutineFinDate = async (routineId, finDate) => {
   console.log('RoutineFin의 date 업데이트 완료');
 };
 
-const resetRoutineAction = async (req, res, next) => {
-  try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-    const userId = res.locals.user.id;
-    const { routineId } = res.body;
-
-    console.log('리셋 true, 리셋 실행');
-    // 리셋1. 바꿔줘야할 대상을 찾는다
-    const target = await Action.findAll({
-      where: {
-        routineId,
-        userId,
-      },
-      include: [
-        {
-          model: ActionFin,
-          attributes: ['date'],
-        },
-      ],
-    }).catch((err) => {
-      if (err) return next(new Error('리셋 대상 찾기 db 에러'));
-    });
-  }
-  catch (err) {
-    return next(err);
-  }
-}
 
 const doneAction = async (req, res, next) => {
   try {
@@ -222,79 +196,33 @@ const doneAction = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
     const { actionId, routineId } = req.body;
-
-    console.log('userId', userId);
-    console.log('actionId', actionId);
-
-    let finDate = new Date();
-
-    if (isReset == 1) {
-
-      // console.log("타겟 액션들의 정보", target);
-      // console.log("타겟 액션의 액션Id값", target[0].id);
-
-      console.log('target의 fin data null로 변환 시작');
-      for (let i = 0; i < target.length; i++) {
-        await ActionFin.update(
-          { date: null },
-          { where: { actionId: target[i].id } }
-        )
-          .then((result) => {
-            console.log(
-              '액션id' + target[i].id + '의 액션 fin 데이터 업데이트 완료'
-            );
-          })
-          .catch((err) => {
-            if (err) return next(new Error('db 에러'));
-          });
+    const cycle = await thisCycle(routineId);
+    const lastRoutineFinId = await findLastRoutineFinId(routineId, cycle);
+    const finDate = new Date();
+    // 2. 유저정보와 액션이 정말 일치하는 데이터인지 확인
+    const thisActionFin = await ActionFin.findOne({
+      where: {
+        routineFinId: lastRoutineFinId,
+        actionId
       }
-      return res.send({
-        result: 'true5',
-        msg: 'ActionFin data 리셋에 성공했습니다.',
-      });
-    } else if (isReset == 0) {
-
-      // 2. 유저정보와 액션이 정말 일치하는 데이터인지 확인
-      const action = await Action.findOne({
-        where: { id: actionId },
-        include: [
-          {
-            model: ActionFin,
-          },
-        ],
-      }).catch((err) => {
-        if (err) return next(new Error('db 에러'));
-      });
-
-      // isReset === false 일때, 무조건 해당 액션은 findate가 null이어야 한다.
-      if (action.ActionFins[0].date !== null && action.ActionFins[0].date) {
-        return next(new Error('이미 완료된 액션인데 왜 들어왔을까요?'));
-      }
+    })
+    //현재 actionFin이 이미 완료되었는지 검증
+    if (thisActionFin.date !== null && thisActionFin.date) {
+      return next(new Error('이미 완료된 액션인데 왜 들어왔을까요?'));
     }
 
     //3. 액션에 맞는 ActionFin의 실 데이터 생성
     console.log('setActionFinDate 진입');
-    await setActionFinDate(actionId, finDate).catch((err) => {
-      if (err) next(new Error('setActionFinDate db 에러'));
-    });
+    await setActionFinDate(actionId, lastRoutineFinId, finDate)
+      .catch((err) => {
+        if (err) next(new Error('setActionFinDate db 에러'));
+      });
 
-    //4. ActionFin에 data값이 생성되지 않은 ActionId을 추출해야함
-    const target = await Routine.findAll({
-      where: { id: routineId },
-      include: [
-        {
-          model: Action,
-          include: [
-            {
-              model: ActionFin,
-            },
-          ],
-        },
-      ],
-    }).catch((err) => {
-      if (err) return next(new Error('db 에러'));
-    });
-
+    //4. date가 null인 액션들의 count확인
+    const count = await countNullAction(lastRoutineFinId)
+      .catch((err) => {
+        if (err) next(new Error('date null인 ActionFin count db 에러'));
+      });
     // console.log('완료되지 않은 액션의 개수', count);
     // console.log('타겟루틴', target);
     // console.log('타겟루틴속 액션', target[0].Actions);
@@ -302,14 +230,7 @@ const doneAction = async (req, res, next) => {
     // console.log('타겟루틴의 액션의 액션핀의 데이터값', target[0].Actions[0].ActionFins[0]);
     // console.log('타겟루틴의 액션의 액션핀의 데이터값', target[0].Actions[0].ActionFins[0].date);
 
-    let count = 0;
-    for (let i = 0; i < target[0].Actions.length; i++) {
-      if (target[0].Actions[i].ActionFins[0].date == null) {
-        count = count + 1;
-      }
-      console.log(count);
-    }
-    console.log('밖의 카운트', count);
+    console.log('date: null인 카운트', count);
 
     //Action들 속 ActionFin의 Date가 null인 것의 개수가 0보다 크다 === 루틴에 완료되지 않은 액션이 있다.
     if (count > 0) {

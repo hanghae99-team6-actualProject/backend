@@ -10,11 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.RoutineFin.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
-      
+      models.RoutineFin.hasMany(models.ActionFin, { foreignKey: 'routineFinId', sourceKey: 'id' });
     }
   };
   RoutineFin.init({
     routineId: DataTypes.INTEGER,
+    cycle: DataTypes.INTEGER,
     date: DataTypes.DATE
   }, {
     sequelize,

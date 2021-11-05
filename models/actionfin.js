@@ -10,10 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.ActionFin.belongsTo(models.Action, { foreignKey: 'actionId', targetKey: 'id' });
+      models.ActionFin.belongsTo(models.RoutineFin, { foreignKey: 'routineFinId', targetKey: 'id' });
     }
   };
   ActionFin.init({
     actionId: DataTypes.INTEGER,
+    routineFinId: DataTypes.INTEGER,
     date: DataTypes.DATE
   }, {
     sequelize,

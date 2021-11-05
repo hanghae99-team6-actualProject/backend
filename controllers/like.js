@@ -26,8 +26,11 @@ const createLike = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id: userId } = res.locals.user;
-    const { id: moimId } = req.params;
-
+    const { moimId } = req.params;
+    const userLike = await LIke.FindOne({ userId });
+    if (userLike) {
+      return next(new Error('이미 좋아요를 하셨습니다.'));
+    }
     await Like.create({ userId, moimId })
       .then(() => { return res.send({ result: true, msg: `${userId} 유저가 ${moimId} 게시글에 좋아요 생성` }) })
       .catch((err) => { if (err) return next(new Error('like 생성 db 에러')); })
@@ -42,7 +45,11 @@ const deleteLike = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const { id: userId } = res.locals.user;
-    const { id: moimId } = req.params;
+    const { moimId } = req.params;
+    const userLike = await LIke.FindOne({ userId });
+    if (!userLike) {
+      return next(new Error('이미 좋아요를 취소하셨습니다.'));
+    }
     await Like.destroy({ where: { userId, moimId } })
       .then(() => {
         return res.send({ result: true, msg: `${userId} 유저가 ${moimId} 게시글에 좋아요 취소` });
