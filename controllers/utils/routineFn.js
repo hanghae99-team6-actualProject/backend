@@ -5,7 +5,8 @@ const myError = require('./httpErrors');
 //현재 루틴의 가장 최신 RoutineFin의 id를 찾아줍니다!
 const findLastRoutineFinId = async (routineId, getCycle) => {
   const cycle = getCycle ? getCycle : await thisCycle(routineId)
-
+  console.log(routineId);
+  console.log(cycle);
   const lastRoutineFin = await RoutineFin.findOne({
     where: {
       routineId,
@@ -13,7 +14,7 @@ const findLastRoutineFinId = async (routineId, getCycle) => {
     }
   });
 
-  return lastRoutineFin.id;
+  return lastRoutineFin?.id;
 }
 
 //현재 루틴의 가장 최신 사이클을 찾아줍니다!
