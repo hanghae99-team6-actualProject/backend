@@ -1,4 +1,4 @@
-const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize} = require("../models");
+const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize } = require("../models");
 const myError = require("./utils/httpErrors");
 const Op = Sequelize.Op;
 
@@ -29,7 +29,12 @@ const ongoingGet = async (req, res, next) => {
       const userMainRoutine = await Routine.findAll({
         where: { userId, isMain: 1 },
         include: [{
-          model: Action
+          model: Action,
+          include: [{
+            model: ActionFin
+          }]
+        }, {
+          model: RoutineFin
         }]
       })
       return res.status(200).send({ result: true, mainRoutine: userMainRoutine, msg: "진행중 루틴 및 액션 조회완료" });
@@ -81,7 +86,7 @@ const trackerHistoryGet = async (req, res, next) => {
         }
       ]
     });
-    
+
     res.status(200).send({ result: true, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {

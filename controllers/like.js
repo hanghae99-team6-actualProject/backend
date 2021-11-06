@@ -1,18 +1,20 @@
 const env = require('../env')
-const { User, Like } = require('../models');
+const { User, Like, Moim } = require('../models');
 const myError = require('./utils/httpErrors')
 
-//나의 좋아요 목록
+//내가 좋아요한 모임 목록
 const getMyLikes = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const { id: userId } = res.locals.user;
-
     const myLikes = await Like.findAll({
       where: {
         userId
-      }
+      },
+      include: [{
+        model: Moim
+      }]
     });
     return res.send({ result: true, myLikes });
   } catch (err) {
@@ -27,8 +29,8 @@ const createLike = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id: userId } = res.locals.user;
     const { moimId } = req.params;
-    const userLike = await LIke.FindOne({ userId });
-    if (userLike) {
+    const userLike = await Like.findAll({ where: { userId, moimId } });
+    if (userLike.length > 0) {
       return next(new Error('이미 좋아요를 하셨습니다.'));
     }
     await Like.create({ userId, moimId })
@@ -46,7 +48,7 @@ const deleteLike = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const { id: userId } = res.locals.user;
     const { moimId } = req.params;
-    const userLike = await LIke.FindOne({ userId });
+    const userLike = await Like.findOne({ userId });
     if (!userLike) {
       return next(new Error('이미 좋아요를 취소하셨습니다.'));
     }

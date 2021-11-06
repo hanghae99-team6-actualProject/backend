@@ -12,7 +12,16 @@ module.exports = {
 
     await queryInterface.bulkInsert('routinefins', [
       {
-        routineId: routineRows[0].id,
+        routineId: 3,
+        cycle: 0,
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        routineId: 3,
+        cycle: 1,
+        date: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

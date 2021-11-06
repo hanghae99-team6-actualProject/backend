@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     routineName: DataTypes.STRING,
     isMain: DataTypes.INTEGER,
     preSet: DataTypes.INTEGER,
-    finDate: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Routine',

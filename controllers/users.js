@@ -2,6 +2,7 @@ require('dotenv').config();
 const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../models');
 const myError = require('./utils/httpErrors')
 const Sequelize = require('sequelize');
+const { createRoutineFn } = require('./utils/routineFn');
 
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {
@@ -69,14 +70,32 @@ const setMainRoutine = async (req, res, next) => {
   const { routineId } = req.body;
 
   try {
+    //바꾸려는 루틴 확인, 검증용
+    const thisRoutine = await Routine.findOne({
+      where: { id: routineId },
+      include: { model: Action }
+    });
+    console.log('thisRoutine', thisRoutine)
+
+    //이전 isMain이 1인 루틴 전부 0으로 수정
     await Routine.update({ isMain: 0 }, {
       where: { userId, isMain: 1 }
     })
+    //프리셋 루틴을 메인 루틴으로 만드려는 상황
+    // if (thisRoutine.preSet === 1) {
+    //   //프리셋 루틴을 메인 루틴으로 만들 때에만 예외적으로 루틴 이름의 중복을 허용합니다.
+    //   console.log('프리셋 루틴을 메인 루틴으로 만드려는 상황')
+    //   const { routineName, Actions } = thisRoutine;
+    //   await createRoutineFn(userId, routineName, 1, 0, Actions)
+    //     .catch((err) => { if (err) return next(err) })
+    //   return res.send({ result: true, msg: "프리셋 루틴을 메인 루틴으로 설정하였습니다" });
+    // }
+    // else {
     await Routine.update({ isMain: 1 }, {
       where: { id: routineId }
     });
-    res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
-
+    return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
+    // }
   } catch (err) {
     console.log(err);
     return next(myError(400, "메인 루틴 설정 update 에러 발생"));
@@ -96,18 +115,26 @@ const myMoim = async (req, res, next) => {
 
     const allMyMoim = await MoimUser.findAll({
       where: { userId: userId, host: hostType },
+      attributes: ['id', 'userId', 'moimId', 'host'],
       // attributes: { include:[[Sequelize.fn('COUNT', Sequelize.col('User.id')), 'User_count'] ] },
-      include:[
+      include: [
         {
           model: User,
           attributes: ['nickName'],
         },
         {
           model: Moim,
+          attributes: ['id', 'title', 'contents', 'createdAt'],
           include: [
             {
-            model: MoimUser,
-            // separate: true,
+              model: MoimUser,
+              attributes: ['id', 'userId', 'moimId', 'host'],
+              include: [
+                {
+                  model: User,
+                  attributes: ['nickName'],
+                }
+              ]
             },
             {
               model: Comment,
@@ -198,11 +225,15 @@ const myComments = async (req, res, next) => {
 
     const myCommentList = await Comment.findAll({
       where: { userId: userId },
-      atrribute: ['id', 'userId', 'moimId', 'contents'],
+      attributes: ['id', 'userId', 'moimId', 'contents', 'createdAt'],
       include: [
         {
+          model: Moim,
+          attributes: ['title', 'contents'],
+        },
+        {
           model: User,
-          atrribute: ['nickName'],
+          attributes: ['nickName'],
         }
       ]
     }).catch((err) => {

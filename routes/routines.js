@@ -19,6 +19,6 @@ router.delete('/:routineId', authMiddleware, routineDelete);
 router.post('/create/:routineId', authMiddleware, createNowRoutineActions);
 router.put('/reset/:routineId', authMiddleware, resetNowRoutineActions);
 // 프리셋 루틴 전체 목록 불러오기
-router.get('/preset', allPresetRoutine);
+router.get('/preset', authMiddleware, allPresetRoutine);
 
 module.exports = router;

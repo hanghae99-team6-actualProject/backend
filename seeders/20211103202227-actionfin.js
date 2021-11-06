@@ -9,8 +9,13 @@ module.exports = {
       `SELECT id from Actions;`
     );
 
+    const routineFins = await queryInterface.sequelize.query(
+      `SELECT id from RoutineFins;`
+    );
+
     const actionRows = actions[0];
     const actionRowsLength = actions[0].length
+    const routineFinRows = routineFins[0];
 
     await queryInterface.bulkInsert('actionfins', [
       {
@@ -55,6 +60,20 @@ module.exports = {
       },
       {
         actionId: actionRows[8].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        actionId: actionRows[9].id,
+        routineFinId: routineFinRows[0].id,
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        actionId: actionRows[10].id,
+        routineFinId: routineFinRows[0].id,
+        date: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       }
