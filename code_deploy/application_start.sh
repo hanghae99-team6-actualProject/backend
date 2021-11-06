@@ -4,4 +4,4 @@ sudo chmod -R 777 /home/ubuntu/app
 cd /home/ubuntu/app
 npm install
 
-pm2 start npm -- run start
+pm2 start npm -- start
