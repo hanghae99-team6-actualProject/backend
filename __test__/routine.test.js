@@ -75,7 +75,7 @@ describe('루틴 CRUD', () => {
 
   test('루틴수정 API', (done) => {
     request(app)
-      .put('/api/routines/3')
+      .put('/api/routines/4')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
@@ -96,7 +96,7 @@ describe('루틴 CRUD', () => {
 
   test('루틴삭제 API', (done) => {
     request(app)
-      .delete('/api/routines/3')
+      .delete('/api/routines/4')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done)
