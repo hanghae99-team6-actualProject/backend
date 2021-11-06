@@ -8,7 +8,7 @@ phases:
   # 설치 중에 CodeBuild가 실행하는 명령을 나타냅니다. 빌드 환경에서 패키지를 설치하는 경우에만 install 단계를 사용하는 것이 좋습니다. 예를 들어, Mocha나 RSpec 같은 코드 테스팅 프레임워크를 설치하기 위해 이 단계를 사용할 수 있습니다.
   install:
     runtime-versions:
-      nodejs: 14.x
+      nodejs: 12.x
     commands:
       - echo Insatlling NPM Packages and wget Enviorment File
   # 빌드 전에 CodeBuild가 실행하는 명령을 나타냅니다. 예를 들어, Amazon ECR에 로그인하기 위해 이 단계를 사용할 수 있습니다. 또는 npm 종속성을 설치할 수도 있습니다.
