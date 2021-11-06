@@ -4,9 +4,6 @@ files:
   - source: /
     destination: /home/ubuntu/app
 hooks:
-  AfterInstall:
-    - location: code_deploy/after_install.sh
-      timeout: 300
   ApplicationStart:
     - location: code_deploy/application_start.sh
       timeout: 300
