@@ -9,6 +9,7 @@ hooks:
       timeout: 300
   BeforeInstall:
     - location: code_deploy/before_install.sh
+      timeout: 300
   ApplicationStart:
     - location: code_deploy/application_start.sh
       timeout: 300
