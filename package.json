@@ -1,24 +1,56 @@
 {
-  "name": "sample_name",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "dev": "nodemon server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
+    "seedon": "npx sequelize-cli db:seed:all",
+    "seeddown": "npx sequelize-cli db:seed:undo:all"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1019.0",
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
+    "http-errors": "^1.8.0",
+    "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.3",
+    "multer-s3": "^2.10.0",
     "mysql2": "^2.3.2",
+    "node-cron": "^3.0.0",
+    "passport": "^0.5.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-kakao": "^1.0.1",
+    "passport-naver": "^1.0.6",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0"
   },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanghae99-team6-actualProject/backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hanghae99-team6-actualProject/backend/issues"
+  },
+  "homepage": "https://github.com/hanghae99-cloneProject-neverSeries/backend#readme",
   "devDependencies": {
-    "jest": "^27.3.1"
+    "artillery": "^2.0.0-4",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
+    "supertest": "^6.1.6"
   }
 }
