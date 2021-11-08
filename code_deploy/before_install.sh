@@ -1,12 +1,9 @@
-#download node and npm
-#curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-#sudo apt-get install -y nodejs
-
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install -y nodejs
 #create our working directory if it doesnt exist
 DIR="/home/ubuntu/app"
-if [ -d "$DIR" ]; then
-  echo "${DIR} exists"
-else
+
+if [ ! -d ${DIR} ]; then
   echo "Creating ${DIR} directory"
   mkdir ${DIR}
 fi

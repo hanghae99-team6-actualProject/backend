@@ -19,6 +19,7 @@ router.use('/moim/like', likeRouter)
 router.use('/comments', commentRouter)
 
 router.get("/", async (req, res, next) => {
+  console.log('테스트용');
   if (req.user) {
     res.send(`
     <h3>Login Success</h3>
