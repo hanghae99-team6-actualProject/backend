@@ -135,3 +135,90 @@ describe('모임 참여/탈퇴', () => {
       .expect(200, done);
   })
 })
+
+
+describe('모임 댓글 CRUD', () => {
+  let auth = {};
+  beforeEach(loginUser2(auth));
+
+  test('댓글 생성 API', (done) => {
+    request(app)
+      .post('/api/comments/2') //모임 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .send({
+        contents: '1번 댓글',
+      })
+      .expect(200, done);
+  })
+
+  test('댓글 전체 조회 API', (done) => {
+    request(app)
+      .get('/api/comments')
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+
+  test('특정 모임 댓글 조회 API', (done) => {
+    request(app)
+      .get('/api/comments/2') //모임 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+
+  test('댓글 수정 API', (done) => {
+    request(app)
+      .put('/api/comments/1') //댓글 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .send({
+        contents: '1번 댓글 수정',
+      })
+      .expect(200, done);
+  })
+
+  test('댓글 삭제 API', (done) => {
+    request(app)
+      .delete('/api/comments/1') //댓글 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+})
+
+
+// router.get('/', authMiddleware, getMyLikes);
+// router.post('/:moimId', authMiddleware, createLike);
+// router.delete('/:moimId', authMiddleware, deleteLike);
+
+
+describe('모임 좋아요 CRD', () => {
+  let auth = {};
+  beforeEach(loginUser2(auth));
+
+  test('좋아요 생성 API', (done) => {
+    request(app)
+      .post('/api/moim/like/2') //모임 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+
+  test('내가 좋아요한 모임 조회 API', (done) => {
+    request(app)
+      .get('/api/moim/like')
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+
+  test('좋아요 삭제 API', (done) => {
+    request(app)
+      .delete('/api/moim/like/2') //모임 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done);
+  })
+})
