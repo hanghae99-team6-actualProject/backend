@@ -77,7 +77,7 @@ const getAllMoim = async (req, res, next) => {
     // console.log(amountLikes);
 
     console.log('전체 모임정보 불러오기 성공');
-    return res.send({
+    return res.status(200).send({
       result: true,
       allMoims,
       msg: '전체 모임정보 불러오기에 성공했습니다.',
@@ -398,7 +398,7 @@ const exitMoim = async (req, res, next) => {
       return next(new Error('모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'));
     }
 
-    return res.send({
+    return res.status(200).send({
       result: true,
       msg: '참가 취소 성공',
       exitUserNickName
