@@ -5,4 +5,3 @@ cd /home/ubuntu/app
 sudo pm2_home=/home/ubuntu/.pm2 pm2 kill
 sudo pm2_home=/home/ubuntu/.pm2 pm2 start npm -- start
 sudo pm2_home=/home/ubuntu/.pm2 pm2 save
-sudo pm2_home=/home/ubuntu/.pm2 pm2 update
