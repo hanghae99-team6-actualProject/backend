@@ -6,7 +6,7 @@ const today = new Date();
 const year = today.getFullYear(); // 년도
 const month = today.getMonth(); // 월
 const date = today.getDate();  // 날짜
-const fromToday = new Date(year, month, 1, 0, 0, 0);
+const fromThisMonth = new Date(year, month, 1, 0, 0, 0);
 const fromYearAgo = new Date(year - 1, month, date, 0, 0, 0);
 
 //메인 루틴, 액션, 유저 조회
@@ -55,8 +55,13 @@ const trackerHistoryGet = async (req, res, next) => {
   const authId = id
 
   try {
+    const finUser = await User.findOne({
+      attributes: ['id','createdAt'],
+      where: { id: authId },
+    });
+
     const finRoutines = await Routine.findAll({
-      attributes: ['userId'],
+      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -64,7 +69,7 @@ const trackerHistoryGet = async (req, res, next) => {
           where: {
             date: {
               [Op.not]: null,
-              [Op.gte]: fromToday
+              [Op.gte]: fromThisMonth
             }
           }
         }
@@ -72,7 +77,7 @@ const trackerHistoryGet = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      attributes: ['userId'],
+      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -80,14 +85,14 @@ const trackerHistoryGet = async (req, res, next) => {
           where: {
             date: {
               [Op.not]: null,
-              [Op.gte]: fromToday
+              [Op.gte]: fromThisMonth
             }
           }
         }
       ]
     });
 
-    res.status(200).send({ result: true, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
+    res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);
@@ -103,9 +108,13 @@ const graphHistoryGet = async (req, res, next) => {
   console.log(authId);
 
   try {
+    const finUser = await User.findOne({
+      attributes: ['id','createdAt'],
+      where: { id: authId },
+    });
 
     const finRoutines = await Routine.findAll({
-      attributes: ['userId'],
+      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -121,7 +130,7 @@ const graphHistoryGet = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      attributes: ['userId'],
+      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -135,7 +144,7 @@ const graphHistoryGet = async (req, res, next) => {
         }
       ]
     });
-    res.status(200).send({ result: true, finRoutines, finActions, msg: "그래프 히스토리 루틴 및 액션 조회완료" });
+    res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "그래프 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     console.log(err);

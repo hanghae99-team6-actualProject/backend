@@ -2,6 +2,11 @@ config:
   target: "http://localhost:8080/api"
   payload:
     -
+      path: "./payload/token.csv"
+      fields:
+        - "accessToken"
+        - "refreshToken"
+    -
       path: "./payload/routine.csv"
       fields:
         - "routineCase"
