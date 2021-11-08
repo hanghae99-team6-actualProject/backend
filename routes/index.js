@@ -10,13 +10,13 @@ const likeRouter = require('./like');
 const moimRouter = require('./moims');
 const commentRouter = require('./comments');
 
-router.use('/main', mainRouter)
+router.use('/main', mainRouter);
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
-router.use('/routines', routineRouter)
-router.use('/moims', moimRouter)
-router.use('/moim/like', likeRouter)
-router.use('/comments', commentRouter)
+router.use('/routines', routineRouter);
+router.use('/moims', moimRouter);
+router.use('/moim/like', likeRouter);
+router.use('/comments', commentRouter);
 
 router.get("/", async (req, res, next) => {
   if (req.user) {
