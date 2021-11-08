@@ -20,46 +20,55 @@ module.exports = {
     await queryInterface.bulkInsert('actionfins', [
       {
         actionId: actionRows[0].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[1].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[2].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[3].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[4].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[5].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[6].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[7].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         actionId: actionRows[8].id,
+        routineFinId: routineFinRows[0].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
