@@ -19,7 +19,7 @@ module.exports = (app) => {
   })
   console.log(env.NAVER_CLIENT_ID);
 
-  passport.use(new ({
+  passport.use(new NaverStrategy({
     clientID: env.NAVER_CLIENT_ID,
     clientSecret: env.NAVER_CLIENT_SECRET,
     callbackURL: `${env.DOMAIN}/api/auth/naver/callback`
