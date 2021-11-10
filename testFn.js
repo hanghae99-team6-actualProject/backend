@@ -10,8 +10,8 @@
 // console.log(newcrtInfo);
 
 
-crtPreSetList = ['1', '2', '3'];
-collcetionMaxCrt = ['3'];
+crtPreSetList = ['asd', '라이언', '어피치'];
+collcetionMaxCrt = ['라이언'];
 
 // collcetionMaxCrt.sort();
 // crtPreSetList.sort();
@@ -28,3 +28,8 @@ collcetionMaxCrt = ['3'];
 
 let result = crtPreSetList.filter(x => !collcetionMaxCrt.includes(x));
 console.log(result);
+
+//인덱스뽑아오기
+const asdqwe = '어피치';
+const targetIndex = crtPreSetList.indexOf(asdqwe, 1);
+console.log(targetIndex);
