@@ -18,13 +18,13 @@ const googleCallbackMiddleware = passport.authenticate('google',
   { failureRedirect: '/' });
 
 const naverCallbackResult = (rea, res) => {
-  res.redirect('/')
+  res.redirect('http://localhost:3000/login/')
 }
 const kakaoCallbackResult = (rea, res) => {
-  res.redirect('/')
+  res.redirect('http://localhost:3000/login/')
 }
 const googleCallbackResult = (rea, res) => {
-  res.redirect('/')
+  res.redirect('http://localhost:3000/login/')
 }
 
 

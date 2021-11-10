@@ -84,4 +84,22 @@ const newCharacter = async (req, res, next) => {
   }
 }
 
-module.exports = { newCharacter }
+const getCharacter = (req, res, next) => {
+  try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+    const userId = res.locals.user.id;
+
+    console.log(userId, "유저아이디!");
+    // 현재 유저의 캐릭터 (만랩이 아님)
+    const userCharacter = await Character.findAll({
+      where: { userId, expMax: 0 },
+      raw: true,
+    });
+    return res.send({ result: true, character: userCharacter, msg: "유저의 현재 캐릭터 확인" })
+  }
+  catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = { newCharacter, getCharacter }

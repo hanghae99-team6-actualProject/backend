@@ -10,7 +10,7 @@ env = {
   DB_END_POINT: process.env.DB_END_POINT,
   EXPRESS_PORT: process.env.EXPRESS_PORT,
 
-  DOMAIN: nodeenv ? process.env.DEV_DB_USER : process.env.PRODUCT_DOMAIN,
+  DOMAIN: nodeenv ? process.env.LOCALHOST_END_POIN : process.env.PRODUCT_END_POINT,
 
   AWS_S3_KEY: process.env.AWS_S3_KEY,
   AWS_S3_PRIVATE_KEY: process.env.AWS_S3_PRIVATE_KEY,

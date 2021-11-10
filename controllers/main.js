@@ -37,7 +37,10 @@ const ongoingGet = async (req, res, next) => {
           model: RoutineFin
         }]
       })
-      return res.status(200).send({ result: true, mainRoutine: userMainRoutine, msg: "진행중 루틴 및 액션 조회완료" });
+      const userCharacter = await Character.findOne({
+        where: { userId, expMax: 0 }
+      });
+      return res.status(200).send({ result: true, mainRoutine: userMainRoutine, character: userCharacter, msg: "진행중 루틴 및 액션 조회완료" });
     }
     else {
       return next(new Error('2개 이상의 루틴이 mainRoutine인 상황, 서버 에러'))
@@ -56,7 +59,7 @@ const trackerHistoryGet = async (req, res, next) => {
 
   try {
     const finUser = await User.findOne({
-      attributes: ['id','createdAt'],
+      attributes: ['id', 'createdAt'],
       where: { id: authId },
     });
 
@@ -109,7 +112,7 @@ const graphHistoryGet = async (req, res, next) => {
 
   try {
     const finUser = await User.findOne({
-      attributes: ['id','createdAt'],
+      attributes: ['id', 'createdAt'],
       where: { id: authId },
     });
 

@@ -19,7 +19,7 @@ module.exports = (app) => {
   })
   console.log(env.NAVER_CLIENT_ID);
 
-  passport.use(new NaverStrategy({
+  passport.use(new ({
     clientID: env.NAVER_CLIENT_ID,
     clientSecret: env.NAVER_CLIENT_SECRET,
     callbackURL: `${env.DOMAIN}/api/auth/naver/callback`
@@ -47,7 +47,7 @@ module.exports = (app) => {
 
   passport.use(new KakaoStrategy({
     clientID: env.KAKAO_CLIENT_ID,
-    callbackURL: `${env.DOMAIN}/auth/kakao/callback`
+    callbackURL: `${env.DOMAIN}/api/auth/kakao/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       const providerId = profile?.id;

@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware')
 const { bye, collection, updateUser, setMainRoutine, myMoim, enterMoimList, myComments } = require('../controllers/users')
-const { newCharacter } = require('../controllers/characters');
+const { newCharacter, getCharacter } = require('../controllers/characters');
 const { doneAction } = require('../controllers/actions');
 
 const router = express.Router();
@@ -12,6 +12,7 @@ router.put('/info', authMiddleware, updateUser);
 router.put('/mainRoutine', authMiddleware, setMainRoutine);
 // 새로운 캐릭터 뽑기
 router.post('/character', authMiddleware, newCharacter);
+router.get('/character', authMiddleware, getCharacter);
 // 액션(운동) 완료
 router.put('/action', authMiddleware, doneAction);
 router.post('/moims', authMiddleware, myMoim);
