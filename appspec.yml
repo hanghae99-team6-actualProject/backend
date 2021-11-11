@@ -3,7 +3,6 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/mingijuk
-    overwrite: yes
 hooks:
   BeforeInstall:
     - location: code_deploy/before_install.sh
