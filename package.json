@@ -8,14 +8,14 @@
     "dev": "nodemon server.js",
     "start": "NODE_ENV=production node server.js",
     "seedon": "npx sequelize-cli db:seed:all",
-    "seeddown": "npx sequelize-cli db:seed:undo:all"
+    "seeddown": "npx sequelize-cli db:seed:undo:all",
+    "supertest": "NODE_ENV=test node server.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1019.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
@@ -47,7 +47,7 @@
   },
   "homepage": "https://github.com/hanghae99-cloneProject-neverSeries/backend#readme",
   "devDependencies": {
-    "artillery": "^2.0.0-4",
+    "artillery": "^1.7.9",
     "jest": "^27.3.1",
     "nodemon": "^2.0.14",
     "supertest": "^6.1.6"

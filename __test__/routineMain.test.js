@@ -1,28 +1,15 @@
 const request = require('supertest');
 const {sequelize} = require('../models');
 const app = require('../app');
-
-describe('POST /signup', () => {
-  test('회원가입 API', (done,res) => {
-    request(app)
-      .post('/api/auth/signup')
-      .send({
-        "userEmail" : "user2@naver.com",
-        "userPw" : "Password!002",
-        "userPwChk" : "Password!002",
-        "nickName" : "testNick2"
-      })
-      .expect(201, done);
-  })
-})
+const baseData = require("./baseData");
 
 function loginUser(auth) {
   return function(done) {
       request(app)
           .post('/api/auth/local')
           .send({
-            userEmail: 'user2@naver.com',
-            userPw: 'Password!002',
+            userEmail: baseData.userEmail2,
+            userPw: baseData.userPw2,
           })
           .expect(200)
           .end(onResponse);
@@ -46,7 +33,15 @@ describe('루틴 CRUD', () => {
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
         routineName : "테스트 루틴 no1",
-        actions : [{"actionName":"데드리프트","actionType" : "맨몸운동", "actionCnt":"10"}, {"actionName":"사이드레터럴레이즈", "actionType" : "스트레칭", "actionCnt":"20"}],
+        actions : [{
+          "actionName":"데드리프트",
+          "actionType" : "맨몸운동",
+          "actionCnt":"10"
+        },{
+          "actionName":"사이드레터럴레이즈",
+          "actionType" : "스트레칭",
+          "actionCnt":"20"
+        }],
         isMain : false
       })
       .expect(200, done);
@@ -60,14 +55,38 @@ describe('루틴 CRUD', () => {
       .expect(200, done)
   })
 
+  test('Graph History 조회 API', (done) => {
+    request(app)
+      .get('/api/main/graphHistory')
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done)
+  })
+
+  test('Habit Tracker 조회 API', (done) => {
+    request(app)
+      .get('/api/main/trackerHistory')
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .expect(200, done)
+  })
+
   test('루틴수정 API', (done) => {
     request(app)
-      .put('/api/routines/1')
+      .put('/api/routines/4')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
         routineName : "테스트 루틴 수정 no1",
-        actions : [{"actionName":"데드리프트 수정","actionType" : "스트레칭", "actionCnt":"11"}, {"actionName":"사이드레터럴레이즈 수정", "actionType" : "맨몸운동", "actionCnt":"21"}],
+        actions : [{
+          "actionName":"데드리프트 수정",
+          "actionType" : "스트레칭",
+          "actionCnt":"11"
+        }, {
+          "actionName":"사이드레터럴레이즈 수정",
+          "actionType" : "맨몸운동",
+          "actionCnt":"21"
+        }],
         isMain : false
       })
       .expect(200, done)
@@ -75,7 +94,7 @@ describe('루틴 CRUD', () => {
 
   test('루틴삭제 API', (done) => {
     request(app)
-      .delete('/api/routines/1')
+      .delete('/api/routines/4')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done)

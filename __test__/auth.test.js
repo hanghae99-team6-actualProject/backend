@@ -1,24 +1,25 @@
 const request = require('supertest');
 const {sequelize} = require('../models');
 const app = require('../app');
+const baseData = require("./baseData")
 
-beforeAll(async () => {
-  await sequelize.sync();
-});
+// beforeAll(async () => {
+//   await sequelize.sync({ force : true });
+// });
 
-afterAll(async() => {
-  await sequelize.sync({ force : true });
-})
+// afterAll(async() => {
+//   await sequelize.sync({ force : true });
+// })
 
 describe('POST /signup', () => {
   test('회원가입 API', (done,res) => {
     request(app)
       .post('/api/auth/signup')
       .send({
-        "userEmail" : "user1@naver.com",
-        "userPw" : "Password!001",
-        "userPwChk" : "Password!001",
-        "nickName" : "testNick1"
+        "userEmail" : baseData.newUserEmail,
+        "userPw" : baseData.newUserPw,
+        "userPwChk" : baseData.newUserPwChk,
+        "nickName" : baseData.newNickName
       })
       .expect(201, done);
   })
@@ -29,8 +30,8 @@ function loginUser(auth) {
       request(app)
           .post('/api/auth/local')
           .send({
-            userEmail: 'user1@naver.com',
-            userPw: 'Password!001',
+            "userEmail" : baseData.newUserEmail,
+            "userPw" : baseData.newUserPw,
           })
           .expect(200)
           .end(onResponse);
