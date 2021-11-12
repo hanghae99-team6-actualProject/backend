@@ -120,7 +120,8 @@ const authMiddleware = async (req, res, next) => {
       return res.status(400).send({ result: false, msg: err.message });
     }
   }
-  catch (error) {
+  catch (err) {
+    next(err);
   }
 };
 
