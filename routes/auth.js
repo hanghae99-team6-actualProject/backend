@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/authMiddleware')
-const { logout, localSignup, me, localLogin } = require('../controllers/auth')
+const { logout, signup, me, localLogin } = require('../controllers/auth')
 const {
   naverLogin,
   kakaoLogin,
@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.get('/me', authMiddleware, me);
 router.get('/logout', authMiddleware, logout);
-router.post('/signup', localSignup)
+router.post('/signup', signup)
 
 //아래부터 로그인
 router.post('/local', localLogin);

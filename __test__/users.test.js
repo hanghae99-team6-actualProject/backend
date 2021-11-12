@@ -28,7 +28,7 @@ describe('캐릭터 생성', () => {
 
   test('캐릭터 생성 API', (done) => {
     request(app)
-      .post('/api/users/character')
+      .post('/api/character')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);

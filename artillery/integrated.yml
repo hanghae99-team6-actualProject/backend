@@ -1,16 +1,16 @@
 config:
   target: "http://localhost:8080/api"
-  defaults:
-    headers:
-        accessToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MzI2MSwiZXhwIjoxNjM2NzI5NjYxLCJpc3MiOiJtaW5naWp1ayJ9.4j4b7adzDOE5e7LnJwGyzQ0u3Rgc70pvCQHRmJIDs4k"
-        refreshToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MzI2MSwiZXhwIjoxNjM3ODUyODYxLCJpc3MiOiJtaW5naWp1ayJ9.a0V0YL1fnNWu-w3_EGAboSiw7RkTLmcMbPc8a1r5QhA"
   phases:
   - duration: 60
     arrivalRate: 5
     name: Warm up
 
 scenarios:
-  - name: "Search and buy"
+  - name: "register"
     flow:
-      - get:
-          url: "/routines"
+      - post:
+          url: "/auth/signup"
+          json:
+            userEmail : "{{userId}}"
+            userPw : "{{userPw}}"
+            nickName : "{{userNick}}"

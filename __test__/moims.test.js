@@ -3,14 +3,6 @@ const {sequelize} = require('../models');
 const app = require('../app');
 const baseData = require("./baseData")
 
-// router.get('/', getAllMoim); //미들웨어 제거
-// router.post('/', authMiddleware, createMoim);
-// router.get('/:moimId', authMiddleware, detailMoim);
-// router.put('/:moimId', authMiddleware, updateMoim);
-// router.delete('/:moimId', authMiddleware, deleteMoim);
-// router.post('/:moimId', authMiddleware, enterMoim);
-// router.post('/:moimId/exit', authMiddleware, exitMoim);
-
 function loginUser(auth) {
   return function(done) {
       request(app)
@@ -143,7 +135,7 @@ describe('모임 댓글 CRUD', () => {
 
   test('댓글 생성 API', (done) => {
     request(app)
-      .post('/api/comments/2') //모임 id
+      .post('/api/moims/comment/2') //모임 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
@@ -154,7 +146,7 @@ describe('모임 댓글 CRUD', () => {
 
   test('댓글 전체 조회 API', (done) => {
     request(app)
-      .get('/api/comments')
+      .get('/api/moims/comment')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
@@ -162,7 +154,7 @@ describe('모임 댓글 CRUD', () => {
 
   test('특정 모임 댓글 조회 API', (done) => {
     request(app)
-      .get('/api/comments/2') //모임 id
+      .get('/api/moims/comment/2') //모임 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
@@ -170,7 +162,7 @@ describe('모임 댓글 CRUD', () => {
 
   test('댓글 수정 API', (done) => {
     request(app)
-      .put('/api/comments/1') //댓글 id
+      .put('/api/moims/comment/1') //댓글 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
@@ -181,18 +173,12 @@ describe('모임 댓글 CRUD', () => {
 
   test('댓글 삭제 API', (done) => {
     request(app)
-      .delete('/api/comments/1') //댓글 id
+      .delete('/api/moims/comment/1') //댓글 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
   })
 })
-
-
-// router.get('/', authMiddleware, getMyLikes);
-// router.post('/:moimId', authMiddleware, createLike);
-// router.delete('/:moimId', authMiddleware, deleteLike);
-
 
 describe('모임 좋아요 CRD', () => {
   let auth = {};
@@ -200,7 +186,7 @@ describe('모임 좋아요 CRD', () => {
 
   test('좋아요 생성 API', (done) => {
     request(app)
-      .post('/api/moim/like/2') //모임 id
+      .post('/api/moims/like/2') //모임 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
@@ -208,7 +194,7 @@ describe('모임 좋아요 CRD', () => {
 
   test('내가 좋아요한 모임 조회 API', (done) => {
     request(app)
-      .get('/api/moim/like')
+      .get('/api/moims/like')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
@@ -216,7 +202,7 @@ describe('모임 좋아요 CRD', () => {
 
   test('좋아요 삭제 API', (done) => {
     request(app)
-      .delete('/api/moim/like/2') //모임 id
+      .delete('/api/moims/like/2') //모임 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);

@@ -19,6 +19,7 @@ scenarios:
     flow:
       - get:
           url: "/main/trackerHistory"
+          
   - name: "Get GraphHistory"
     flow:
       - get:

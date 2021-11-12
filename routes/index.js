@@ -6,17 +6,17 @@ const authRouter = require("./auth");
 const usersRouter = require("./users");
 const routineRouter = require('./routines');
 const mainRouter = require('./main');
-const likeRouter = require('./like');
 const moimRouter = require('./moims');
-const commentRouter = require('./comments');
+const characterRouter = require('./characters');
+const actionRouter = require('./actions');
 
 router.use('/main', mainRouter);
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
 router.use('/routines', routineRouter);
 router.use('/moims', moimRouter);
-router.use('/moim/like', likeRouter);
-router.use('/comments', commentRouter);
+router.use('/characters', characterRouter);
+router.use('/actions', actionRouter);
 
 router.get("/", async (req, res, next) => {
   if (req.user) {

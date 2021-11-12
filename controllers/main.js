@@ -1,17 +1,14 @@
 const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize } = require("../models");
 const myError = require("./utils/httpErrors");
+const date = require("./utils/date");
 const Op = Sequelize.Op;
 
-const today = new Date();
-const year = today.getFullYear(); // 년도
-const month = today.getMonth(); // 월
-const date = today.getDate();  // 날짜
-const fromThisMonth = new Date(year, month, 1, 0, 0, 0);
-const fromYearAgo = new Date(year - 1, month, date, 0, 0, 0);
+const fromThisMonth = new Date(date.year, date.month, 1, 0, 0, 0);
+const fromYearAgo = new Date(date.year - 1, date.month, date.day, 0, 0, 0);
 
 //메인 루틴, 액션, 유저 조회
-const ongoingGet = async (req, res, next) => {
-  console.log("routineGet router 진입");
+const getOngoing = async (req, res, next) => {
+  console.log("getRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id: userId } = res.locals.user;
 
@@ -52,7 +49,7 @@ const ongoingGet = async (req, res, next) => {
   }
 };
 
-const trackerHistoryGet = async (req, res, next) => {
+const getTrackerHistory = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
@@ -103,12 +100,10 @@ const trackerHistoryGet = async (req, res, next) => {
   }
 };
 
-const graphHistoryGet = async (req, res, next) => {
+const getGraphHistory = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
-  console.log('아이디체크체크');
-  console.log(authId);
 
   try {
     const finUser = await User.findOne({
@@ -117,7 +112,6 @@ const graphHistoryGet = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -133,7 +127,6 @@ const graphHistoryGet = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -156,7 +149,7 @@ const graphHistoryGet = async (req, res, next) => {
 };
 
 module.exports = {
-  ongoingGet,
-  trackerHistoryGet,
-  graphHistoryGet
+  getOngoing,
+  getTrackerHistory,
+  getGraphHistory
 };

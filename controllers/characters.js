@@ -2,48 +2,38 @@ const { Character } = require('../models');
 const crtConst = require('../constants/characters')
 const myError = require('./utils/httpErrors')
 
-const newCharacter = async (req, res, next) => {
+const createCharacter = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
-    console.log(userId, "유저아이디!");
     // 현재 유저가 만랩 캐릭터가 있는 것인지 확인
     const crtMax = await Character.findAll({
       where: { userId, expMax: 1 },
       attributes: ['characterName'],
       raw: true,
     });
-    console.log(crtMax, "여긴 crtMax!!");
-    console.log(crtMax.length === 0);
-    // console.log(chkCrt[0].characterName, "여긴 chkCrt의 이름 변수타입!!!");
-    // console.log(chkCrt[0].dataValues, "여긴 chkCrt의 이름 객체타입!!!");
 
     // 현재 유저가 키우고 있는 캐릭터가 있는지 확인
     const nowCrt = await Character.findAll({
       where: { userId: userId, expMax: 0 },
     });
-    console.log(nowCrt, "여긴 nowCrt!!");
-    console.log(nowCrt.length === 0); // find에서 아무것도 발견되지 않으면 언디파인드로 송출
-    // console.log(isCrt[0].characterName, "여긴 isCrt의 이름!!!!")
-
-    // const crtConst.preSetList = ['무지', '카카오', '네이버']; // 캐릭터 풀 같은 고정 상수는 const로 하기 + 다른 파일로 만들어두기 도 좋습니다.
 
     const isCrtMax = crtMax.length !== 0;
     const isNowCrt = nowCrt.length !== 0;
 
+    // 만랩X, 현재 성장중인 캐릭터가 있는 경우
     if (isNowCrt) {
-      // ㄴ 만랩X, 현재 성장중인 캐릭터가 있는 경우
       throw new Error('현재 성장중인 캐릭터가 있습니다.');
     }
     else {
       let newCrtName;
       let newCrtIndex;
 
+      // 아무런 캐릭터가 없는 경우
+      // 프리셋 캐릭터 풀에서 난수로 지급
       if (!isCrtMax) {
         console.log("여긴 캐릭터가 하나도 없는 경우!");
-        // ㄴ 아무런 캐릭터가 없는 경우
-        // 프리셋 캐릭터 풀에서 난수로 지급
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
 
         // 캐릭터 뽑기 중 인덱스 번호 주기
@@ -64,7 +54,7 @@ const newCharacter = async (req, res, next) => {
         );
 
         //안해본 캐릭터의 풀(notCollection)을 랜덤화하여 한개의 값 추출
-        newCrtName = notCollection[Math.floor(Math.random() * notCollection.length)];// -> 이부분은 기획적으로 더 많이 얘기를 해보아야 할 것 같습니다
+        newCrtName = notCollection[Math.floor(Math.random() * notCollection.length)];
 
         // 캐릭터 뽑기 중 인덱스 번호 주기
         if(newCrtName === '무지'){
@@ -118,4 +108,4 @@ const getCharacter = async (req, res, next) => {
   }
 }
 
-module.exports = { newCharacter, getCharacter }
+module.exports = { createCharacter, getCharacter }

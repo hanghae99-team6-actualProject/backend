@@ -1,8 +1,6 @@
 const express = require('express');
-const authMiddleware = require('../middlewares/authMiddleware')
-const { bye, collection, updateUser, setMainRoutine, getMainRoutine, myMoim, enterMoimList, myComments } = require('../controllers/users')
-const { newCharacter } = require('../controllers/characters');
-const { doneAction } = require('../controllers/actions');
+const authMiddleware = require('../middlewares/authMiddleware');
+const { bye, collection, updateUser, setMainRoutine, getMainRoutine, myMoim, myComments } = require('../controllers/users');
 
 const router = express.Router();
 
@@ -11,10 +9,8 @@ router.get('/collection', authMiddleware, collection);
 router.put('/info', authMiddleware, updateUser);
 router.get('/mainRoutine', authMiddleware, getMainRoutine);
 router.put('/mainRoutine', authMiddleware, setMainRoutine);
-// 새로운 캐릭터 뽑기
-router.post('/character', authMiddleware, newCharacter);
-// 액션(운동) 완료
-router.put('/action', authMiddleware, doneAction);
+
+//mypage
 router.post('/moims', authMiddleware, myMoim);
 router.get('/comments', authMiddleware, myComments);
 

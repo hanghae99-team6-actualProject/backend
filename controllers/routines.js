@@ -1,5 +1,4 @@
-const { Routine, Action, User, RoutineFin, ActionFin } = require("../models");
-const actionfin = require("../models/actionfin");
+const { Routine, Action, RoutineFin, ActionFin } = require("../models");
 const myError = require('./utils/httpErrors');
 const {
   findLastRoutineFinId,
@@ -10,11 +9,8 @@ const {
   createRoutineFn
 } = require('./utils/routineFn');
 
-//--Action 수정 함수--
-//해당 루틴 아이디 기준 다 지우고 만든다. 왜?
-//루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
-//이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로 지우고 만드는게 직관적임
-async function actionModify(routineId, userId, routineFinId, actions) {
+//Action 수정 함수
+async function modifyAction(routineId, userId, routineFinId, actions) {
   await deleteActionFn(routineId)
     .catch((err) => { if (err) next(new Error('deleteAction db 에러')) })
   await createActionFn(routineId, userId, routineFinId, actions)
@@ -24,8 +20,8 @@ async function actionModify(routineId, userId, routineFinId, actions) {
 }
 
 //루틴 조회 API
-const routineGet = async (req, res, next) => {
-  console.log("routineGet router 진입");
+const getRoutine = async (req, res, next) => {
+  console.log("getRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
   const { id } = res.locals.user;
@@ -57,8 +53,8 @@ const routineGet = async (req, res, next) => {
 };
 
 //루틴 생성 API
-const routineCreate = async (req, res, next) => {
-  console.log("routineCreate router 진입");
+const createRoutine = async (req, res, next) => {
+  console.log("createRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
   const { id } = res.locals.user;
@@ -71,7 +67,7 @@ const routineCreate = async (req, res, next) => {
     const routines = await Routine.findAll({
       where: { userId: authId, routineName },
     });
-    // 중복된 것이 없다면 루틴 및 루틴핀 데이터를 생성
+    // 중복된 것이 없다면 루틴 및 루틴fin 데이터를 생성
     if (routines.length > 0) {
       return next(new Error('이미 동일한 이름으로 등록된 루틴이 있습니다.'));
     }
@@ -87,8 +83,8 @@ const routineCreate = async (req, res, next) => {
 };
 
 //루틴 수정 API
-const routineModify = async (req, res, next) => {
-  console.log("routineModify router 진입");
+const modifyRoutine = async (req, res, next) => {
+  console.log("modifyRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
   const { id } = res.locals.user;
@@ -115,7 +111,7 @@ const routineModify = async (req, res, next) => {
         }
       );
       const routineFinId = await findLastRoutineFinId(routineId);
-      await actionModify(routineId, authId, routineFinId, actions);
+      await modifyAction(routineId, authId, routineFinId, actions);
       return res.status(200).send({ result: true, msg: '루틴이 수정되었습니다.' });
     } else {
       throw new Error('수정 대상 루틴이 없습니다.');
@@ -127,12 +123,9 @@ const routineModify = async (req, res, next) => {
 };
 
 //루틴 삭제 API
-const routineDelete = async (req, res, next) => {
-  console.log("routineDelete router 진입");
+const deleteRoutine = async (req, res, next) => {
+  console.log("deleteRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
-  // const { id } = res.locals.user;
-  // const authId = id
 
   try {
     const { routineId } = req.params;
@@ -147,7 +140,7 @@ const routineDelete = async (req, res, next) => {
       .then(() => {
         res.status(200).send({ result: true, routineId, msg: '루틴이 삭제되었습니다.' });
       })
-      .catch((err) => { if (err) next(new Error('routineDelete 중 db 에러')) })
+      .catch((err) => { if (err) next(new Error('deleteRoutine 중 db 에러')) })
 
   } catch (err) {
     console.log(err);
@@ -159,16 +152,12 @@ const routineDelete = async (req, res, next) => {
 const createNowRoutineActions = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-    const userId = res.locals.user.id;
     const { routineId } = req.params;
     const lastCycle = await thisCycle(routineId);
     const routineFinId = await findLastRoutineFinId(routineId, lastCycle);
     let newRoutineFinId = 0;
     const getNewRoutineFinId = (input) => newRoutineFinId = input;
 
-    console.log('lastCycle', lastCycle)
-    console.log('routineFinId', routineFinId)
-    //4. date가 null인 액션들의 count확인
     const count = await countNullAction(routineFinId)
       .catch((err) => {
         if (err) next(new Error('date null인 ActionFin count db 에러'));
@@ -192,7 +181,7 @@ const createNowRoutineActions = async (req, res, next) => {
     console.log("newRoutineFinId", newRoutineFinId)
 
     for await (const [index, value] of lastActionFins.entries()) {
-      const { id, routineFinId, actionId, date } = value;
+      const { actionId } = value;
 
       await ActionFin.create({
         actionId: actionId,
@@ -213,7 +202,6 @@ const createNowRoutineActions = async (req, res, next) => {
 const resetNowRoutineActions = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-    const userId = res.locals.user.id;
     const { routineId } = req.params;
     const routineFinId = await findLastRoutineFinId(routineId);
 
@@ -250,7 +238,6 @@ const allPresetRoutine = async (req, res, next) => {
         },
       ],
     });
-    console.log(routines);
     console.log("전체 프리셋 루틴 불러오기 완료!");
 
     return res.status(200).send({
@@ -267,10 +254,10 @@ const allPresetRoutine = async (req, res, next) => {
 
 
 module.exports = {
-  routineGet,
-  routineCreate,
-  routineModify,
-  routineDelete,
+  getRoutine,
+  createRoutine,
+  modifyRoutine,
+  deleteRoutine,
   createNowRoutineActions,
   resetNowRoutineActions,
   allPresetRoutine

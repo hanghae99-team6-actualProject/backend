@@ -5,13 +5,13 @@ const authMiddleware = require('../middlewares/authMiddleware')
 //controller import
 const mainCtrl = require('../controllers/main');
 
-ongoingGet = mainCtrl.ongoingGet;
-trackerHistoryGet = mainCtrl.trackerHistoryGet;
-graphHistoryGet = mainCtrl.graphHistoryGet
+getOngoing = mainCtrl.getOngoing;
+getTrackerHistory = mainCtrl.getTrackerHistory;
+getGraphHistory = mainCtrl.getGraphHistory
 
 //API
-router.get('/ongoing', authMiddleware, ongoingGet);
-router.get('/trackerHistory', authMiddleware, trackerHistoryGet);
-router.get('/graphHistory', authMiddleware, graphHistoryGet);
+router.get('/ongoing', authMiddleware, getOngoing);
+router.get('/trackerHistory', authMiddleware, getTrackerHistory);
+router.get('/graphHistory', authMiddleware, getGraphHistory);
 
 module.exports = router;
