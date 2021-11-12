@@ -48,7 +48,7 @@ const getRoutine = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, "조회 catch 에러 발생"));
+    return next(err);
   }
 };
 
@@ -118,7 +118,7 @@ const modifyRoutine = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -144,7 +144,7 @@ const deleteRoutine = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(500, err.message));
+    return next(err);
   }
 };
 
@@ -245,10 +245,9 @@ const allPresetRoutine = async (req, res, next) => {
       routines,
       msg: '프리셋 루틴 목록 불러오기 완료',
     });
-  } catch (error) {
-    console.log(error);
-    return next(myError(400, '알 수 없는 오류 발생',
-    ));
+  } catch (err) {
+    console.log(err);
+    return next(err);
   }
 };
 

@@ -89,7 +89,7 @@ const upDayRoutineExp = async (userId, routineId) => {
     } else {
       console.log('액션 + 루틴 엘스로 진입');
       await calcRoutineExp(userId, routineId);
-      await console.log('루틴exp계산 결과 : ' + routineExp);
+      console.log('루틴exp계산 결과 : ' + routineExp);
 
       await ExpDayLog.update(
         {
@@ -139,15 +139,15 @@ const upExpFinOneAction = async (userId, res) => {
       console.log(err);
       if (err) throw new Error('upExpFinOneAction 함수 실행 에러 발생');
     });
-    return await true;
+    return true;
   } else {
     console.log('캐릭 루틴 경험치 함수 엘스 진입@@@@');
-    return await false;
+    return false;
   }
 };
 
 // 루틴완료 o 액션완료 일때 경험치 획득 + actionExpGrowth + routineExpGrowth
-const upExpAllAction = async (userId, routineId, res) => {
+const upExpAllAction = async (userId, routineId) => {
   //당일 한계 경험치 체크함수 - routineId 같이 던지고 해당 함수 내에서 처리
   if (await upDayRoutineExp(userId, routineId)) {
     console.log('캐릭 루틴 경험치 함수 진입');
@@ -160,10 +160,10 @@ const upExpAllAction = async (userId, routineId, res) => {
       console.log(err);
       if (err) throw new Error('upExpAllAction 함수 실행 에러 발생');
     });
-    return await true;
+    return true;
   } else {
     console.log('캐릭 루틴 경험치 함수 엘스 진입@@@@');
-    return await false;
+    return false;
   }
 };
 
@@ -213,7 +213,7 @@ const doneAction = async (req, res, next) => {
       .catch((err) => {
         if (err) next(new Error('date null인 ActionFin count db 에러'));
       });
-    
+
     console.log('date: null인 카운트', count);
 
     //Action들 속 ActionFin의 Date가 null인 것의 개수가 0보다 크다 === 루틴에 완료되지 않은 액션이 있다.
@@ -256,7 +256,7 @@ const doneAction = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 

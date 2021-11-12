@@ -81,7 +81,7 @@ const localLogin = async (req, res, next) => {
     return res.status(200).send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
     console.log(err);
-    return next(myError(401, err.message));
+    return next(err);
   }
 }
 
@@ -127,7 +127,7 @@ const signup = async (req, res, next) => {
     //회원가입시 프리셋 루틴을 모든 유저에게 생성해주기!
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 

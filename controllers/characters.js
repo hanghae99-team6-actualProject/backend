@@ -37,7 +37,7 @@ const createCharacter = async (req, res, next) => {
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
 
         // 캐릭터 뽑기 중 인덱스 번호 주기
-        if(newCrtName === '무지'){
+        if (newCrtName === '무지') {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 2;
         } else {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
@@ -57,7 +57,7 @@ const createCharacter = async (req, res, next) => {
         newCrtName = notCollection[Math.floor(Math.random() * notCollection.length)];
 
         // 캐릭터 뽑기 중 인덱스 번호 주기
-        if(newCrtName === '무지'){
+        if (newCrtName === '무지') {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 2;
         } else {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
@@ -83,10 +83,10 @@ const createCharacter = async (req, res, next) => {
         });
 
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     //'캐릭터 만들기에 실패했습니다. 관리자에게 문의하세요.',
-    return next(myError(400, error.message));
+    return next(err);
   }
 }
 

@@ -45,7 +45,7 @@ const getOngoing = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(new Error("진행중 정보 조회 에러 발생"));
+    return next(err);
   }
 };
 
@@ -96,7 +96,7 @@ const getTrackerHistory = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, "해빗트래커 히스토리 정보 조회 에러 발생"));
+    return next(err);
   }
 };
 
@@ -144,7 +144,7 @@ const getGraphHistory = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, "그래프 히스토리 정보 조회 에러 발생"));
+    return next(err);
   }
 };
 
