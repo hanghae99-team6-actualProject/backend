@@ -95,7 +95,7 @@ const createMoim = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { title, contents, imgSrc } = req.body;
+    const { title, contents, imgSrc, location } = req.body;
     console.log(userId);
     console.log(title);
     console.log(contents);
@@ -122,6 +122,7 @@ const createMoim = async (req, res, next) => {
       title,
       contents,
       imgSrc,
+      location
     })
       .then(async (result) => {
         console.log(result);
@@ -205,7 +206,7 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents, imgSrc } = req.body;
+    const { title, contents, imgSrc, location } = req.body;
     console.log(moimId);
 
     //1. find?
@@ -241,6 +242,7 @@ const updateMoim = async (req, res, next) => {
           title: title,
           contents: contents,
           imgSrc: imgSrc,
+          location
         },
         {
           where: { id: moimId },
@@ -370,7 +372,7 @@ const exitMoim = async (req, res, next) => {
     console.log(moimId);
 
     const isEnterMoim = await MoimUser.findOne({
-      where : { userId: userId, moimId },
+      where: { userId: userId, moimId },
       include: [
         {
           model: User,
@@ -381,7 +383,7 @@ const exitMoim = async (req, res, next) => {
 
     // console.log('참여 여부 확인', isEnterMoim);
     // console.log('참여 여부 확인', isEnterMoim.User.nickName);
-    
+
     const exitUserNickName = isEnterMoim.User.nickName;
 
     if (isEnterMoim.length === null) {
@@ -389,12 +391,12 @@ const exitMoim = async (req, res, next) => {
     }
 
     const exitMoim = await MoimUser.destroy({
-      where: {userId: userId, moimId}
+      where: { userId: userId, moimId }
     }).catch((err) => { if (err) next(new Error('모임 참가 취소 중 db 에러')) });
 
     console.log(exitMoim); //삭제된 것이 있다면 1
 
-    if( exitMoim !== 1) {
+    if (exitMoim !== 1) {
       return next(new Error('모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'));
     }
 

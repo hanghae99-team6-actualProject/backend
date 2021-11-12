@@ -38,12 +38,20 @@ const newCharacter = async (req, res, next) => {
     }
     else {
       let newCrtName;
+      let newCrtIndex;
 
       if (!isCrtMax) {
         console.log("여긴 캐릭터가 하나도 없는 경우!");
         // ㄴ 아무런 캐릭터가 없는 경우
         // 프리셋 캐릭터 풀에서 난수로 지급
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
+
+        // 캐릭터 뽑기 중 인덱스 번호 주기
+        if(newCrtName === '무지'){
+          newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 2;
+        } else {
+          newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
+        }
       }
       else {
         // 만랩달성 + 현재 키우는 캐릭터 없음
@@ -57,6 +65,13 @@ const newCharacter = async (req, res, next) => {
 
         //안해본 캐릭터의 풀(notCollection)을 랜덤화하여 한개의 값 추출
         newCrtName = notCollection[Math.floor(Math.random() * notCollection.length)];// -> 이부분은 기획적으로 더 많이 얘기를 해보아야 할 것 같습니다
+
+        // 캐릭터 뽑기 중 인덱스 번호 주기
+        if(newCrtName === '무지'){
+          newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 2;
+        } else {
+          newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
+        }
       }
       console.log(newCrtName, '랜덤화 한 새로운 캐릭터의 이름값!');
       await Character.create({
@@ -70,6 +85,7 @@ const newCharacter = async (req, res, next) => {
           return res.status(200).send({
             result: true,
             characterName: r.characterName,
+            characterIndex: newCrtIndex,
             msg: '신규 캐릭터가 생성되었습니다.',
           });
         }).catch((err) => {
@@ -84,4 +100,22 @@ const newCharacter = async (req, res, next) => {
   }
 }
 
-module.exports = { newCharacter }
+const getCharacter = async (req, res, next) => {
+  try {
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+    const userId = res.locals.user.id;
+
+    console.log(userId, "유저아이디!");
+    // 현재 유저의 캐릭터 (만랩이 아님)
+    const userCharacter = await Character.findAll({
+      where: { userId, expMax: 0 },
+      raw: true,
+    });
+    return res.send({ result: true, character: userCharacter, msg: "유저의 현재 캐릭터 확인" })
+  }
+  catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = { newCharacter, getCharacter }

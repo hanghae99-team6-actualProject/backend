@@ -22,7 +22,7 @@ router.get("/", async (req, res, next) => {
   if (req.user) {
     res.send(`
     <h3>Login Success</h3>
-        <a href="${env.END_POINT}/api/auth/logout">Logout </a>
+        <a href="${env.DOMAIN}/api/auth/logout">Logout </a>
         <p>
             ${JSON.stringify(req.user, null, 2)}
         </p>
@@ -30,9 +30,9 @@ router.get("/", async (req, res, next) => {
   } else {
     res.send(`
       <h3>Node Passport Social Login</h3>  
-      <a href="${env.END_POINT}/api/auth/google">Login with Google+</a>
-      <a href="${env.END_POINT}/api/auth/naver">Login with Naver</a>
-      <a href="${env.END_POINT}/api/auth/kakao">Login with Kakao</a>
+      <a href="${env.DOMAIN}/api/auth/google">Login with Google+</a>
+      <a href="${env.DOMAIN}/api/auth/naver">Login with Naver</a>
+      <a href="${env.DOMAIN}/api/auth/kakao">Login with Kakao</a>
     `)
   }
 });
