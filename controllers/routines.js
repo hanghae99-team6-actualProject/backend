@@ -13,7 +13,7 @@ const {
 //--Action 수정 함수--
 //해당 루틴 아이디 기준 다 지우고 만든다. 왜?
 //루틴 내 액션들이 로우별로 아이디 값 고유하게 갖고 있는 상태임
-//이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로. 지우고 만드는게 효율적일듯
+//이 때 루틴 아이디만으로 아이디 특정해서 바꾼다고 한들, 액션갯수가 계속 달라질 수 있으므로 지우고 만드는게 직관적임
 async function actionModify(routineId, userId, routineFinId, actions) {
   await deleteActionFn(routineId)
     .catch((err) => { if (err) next(new Error('deleteAction db 에러')) })
@@ -25,8 +25,9 @@ async function actionModify(routineId, userId, routineFinId, actions) {
 
 //루틴 조회 API
 const routineGet = async (req, res, next) => {
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   console.log("routineGet router 진입");
+  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+
   const { id } = res.locals.user;
   const authId = id
 
@@ -65,7 +66,6 @@ const routineCreate = async (req, res, next) => {
   const isMain = 0
   const { routineName, actions } = req.body;
 
-  //유저 DB체크
   try {
     //루틴 DB체크
     const routines = await Routine.findAll({

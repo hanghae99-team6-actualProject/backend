@@ -7,8 +7,8 @@ config:
       - "userPw"
       - "userNick"
   phases:
-    - duration: 5
-      arrivalRate: 2
+    - duration: 10
+      arrivalRate: 1
       name: makeUserMax
 
 scenarios:
