@@ -7,11 +7,15 @@ const { thisCycle, findLastRoutineFinId, countNullAction } = require('./utils/ro
 const Op = Sequelize.Op;
 
 //upDayTotalExp 함수 내 활용될 변수들
-const today = new Date();
-const year = today.getFullYear(); // 년도
-const month = today.getMonth(); // 월
-const date = today.getDate(); // 날짜
-const fromToday = new Date(year, month, date, 0, 0, 0);
+function timeSet() {
+  const today = new Date();
+  const year = today.getFullYear(); // 년도
+  const month = today.getMonth(); // 월
+  const date = today.getDate(); // 날짜
+  const fromToday = new Date(year, month, date, 0, 0, 0);
+
+  return { fromToday };
+}
 
 //루틴완료 경험치 계산 시 활용
 let routineExp = 0;
@@ -19,6 +23,9 @@ let routineExp = 0;
 //액션 루틴 완료 시 오늘 날짜 + 계정 기준으로 레코드 생성
 const chkDayLog = async (userId, res) => {
   try {
+    const { fromToday } = timeSet();
+    console.log('123124141512354324351512', fromToday);
+
     const dayLogExist = ExpDayLog.findOrCreate({
       where: {
         userId,
@@ -40,6 +47,8 @@ const chkDayLog = async (userId, res) => {
 
 //단일 액션 완료 시 당일 한계 경험치 업데이트
 const upDayActionExp = async (userId) => {
+  const { fromToday } = timeSet();
+
   await chkDayLog(userId);
   const totalExpChk = await ExpDayLog.findAll({
     where: {
@@ -72,6 +81,8 @@ const upDayActionExp = async (userId) => {
 
 //액션 + 루틴완료 시 당일 한계 경험치 업데이트
 const upDayRoutineExp = async (userId, routineId) => {
+  const { fromToday } = timeSet();
+
   await chkDayLog(userId);
   const totalExpChk = await ExpDayLog.findAll({
     where: {

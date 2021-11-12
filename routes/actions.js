@@ -5,6 +5,6 @@ const { doneAction } = require('../controllers/actions');
 const router = express.Router();
 
 // 액션(운동) 완료
-router.put('/action', authMiddleware, doneAction);
+router.put('/', authMiddleware, doneAction);
 
 module.exports = router;
