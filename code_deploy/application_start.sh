@@ -5,9 +5,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 . ~/.nvm/nvm.sh
 nvm install node
 
-#give permission for everything in the ohsool directory
+# 밍기적 폴더 권한 추가
 sudo chmod -R 777 /home/ubuntu/mingijuk
-
 cd /home/ubuntu/mingijuk
 
 # npm과 node 설치
