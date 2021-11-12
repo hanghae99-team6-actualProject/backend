@@ -10,7 +10,7 @@ const getAllComments = async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: [ 'nickName' ],
+          attributes: ['nickName'],
         }
       ]
     }).catch((err) => {
@@ -25,8 +25,7 @@ const getAllComments = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -42,7 +41,7 @@ const getTargetMoimComments = async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: [ 'nickName' ],
+          attributes: ['nickName'],
         }
       ]
     }).catch((err) => {
@@ -66,7 +65,7 @@ const getTargetMoimComments = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -96,7 +95,7 @@ const createComment = async (req, res, next) => {
       });
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -139,7 +138,7 @@ const updateComment = async (req, res, next) => {
       });
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -168,19 +167,19 @@ const deleteComment = async (req, res, next) => {
     await Comment.destroy({
       where: { id: commentId },
     }).then(() => {
-        console.log('댓글 삭제완료');
-        return res.status(200).send({
-          result: true,
-          msg: '댓글 삭제에 성공했습니다.',
-        });
-      })
+      console.log('댓글 삭제완료');
+      return res.status(200).send({
+        result: true,
+        msg: '댓글 삭제에 성공했습니다.',
+      });
+    })
       .catch((err) => {
         if (err) next(new Error('댓글 삭제 중 db 에러'));
       });
-      
+
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 

@@ -87,7 +87,7 @@ const setMainRoutine = async (req, res, next) => {
     // }
   } catch (err) {
     console.log(err);
-    return next(myError(400, "메인 루틴 설정 update 에러 발생"));
+    return next(err);
   }
 };
 
@@ -187,7 +187,7 @@ const myMoim = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
@@ -232,7 +232,7 @@ const myComments = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 

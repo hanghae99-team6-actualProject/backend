@@ -16,7 +16,7 @@ const makeMoimUser = async (userId, moimId, userType, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(myError(400, '유저 생성 중 db 에러 발생'));
+    return next(err);
   }
 };
 
@@ -60,7 +60,7 @@ const getAllMoim = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    return next(myError(500, err.message));
+    return next(err);
   }
 };
 
@@ -105,7 +105,7 @@ const createMoim = async (req, res, next) => {
       });
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -159,7 +159,7 @@ const detailMoim = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
@@ -220,7 +220,7 @@ const updateMoim = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -266,7 +266,7 @@ const deleteMoim = async (req, res, next) => {
     }
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -299,7 +299,7 @@ const enterMoim = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 };
 
@@ -343,7 +343,7 @@ const exitMoim = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
