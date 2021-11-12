@@ -6,7 +6,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 nvm install node
 
 # EC2 서버 작업 폴더 확인
-DIR="/home/ubuntu/app"
+DIR="/home/ubuntu/mingijuk"
+
 if [ -d "$DIR" ]; then
   echo folder exists
 else 
