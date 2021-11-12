@@ -1,15 +1,9 @@
 config:
   target: "http://localhost:8080/api"
-  payload:
-    path: "payload/account.csv"
-    fields:
-      - "userId"
-      - "userPw"
-      - "userNick"
   phases:
-    - duration: 10
-      arrivalRate: 1
-      name: makeUserMax
+  - duration: 60
+    arrivalRate: 5
+    name: Warm up
 
 scenarios:
   - name: "register"

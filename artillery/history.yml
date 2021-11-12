@@ -1,0 +1,26 @@
+config:
+  target: "http://localhost:8080/api"  
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: Warm up
+    - duration: 20
+      arrivalRate: 15
+      name: Ramp up load
+    - duration: 50
+      arrivalRate: 15
+      name: Sustained load
+  defaults:
+    headers:
+        accessToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MDU4MiwiZXhwIjoxNjM2NzI2OTgyLCJpc3MiOiJtaW5naWp1ayJ9.loDVh_cPf3sGP4TRoHwUgraDpu5qvIIYKIZ7Nr1AIWY"
+        refreshToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MDU4MiwiZXhwIjoxNjM3ODUwMTgyLCJpc3MiOiJtaW5naWp1ayJ9.l2_5T9Y-VmUBXgJQGdUcbDHpaGILAsjrG9_vXZAFEPc"
+scenarios:
+  - name: "Get HabitTracker"
+    flow:
+      - get:
+          url: "/main/trackerHistory"
+          
+  - name: "Get GraphHistory"
+    flow:
+      - get:
+          url: "/main/graphHistory"

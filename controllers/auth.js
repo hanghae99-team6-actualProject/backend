@@ -86,7 +86,7 @@ const localLogin = async (req, res, next) => {
 }
 
 //로컬 회원가입 API
-const localSignup = async (req, res, next) => {
+const signup = async (req, res, next) => {
   try {
     const { userEmail, userPw, userPwChk, nickName } = await userValidation.validateAsync(req.body);
 
@@ -131,4 +131,4 @@ const localSignup = async (req, res, next) => {
   }
 };
 
-module.exports = { logout, localLogin, localSignup, me };
+module.exports = { logout, localLogin, signup, me };

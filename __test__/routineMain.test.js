@@ -1,7 +1,7 @@
 const request = require('supertest');
 const {sequelize} = require('../models');
 const app = require('../app');
-const baseData = require("./baseData")
+const baseData = require("./baseData");
 
 function loginUser(auth) {
   return function(done) {
@@ -17,8 +17,6 @@ function loginUser(auth) {
       function onResponse(err, res) {
           auth.accessToken = res.body.accessToken;
           auth.refreshToken = res.body.refreshToken;
-          console.log('@@@@@@@@@@')
-          console.log(auth)
           return done();
       }
   };

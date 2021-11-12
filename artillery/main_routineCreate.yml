@@ -1,23 +1,17 @@
 config:
   target: "http://localhost:8080/api"
   payload:
-    -
-      path: "./payload/token.csv"
-      fields:
-        - "accessToken"
-        - "refreshToken"
-    -
-      path: "./payload/routine.csv"
-      fields:
-        - "routineCase"
+    path: "./payload/routine.csv"
+    fields:
+      - "routineCase"
   phases:
     - duration: 10
       arrivalRate: 5
       name: Routine Create & Get Mainpage
   defaults:
     headers:
-        accessToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx0ZXh0NTVAbmF2ZXIuY29tIiwiaWF0IjoxNjM1OTUxOTY4LCJleHAiOjE2MzYwMzgzNjgsImlzcyI6Im1pbmdpanVrIn0.71NM0JzN3h73__r3pY3vPnT3Ewb7C4Gq9qwtaCt-UlQ"
-        refreshToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx0ZXh0NTVAbmF2ZXIuY29tIiwiaWF0IjoxNjM1OTUxOTY4LCJleHAiOjE2MzcxNjE1NjgsImlzcyI6Im1pbmdpanVrIn0.GvDfop2HWAQbKqrYuKoHiZup6hkeYQAKMI6-I0MGLq8"
+        accessToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MDU4MiwiZXhwIjoxNjM2NzI2OTgyLCJpc3MiOiJtaW5naWp1ayJ9.loDVh_cPf3sGP4TRoHwUgraDpu5qvIIYKIZ7Nr1AIWY"
+        refreshToken: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm92aWRlcklkIjoibG9jYWx1c2VyMTExQG5hdmVyLmNvbSIsImlhdCI6MTYzNjY0MDU4MiwiZXhwIjoxNjM3ODUwMTgyLCJpc3MiOiJtaW5naWp1ayJ9.l2_5T9Y-VmUBXgJQGdUcbDHpaGILAsjrG9_vXZAFEPc"
 scenarios:
   - name: "Get Mainpage Data"
     flow:

@@ -12,6 +12,29 @@ router.delete('/:moimId', authMiddleware, deleteMoim);
 router.post('/:moimId', authMiddleware, enterMoim);
 router.post('/:moimId/exit', authMiddleware, exitMoim);
 
+//likes moved
+//controller import
+const { createLike, getMyLikes, deleteLike } = require('../controllers/likes');
+
+//API
+router.get('/like/', authMiddleware, getMyLikes);
+router.post('/like/:moimId', authMiddleware, createLike);
+router.delete('/like/:moimId', authMiddleware, deleteLike);
+
+//comments moved
+//controller import
+const { getAllComments, getTargetMoimComments, createComment, updateComment, deleteComment } = require('../controllers/comments');
+
+//API
+router.get('/comment/', authMiddleware, getAllComments);
+router.get('/comment/:moimId', authMiddleware, getTargetMoimComments); //특정 모임에 대한 댓글 불러오기
+router.post('/comment/:moimId', authMiddleware, createComment);
+router.put('/comment/:commentId', authMiddleware, updateComment);
+router.delete('/comment/:commentId', authMiddleware, deleteComment);
+
+
+
+
 // 채팅방
 
 //방만들기 함수
@@ -181,9 +204,6 @@ router.delete('/:moimId/:chatRoomId', async (req, res, next) => {
     return next(myError(400, err.message));
   }
 });
-
-
-
 
 
 

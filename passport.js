@@ -1,4 +1,5 @@
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const NaverStrategy = require('passport-naver').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -8,16 +9,6 @@ const { User } = require('./models');
 
 module.exports = (app) => {
   app.use(passport.initialize());
-  app.use(passport.session());
-
-  passport.serializeUser((profile, done) => {
-    done(null, profile);
-  })
-
-  passport.deserializeUser((profile, done) => {
-    done(null, profile);
-  })
-  console.log(env.NAVER_CLIENT_ID);
 
   passport.use(new NaverStrategy({
     clientID: env.NAVER_CLIENT_ID,
@@ -37,8 +28,30 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+        console.log("유저가 없어 회원가입됩니다", user);
       }
-      done(null, profile)
+      else {
+        console.log("유저가 이미 있어 로그인합니다", user);
+      }
+
+      // refresh token 발급 (2주)
+      const refreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "14d",
+        issuer: 'mingijuk'
+      });
+
+      // access token 발급 (24시간)
+      const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "24h",
+        issuer: 'mingijuk'
+      });
+
+      await User.update({ refreshToken }, { where: { providerId: providerId.toString() } });
+
+      done(null, profile, {
+        refreshToken,
+        accessToken
+      });
     } catch (err) {
       console.log(err);
       return done(err);
@@ -50,6 +63,7 @@ module.exports = (app) => {
     callbackURL: `${env.DOMAIN}/api/auth/kakao/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
+      console.log('passport kakao 진입')
       const providerId = profile?.id;
       const userEmail = profile?._json?.kakao_account?.email;
       const nickName = profile.displayName;
@@ -62,8 +76,30 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+        console.log("유저가 없어 회원가입됩니다", user);
       }
-      done(null, profile)
+      else {
+        console.log("유저가 이미 있어 로그인합니다", user);
+      }
+
+      // refresh token 발급 (2주)
+      const refreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "14d",
+        issuer: 'mingijuk'
+      });
+
+      // access token 발급 (24시간)
+      const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "24h",
+        issuer: 'mingijuk'
+      });
+      console.log('providerId', providerId)
+
+      await User.update({ refreshToken }, { where: { providerId: providerId.toString() } });
+      done(null, profile, {
+        refreshToken,
+        accessToken
+      })
     } catch (err) {
       console.log(err);
       return done(err);
@@ -88,8 +124,27 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+        console.log("유저가 없어 회원가입됩니다", user);
       }
-      done(null, profile)
+      else {
+        console.log("유저가 이미 있어 로그인합니다", user);
+      }
+      // refresh token 발급 (2주)
+      const refreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "14d",
+        issuer: 'mingijuk'
+      });
+
+      // access token 발급 (24시간)
+      const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
+        expiresIn: "24h",
+        issuer: 'mingijuk'
+      });
+
+      done(null, profile, {
+        refreshToken,
+        accessToken
+      })
     } catch (err) {
       console.log(err);
       return done(err);

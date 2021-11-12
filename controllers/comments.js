@@ -1,4 +1,4 @@
-const { Moim, MoimUser, Comment, Like, User } = require('../models');
+const { Comment, User } = require('../models');
 const myError = require('./utils/httpErrors');
 
 const getAllComments = async (req, res, next) => {
@@ -49,7 +49,6 @@ const getTargetMoimComments = async (req, res, next) => {
       if (err) next(new Error('특정 모임 댓글 불러오기 중 db 에러'));
     });
 
-    console.log('타겟',targetMoimComments.length);
     if (targetMoimComments.length === 0) {
       console.log('특정 모임에 댓글이 없음');
       return res.status(200).send({
@@ -67,7 +66,6 @@ const getTargetMoimComments = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
     return next(myError(400, err.message));
   }
 };
@@ -87,8 +85,6 @@ const createComment = async (req, res, next) => {
       contents,
     })
       .then((result) => {
-        console.log(result);
-        console.log('댓글 작성 완료');
         return res.status(200).send({
           result: true,
           newCommentId: result.id,
@@ -100,7 +96,6 @@ const createComment = async (req, res, next) => {
       });
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
     return next(myError(400, err.message));
   }
 };
@@ -128,16 +123,12 @@ const updateComment = async (req, res, next) => {
     if (!isComment) {
       next(new Error('수정하고자 하는 댓글이 존재하지 않습니다.'));
     }
-    // else if (isComment.lengh < 1) {
-    //   next(new Error('수정하고자 하는 댓글이 존재하지 않습니다.'));
-    // }
 
     await Comment.update(
       { contents },
       { where: { id: commentId, userId: userId } }
     )
       .then(() => {
-        console.log('댓글 수정 완료');
         return res.status(200).send({
           result: true,
           msg: '댓글 수정에 성공했습니다.',
@@ -148,7 +139,6 @@ const updateComment = async (req, res, next) => {
       });
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
     return next(myError(400, err.message));
   }
 };
@@ -190,7 +180,6 @@ const deleteComment = async (req, res, next) => {
       
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
     return next(myError(400, err.message));
   }
 };
