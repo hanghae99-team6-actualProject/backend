@@ -35,7 +35,6 @@ const createCharacter = async (req, res, next) => {
       if (!isCrtMax) {
         console.log("여긴 캐릭터가 하나도 없는 경우!");
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
-
         // 캐릭터 뽑기 중 인덱스 번호 주기
         if (newCrtName === '무지') {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 2;
@@ -63,7 +62,10 @@ const createCharacter = async (req, res, next) => {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
         }
       }
+      
       console.log(newCrtName, '랜덤화 한 새로운 캐릭터의 이름값!');
+      console.log(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스값!');
+      
       await Character.create({
         userId: Number(userId),
         preSet: 1,

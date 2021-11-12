@@ -1,10 +1,17 @@
 const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize } = require("../models");
 const myError = require("./utils/httpErrors");
-const date = require("./utils/date");
 const Op = Sequelize.Op;
 
-const fromThisMonth = new Date(date.year, date.month, 1, 0, 0, 0);
-const fromYearAgo = new Date(date.year - 1, date.month, date.day, 0, 0, 0);
+function timeSet () {
+  const today = new Date();
+  const year = today.getFullYear(); // 년도
+  const month = today.getMonth(); // 월
+  const day = today.getDate();  // 날짜
+  const fromThisMonth = new Date(year, month, day, 1, 0, 0, 0);
+  const fromYearAgo = new Date(year - 1, month, day, 0, 0, 0);
+
+  return { fromThisMonth, fromYearAgo }
+}
 
 //메인 루틴, 액션, 유저 조회
 const getOngoing = async (req, res, next) => {
@@ -53,6 +60,8 @@ const getTrackerHistory = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
+
+  const { fromThisMonth } = timeSet();
 
   try {
     const finUser = await User.findOne({
@@ -104,6 +113,8 @@ const getGraphHistory = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
+
+  const { fromYearAgo } = timeSet();
 
   try {
     const finUser = await User.findOne({
