@@ -3,14 +3,6 @@ const {sequelize} = require('../models');
 const app = require('../app');
 const baseData = require("./baseData")
 
-// beforeAll(async () => {
-//   await sequelize.sync({ force : true });
-// });
-
-// afterAll(async() => {
-//   await sequelize.sync({ force : true });
-// })
-
 describe('POST /signup', () => {
   test('회원가입 API', (done,res) => {
     request(app)

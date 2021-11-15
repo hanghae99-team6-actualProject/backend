@@ -36,7 +36,5 @@ router.get("/", async (req, res, next) => {
     `)
   }
 });
-//test용 끝
-
 
 module.exports = router;
