@@ -1,0 +1,25 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/mingijuk
+    file_exists_behavior: OVERWRITE
+hooks:
+  ApplicationStop:
+    - location: /code_deploy/application_stop.sh
+      timeout: 500
+  BeforeInstall:
+    # 프로젝트 디렉토리 기준으로의 경로를 적어줍니다.
+    # local이나 server 인스턴스의 기준이 아닙니다!
+    - location: /code_deploy/before_install.sh
+      timeout: 500
+  #  AfterInstall:
+  #    - location: /code_deploy/after_install.sh
+  #      runas: root
+  ApplicationStart:
+    - location: /code_deploy/application_start.sh
+      timeout: 500
+  #   ValidateService:
+#     - location: Scripts/MonitorService.sh
+#       timeout: 3600
+#       runas: codedeployuser

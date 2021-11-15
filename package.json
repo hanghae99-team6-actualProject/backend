@@ -6,10 +6,10 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon server.js",
-    "start": "cross-env NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node server.js",
     "seedon": "npx sequelize-cli db:seed:all",
     "seeddown": "npx sequelize-cli db:seed:undo:all",
-    "supertest": "cross-env NODE_ENV=test node server.js"
+    "supertest": "NODE_ENV=test node server.js"
   },
   "dependencies": {
     "aws-sdk": "^2.1019.0",
