@@ -70,7 +70,7 @@ const createMoim = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { title, contents, imgSrc, location } = req.body;
+    const { title, contents, imgSrc, location, startAt, finishAt } = req.body;
 
     // 생성 중복검사
     const isMoim = await Moim.findAll({
@@ -92,7 +92,9 @@ const createMoim = async (req, res, next) => {
       title,
       contents,
       imgSrc,
-      location
+      location,
+      startAt,
+      finishAt
     })
       .then(async (result) => {
         // 생성된 모임의 호스트 데이터 생성
@@ -170,7 +172,7 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents, imgSrc, location } = req.body;
+    const { title, contents, imgSrc, location, startAt, finishAt } = req.body;
     console.log(moimId);
 
     //1. find?
@@ -195,10 +197,12 @@ const updateMoim = async (req, res, next) => {
       //2. update 실행
       await Moim.update(
         {
-          title: title,
-          contents: contents,
-          imgSrc: imgSrc,
-          location
+          title,
+          contents,
+          imgSrc,
+          location,
+          startAt,
+          finishAt
         },
         {
           where: { id: moimId },
@@ -259,6 +263,7 @@ const deleteMoim = async (req, res, next) => {
           });
         })
         .catch((err) => {
+          console.log(err);
           if (err) next(new Error('모임 삭제 db 실행 에러 발생'));
         });
     } else {
@@ -277,17 +282,22 @@ const enterMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
+    //모임 기간이 지났는지 확인
+    const thisMoim = await Moim.findOne({ where: { id: moimId } });
+    const now = new Date();
 
-    const isUser = await MoimUser.findAll({
+    if (now < thisMoim.finishAt) {
+      return next(new Error('이미 기간이 지난 모임입니다'));
+    }
+
+    //이미 참가한 모임인지 확인
+    const isUser = await MoimUser.findOne({
       where: {
         userId: userId,
         moimId,
       }
-    }).catch((err) => {
-      if (err) next(new Error('모임 참가 유저 중복검색 중 db 에러'))
     });
-    console.log('0이면 유저생성가능', isUser.length)
-    if (isUser.length > 0) {
+    if (isUser) {
       return next(new Error('이미 참가중인 모임입니다.'));
     }
 

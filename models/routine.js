@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Routine.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
+      models.Routine.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
       models.Routine.hasMany(models.Action, { foreignKey: 'routineId', sourceKey: 'id' });
-      models.Routine.hasMany(models.RoutineFin, { foreignKey: 'routineId', sourceKey: 'id', onDelete: 'cascade' });
+      models.Routine.hasMany(models.RoutineFin, { foreignKey: 'routineId', sourceKey: 'id' });
     }
   };
   Routine.init({

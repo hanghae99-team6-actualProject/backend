@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     static associate(models) {
-      models.User.hasMany(models.Routine, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.Like, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.ExpDayLog, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.MoimUser, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
-      models.User.hasMany(models.Comment, { foreignKey: 'userId', sourceKey: 'id', onDelete: 'cascade' });
+      models.User.hasMany(models.Routine, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.Action, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.Character, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.Like, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.ExpDayLog, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.MoimUser, { foreignKey: 'userId', sourceKey: 'id' });
+      models.User.hasMany(models.Comment, { foreignKey: 'userId', sourceKey: 'id' });
     }
   };
   User.init({

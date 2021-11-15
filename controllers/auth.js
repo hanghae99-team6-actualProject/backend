@@ -69,7 +69,7 @@ const localLogin = async (req, res, next) => {
 
     // access token 발급 (24시간)
     const accessToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
-      expiresIn: "24h",
+      expiresIn: "1h",
       issuer: 'mingijuk'
     });
 

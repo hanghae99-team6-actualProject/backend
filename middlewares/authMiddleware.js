@@ -71,7 +71,7 @@ const authMiddleware = async (req, res, next) => {
         const providerId = thisUser?.providerId;
 
         const newAccessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
-          expiresIn: "24h",
+          expiresIn: "1h",
           issuer: 'mingijuk'
         });
 
