@@ -42,7 +42,7 @@ module.exports = (app) => {
 
       // access token 발급 (24시간)
       const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
-        expiresIn: "24h",
+        expiresIn: "1h",
         issuer: 'mingijuk'
       });
 
@@ -90,7 +90,7 @@ module.exports = (app) => {
 
       // access token 발급 (24시간)
       const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
-        expiresIn: "24h",
+        expiresIn: "1h",
         issuer: 'mingijuk'
       });
       console.log('providerId', providerId)
@@ -137,7 +137,7 @@ module.exports = (app) => {
 
       // access token 발급 (24시간)
       const accessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
-        expiresIn: "24h",
+        expiresIn: "1h",
         issuer: 'mingijuk'
       });
 

@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     static associate(models) {
-      models.Moim.hasMany(models.MoimUser, { foreignKey: 'moimId', sourceKey: 'id', onDelete: 'cascade' });
-      models.Moim.hasMany(models.Comment, { foreignKey: 'moimId', sourceKey: 'id', onDelete: 'cascade' });
-      models.Moim.hasMany(models.Like, { foreignKey: 'moimId', sourceKey: 'id', onDelete: 'cascade' });
+      models.Moim.hasMany(models.MoimUser, { foreignKey: 'moimId', sourceKey: 'id' });
+      models.Moim.hasMany(models.Comment, { foreignKey: 'moimId', sourceKey: 'id' });
+      models.Moim.hasMany(models.Like, { foreignKey: 'moimId', sourceKey: 'id' });
     }
   };
   Moim.init({
@@ -21,6 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     contents: DataTypes.STRING,
     imgSrc: DataTypes.STRING,
     location: DataTypes.STRING,
+    startAt: DataTypes.DATE,
+    finishAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Moim',

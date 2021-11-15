@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      models.Comment.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
-      models.Comment.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id' });
+      models.Comment.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
+      models.Comment.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
     }
   };
   Comment.init({

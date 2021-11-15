@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
 
     static associate(models) {
-      models.ExpDayLog.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
+      models.ExpDayLog.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
     }
   };
   ExpDayLog.init({
