@@ -1,6 +1,7 @@
 const { Routine, RoutineFin, Action, ActionFin, User, Character, Sequelize, sequelize } = require("../models");
 const myError = require("./utils/httpErrors");
 const Op = Sequelize.Op;
+const logger = require('../logger');
 
 function timeSet () {
   const today = new Date();
@@ -15,7 +16,7 @@ function timeSet () {
 
 //메인 루틴, 액션, 유저 조회
 const getOngoing = async (req, res, next) => {
-  console.log("getRoutine router 진입");
+  logger.info("getRoutine router 진입");
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id: userId } = res.locals.user;
 
@@ -51,7 +52,7 @@ const getOngoing = async (req, res, next) => {
     }
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };
@@ -70,7 +71,6 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -86,7 +86,6 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      // attributes: ['userId'],
       where: { userId: authId },
       include: [
         {
@@ -104,7 +103,7 @@ const getTrackerHistory = async (req, res, next) => {
     res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };
@@ -154,7 +153,7 @@ const getGraphHistory = async (req, res, next) => {
     res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "그래프 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };

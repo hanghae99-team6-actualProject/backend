@@ -1,6 +1,7 @@
 const { Character } = require('../models');
-const crtConst = require('../constants/characters')
-const myError = require('./utils/httpErrors')
+const crtConst = require('../constants/characters');
+const myError = require('./utils/httpErrors');
+const logger = require('../logger');
 
 const createCharacter = async (req, res, next) => {
   try {
@@ -63,8 +64,8 @@ const createCharacter = async (req, res, next) => {
         }
       }
       
-      console.log(newCrtName, '랜덤화 한 새로운 캐릭터의 이름값!');
-      console.log(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스값!');
+      logger.info(newCrtName, '랜덤화 한 새로운 캐릭터의 이름');
+      logger.info(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스');
       
       await Character.create({
         userId: Number(userId),
@@ -86,7 +87,7 @@ const createCharacter = async (req, res, next) => {
 
     }
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     //'캐릭터 만들기에 실패했습니다. 관리자에게 문의하세요.',
     return next(err);
   }
@@ -97,7 +98,7 @@ const getCharacter = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
-    console.log(userId, "유저아이디!");
+    logger.info(userId, "유저아이디!");
     // 현재 유저의 캐릭터 (만랩이 아님)
     const userCharacter = await Character.findAll({
       where: { userId, expMax: 0 },
