@@ -21,10 +21,12 @@ const baseData = {
   moimTitle1 : "첫 번째 모임",
   moimContents1 : "첫 번째 모임 컨텐츠",
   moimImg1 : "첫 번째 모임 이미지",
+  location1: "서울",
 
   moimTitle2 : "두 번째 모임",
   moimContents2 : "두 번째 모임 컨텐츠",
   moimImg2 : "두 번째 모임 이미지",
+  location2: "경기도",
 };
 
 module.exports = baseData;

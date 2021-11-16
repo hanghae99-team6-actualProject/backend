@@ -31,13 +31,6 @@ const logout = (req, res, next) => {
     User.update({ refreshToken: "" }, { where: { providerId } })
       .catch((err) => { return next(new Error('User.update refreshToken db 에러')) })
 
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err);
-      }
-      req.logout()
-    })
-
     res.status(200).json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
     console.log(err);
