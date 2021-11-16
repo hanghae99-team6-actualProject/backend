@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const hpp = require('hpp');
 const helmet = require('helmet');
 const env = require('./env')
+const path = require('path');
 
 const configurePassport = require('./passport')
 const { sequelize } = require("./models");
@@ -17,6 +18,14 @@ const userCron = require("./crons/user");
 //서버리슨 분리로 주석처리
 // const port = env.EXPRESS_PORT;
 const app = express()
+
+//ejs 읽기!
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+app.use('/chattt', (req, res) => {
+  return res.render('chatIndex');
+})
 
 if (env.NODE_ENV === 'production') {
   app.use(
@@ -51,6 +60,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.static('public'));
+
 
 //routes
 // app.get('*', asyncErrorHandeler) 이것의 작동 방식을 모르겠습니다
