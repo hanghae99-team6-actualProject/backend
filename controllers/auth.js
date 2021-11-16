@@ -8,16 +8,16 @@ const {
   createRoutineFn
 } = require('./utils/routineFn');
 const presetConst = require('../constants/presetRoutines')
+const logger = require('../logger');
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { user } = res.locals;
-    console.log(user);
     res.status(200).send({ result: true, user });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -33,7 +33,7 @@ const logout = (req, res, next) => {
 
     res.status(200).json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };
@@ -73,7 +73,7 @@ const localLogin = async (req, res, next) => {
 
     return res.status(200).send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -119,7 +119,7 @@ const signup = async (req, res, next) => {
       });
     //회원가입시 프리셋 루틴을 모든 유저에게 생성해주기!
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };

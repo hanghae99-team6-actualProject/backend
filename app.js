@@ -3,7 +3,8 @@ const cors = require("cors");
 const morgan = require('morgan');
 const hpp = require('hpp');
 const helmet = require('helmet');
-const env = require('./env')
+const env = require('./env');
+const logger = require('./logger');
 
 const configurePassport = require('./passport')
 const { sequelize } = require("./models");
@@ -26,23 +27,27 @@ if (env.NODE_ENV === 'production') {
       hsts: false,
     })
   );
-  app.use(morgan('combined'));
+  // production 환경일 때 morgan -> winston에서 로그 출력 및 파일 기록
+  // app.use(morgan('combined'));
+  app.use(morgan('combined',{stream: logger.stream}));
+
   app.use(hpp());
 } else {
-  app.use(morgan('dev'))
+  // app.use(morgan('dev'))
+  app.use(morgan('dev',{stream: logger.stream}))
 }
 
 sequelize
-  .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
+  .sync({ force: false }) //데이터 구조 변경하고 싶을 때, true
   .then(() => {
-    console.log('------ SQL Restructure Complete ------');
+    logger.info('------ SQL Restructure Complete ------');
   })
   .catch((error) => {
-    console.error(error);
+    logger.error(error);
   });
 
 if (env.NODE_ENV === 'production') {
-  console.log('배포 환경입니다');
+  logger.info('배포 환경입니다');
 }
 
 configurePassport(app);
@@ -59,11 +64,6 @@ app.use('/api', indexRouter);
 //error handling
 app.use(error404);
 app.use(errorHandler)
-
-//서버리슨 분리로 주석처리
-// app.listen(port, () => {
-//   console.log(`${port} 포트에서 서버가 정상적으로 가동되었습니다.`);
-// });
 
 userCron.destroyUser();
 
