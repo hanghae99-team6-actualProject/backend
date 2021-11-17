@@ -164,6 +164,11 @@
         chatInput.value = ''; // 소켓.에밋으로 이벤트를 발생시켜 서버와 통신 후 메세지 인풋창을 공란으로 돌려 놓는다
       });
 
+      socketMoim.on('newRoom', function(data) {
+        console.log(data);
+        console.log("새로운 채팅방에 대한 랜딩이 필요하다");
+      })
+
     </script>
 
   </body>

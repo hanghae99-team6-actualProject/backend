@@ -7,6 +7,7 @@ const server = http.createServer(app);
 // const server = require('./server');
 
 const io = socketIo(server);
+app.set('io', io);
 
 // app.use("io", io); //라우터에서 io 객체를 쓸 수 있게 하는 저장
 
@@ -77,8 +78,7 @@ moimNamespace.on('connection', (socketMoim) => {
     // console.log('서버 입장시 메세지', msg);
     console.log(msg);
 
-    // moimNamespace.to(roomId).emit('updateMsg', {//room이 필요없어 보이는 걸 그래서 아래는 룸을 없앰, 이후에 다른 방에서도 시스템이 공유된다면 그대 수정
-    moimNamespace.emit('updateMsg', { 
+    moimNamespace.to(roomId).emit('updateMsg', { 
       name: 'SERVER',
       msg: msg,
     });
