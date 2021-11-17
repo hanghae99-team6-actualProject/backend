@@ -25,7 +25,12 @@ app.set("view engine", "ejs");
 
 app.use('/chattt', (req, res) => {
   return res.render('chatIndex');
-})
+});
+
+app.use('/chat/:moimId', (req, res) => {
+  return res.render('chatIndex');
+});
+
 
 if (env.NODE_ENV === 'production') {
   app.use(
