@@ -13,8 +13,8 @@ const logger = createLogger({
   ),
   defaultMeta: { service: 'mingijuk' },
   transports: [
-    new transports.File({ filename: 'error.log', level: 'error' }),
-    new transports.File({ filename: 'combined.log' })
+    new transports.File({ filename: './log/error.log', level: 'error' }),
+    new transports.File({ filename: './log/combined.log' })
   ]
 });
 
