@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     contents: DataTypes.STRING,
     imgSrc: DataTypes.STRING,
     location: DataTypes.STRING,
+    locationGu: DataTypes.STRING,
     startAt: DataTypes.DATE,
     finishAt: DataTypes.DATE
   }, {

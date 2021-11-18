@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
-const { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim } = require('../controllers/moims');
+const { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim } = require('../controllers/moims');
 const { createLike, getMyLikes, deleteLike } = require('../controllers/likes');
 const { getAllComments, getTargetMoimComments, createComment, updateComment, deleteComment } = require('../controllers/comments');
 
@@ -17,6 +17,7 @@ router.put('/comment/:commentId', authMiddleware, updateComment);
 router.delete('/comment/:commentId', authMiddleware, deleteComment);
 
 router.get('/', getAllMoim); //미들웨어 제거
+router.get('/search/:locationGu', getMoimByLocation); //미들웨어 제거
 router.post('/', authMiddleware, createMoim);
 router.get('/:moimId', authMiddleware, detailMoim);
 router.put('/:moimId', authMiddleware, updateMoim);

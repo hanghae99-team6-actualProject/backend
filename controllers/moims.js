@@ -50,14 +50,63 @@ const getAllMoim = async (req, res, next) => {
         },
       ],
     })
-      .catch((err) => {
-        if (err) next(new Error('전체 모임정보 불러오기 중 db 에러'));
-      });
+    //catch가 두 군데서  걸려서 이중리턴 에러 발생함
+    // .catch((err) => {
+    //   if (err) next(new Error('전체 모임정보 불러오기 중 db 에러'));
+    // });
 
     return res.status(200).send({
       result: true,
       allMoims,
       msg: '전체 모임정보 불러오기에 성공했습니다.',
+    });
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+};
+
+const getMoimByLocation = async (req, res, next) => {
+  try {
+    logger.info('getMoimByLocation router 진입');
+    const { locationGu } = req.params;
+    console.log(req.params);
+
+    const guMoims = await Moim.findAll({
+      where: { locationGu },
+      include: [
+        {
+          model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+        },
+      ],
+    })
+    //catch가 두 군데서  걸려서 이중리턴 에러 발생함
+    // .catch((err) => {
+    //   if (err) next(new Error('전체 모임정보 불러오기 중 db 에러'));
+    // });
+
+    return res.status(200).send({
+      result: true,
+      guMoims,
+      msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
     });
   } catch (err) {
     logger.error(err);
@@ -71,7 +120,7 @@ const createMoim = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { title, contents, imgSrc, location, startAt, finishAt } = req.body;
+    const { title, contents, imgSrc, location, locationGu, startAt, finishAt } = req.body;
 
     // 생성 중복검사
     const isMoim = await Moim.findAll({
@@ -94,6 +143,7 @@ const createMoim = async (req, res, next) => {
       contents,
       imgSrc,
       location,
+      locationGu,
       startAt,
       finishAt
     })
@@ -359,4 +409,4 @@ const exitMoim = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim };
+module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim };
