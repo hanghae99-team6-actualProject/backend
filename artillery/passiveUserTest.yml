@@ -1,0 +1,106 @@
+config:
+  target: "http://localhost:8080/api"
+  payload:
+    -
+      path: "payload/account.csv"
+      fields:
+        - "userId"
+        - "userPw"
+        - "userNick"
+    -
+      path: "./payload/count.csv"
+      fields:
+        - "count"
+  phases:
+    - duration: 50
+      arrivalRate: 10
+      name: Warm Up
+before:
+  flow:
+    - log: "Get tokens"
+    - post:
+        url: "/auth/signup"
+        json:
+          userEmail : "passiveUserTest1@naver.com"
+          userPw : "Password!001"
+          userPwChk : "Password!001"
+          nickName : "passiveUserNick001"
+    - post:
+        url: "/auth/local"
+        json:
+          userEmail : "passiveUserTest1@naver.com"
+          userPw : "Password!001"
+        capture:
+          - json: "$.accessToken"
+            as: "accessToken"
+          - json: "$.refreshToken"
+            as: "refreshToken"
+    # - post:
+    #     url: "/moims"
+    #     headers:
+    #       accessToken: "Bearer {{ accessToken }}"
+    #       refreshToken: "Bearer {{ refreshToken }}"
+    #     json:
+    #       title : "moim title"
+    #       contents : "moim contents"
+    #       imgSrc : "imgSource"
+scenarios:
+  - name: "메인화면(진행중 루틴, 트래커) 조회"
+    flow:
+      - get:
+          url: "/main/ongoing"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      - get:
+          url: "/main/trackerHistory"
+          headers:
+            accessToken: "Bearer {{ accessToken }}" 
+            refreshToken: "Bearer {{ refreshToken }}"
+  - name: "루틴 목록 조회"
+    flow:
+      - get:
+          url: "/routines"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+  - name: "히스토리(그래프) 조회"
+    flow:
+      - get:
+          url: "/main/graphHistory"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+  - name: "내 정보(내정보, 마이콜렉션, 내모임, 내댓글, 내좋아요) 조회,"
+    flow:
+      - get:
+          url: "/auth/me"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      - get:
+          url: "/users/collection"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      - post:
+          url: "/users/moims"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+          json:
+            userType : 0
+      - get:
+          url: "/users/comments"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      # - get:
+      #     url: "/moims/like"
+      #     headers:
+      #       accessToken: "Bearer {{ accessToken }}"
+      #       refreshToken: "Bearer {{ refreshToken }}"
+  - name: "모임리스트 조회"
+    flow:
+      - get:
+          url: "/moims"

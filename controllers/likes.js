@@ -1,6 +1,7 @@
 const env = require('../env')
 const { User, Like, Moim } = require('../models');
 const myError = require('./utils/httpErrors')
+const logger = require('../logger');
 
 //내가 좋아요한 모임 목록
 const getMyLikes = async (req, res, next) => {
@@ -18,7 +19,7 @@ const getMyLikes = async (req, res, next) => {
     });
     return res.status(200).send({ result: true, myLikes });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -37,7 +38,7 @@ const createLike = async (req, res, next) => {
       .then(() => { return res.status(200).send({ result: true, msg: `${userId} 유저가 ${moimId} 게시글에 좋아요 생성` }) })
       .catch((err) => { if (err) return next(new Error('like 생성 db 에러')); })
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -58,7 +59,7 @@ const deleteLike = async (req, res, next) => {
       })
       .catch((err) => { if (err) return next(new Error('deleteLike db 에러')) });
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }

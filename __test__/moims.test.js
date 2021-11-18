@@ -54,6 +54,7 @@ describe('모임 CRUD', () => {
         title: baseData.moimTitle1,
         contents: baseData.moimContents1,
         imgSrc: baseData.moimImg1,
+        location: baseData.location1,
       })
       .expect(200, done);
   })
@@ -67,6 +68,7 @@ describe('모임 CRUD', () => {
         title: baseData.moimTitle2,
         contents: baseData.moimContents2,
         imgSrc: baseData.moimImg2,
+        location: baseData.location2,
       })
       .expect(200, done);
   })
@@ -144,6 +146,17 @@ describe('모임 댓글 CRUD', () => {
       .expect(200, done);
   })
 
+  test('댓글 수정 API', (done) => {
+    request(app)
+      .put('/api/moims/comment/1') //댓글 id
+      .set('accessToken', 'Bearer ' + auth.accessToken)
+      .set('refreshToken', 'Bearer ' + auth.refreshToken)
+      .send({
+        contents: '1번 댓글 수정',
+      })
+      .expect(200, done);
+  })
+
   test('댓글 전체 조회 API', (done) => {
     request(app)
       .get('/api/moims/comment')
@@ -157,17 +170,6 @@ describe('모임 댓글 CRUD', () => {
       .get('/api/moims/comment/2') //모임 id
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
-      .expect(200, done);
-  })
-
-  test('댓글 수정 API', (done) => {
-    request(app)
-      .put('/api/moims/comment/1') //댓글 id
-      .set('accessToken', 'Bearer ' + auth.accessToken)
-      .set('refreshToken', 'Bearer ' + auth.refreshToken)
-      .send({
-        contents: '1번 댓글 수정',
-      })
       .expect(200, done);
   })
 

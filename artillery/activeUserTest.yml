@@ -1,0 +1,74 @@
+config:
+  target: "http://localhost:8080/api"
+  payload:
+    -
+      path: "payload/account.csv"
+      fields:
+        - "userId"
+        - "userPw"
+        - "userNick"
+    -
+      path: "./payload/count.csv"
+      fields:
+        - "count"
+  phases:
+    - duration: 50
+      arrivalRate: 10
+      name: Warm Up
+before:
+  flow:
+    - log: "Get tokens"
+    - post:
+        url: "/auth/signup"
+        json:
+          userEmail : "userTest1@naver.com"
+          userPw : "Password!001"
+          userPwChk : "Password!001"
+          nickName : "userNick001"
+    - post:
+        url: "/auth/local"
+        json:
+          userEmail : "userTest1@naver.com"
+          userPw : "Password!001"
+        capture:
+          - json: "$.accessToken"
+            as: "accessToken"
+          - json: "$.refreshToken"
+            as: "refreshToken"
+scenarios:
+  - name: "로그인 후 메인화면 출력, 루틴 & 액션 생성, 모임 생성"
+    flow:
+      - get:
+          url: "/main/ongoing"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      - get:
+          url: "/main/trackerHistory"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+      - post:
+          url: "/routines"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+          json:
+            routineName : "테스트 루틴 넘버 test-{{count}}"
+            actions : 
+              - actionName: "데드리프트"
+                actionType: "맨몸운동"
+                actionCnt: "10"
+              - actionName: "사이드레터럴레이즈"
+                actionType: "스트레칭"
+                actionCnt: "20"
+            isMain : false
+      - post:
+          url: "/moims"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+          json:
+            title : "테스트 모임-{{count}}"
+            contents : "testContents"
+            imgSrc : "testImg"

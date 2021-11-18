@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const env = require('../env')
+const env = require('../env');
 
 const authRouter = require("./auth");
 const usersRouter = require("./users");
@@ -37,7 +37,5 @@ router.get("/", async (req, res, next) => {
     `)
   }
 });
-//test용 끝
-
 
 module.exports = router;

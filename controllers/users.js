@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../models');
-const myError = require('./utils/httpErrors')
+const myError = require('./utils/httpErrors');
+const logger = require('../logger');
 
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {
@@ -15,7 +16,7 @@ const bye = async (req, res, next) => {
         if (err) return next(new Error('User db삭제 에러'))
       })
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -30,7 +31,7 @@ const collection = async (req, res, next) => {
         exp: 10000,
       },
     }).catch((err) => {
-      console.log(err);
+      logger.error(err);
       if (err) return next(new Error('Character db 검색 에러'));
     })
     return res.send({ result: true, character: usersCharacter, msg: '성공' });
@@ -55,7 +56,7 @@ const updateUser = async (req, res, next) => {
         if (err) return next(new Error('유저 정보 수정 db 에러'));
       })
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
@@ -63,7 +64,7 @@ const updateUser = async (req, res, next) => {
 //메인 루틴 설정 API
 const setMainRoutine = async (req, res, next) => {
   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-  console.log("setMainRoutine router 진입");
+  logger.info("setMainRoutine router 진입");
   const { id: userId } = res.locals.user;
   const { routineId } = req.body;
 
@@ -73,7 +74,7 @@ const setMainRoutine = async (req, res, next) => {
       where: { id: routineId },
       include: { model: Action }
     });
-    console.log('thisRoutine', thisRoutine)
+    logger.info('thisRoutine', thisRoutine)
 
     //이전 isMain이 1인 루틴 전부 0으로 수정
     await Routine.update({ isMain: 0 }, {
@@ -86,14 +87,14 @@ const setMainRoutine = async (req, res, next) => {
     return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
     // }
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 };
 
 const myMoim = async (req, res, next) => {
   try {
-    console.log('myMoin 라우터 진입');
+    logger.info('myMoin 라우터 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const userId = res.locals.user.id;
@@ -150,27 +151,27 @@ const myMoim = async (req, res, next) => {
     })
 
     if (hostType === 1) {
-      console.log('호스트인 경우')
-      console.log(allMyMoim.length);
+      logger.info('호스트인 경우')
+      logger.info(allMyMoim.length);
       if (allMyMoim.length === 0) {
-        console.log('개설한 모임이 없습니다.');
+        logger.info('개설한 모임이 없습니다.');
         return res.status(200).send({
           result: "true2",
           msg: '내가 만든 모임이 없습니다.'
         })
       }
 
-      console.log('조회 완료')
+      logger.info('조회 완료')
       return res.status(200).send({
         result: "true1",
         allMyMoim,
         msg: '내가 만든 모임 정보 불러오기에 성공했습니다.'
       })
     } else if (hostType === 0) {
-      console.log('참여자인 경우')
-      console.log(allMyMoim.length);
+      logger.info('참여자인 경우')
+      logger.info(allMyMoim.length);
       if (allMyMoim.length === 0) {
-        console.log('참여한 모임이 없습니다.');
+        logger.info('참여한 모임이 없습니다.');
         return res.status(200).send({
           result: "true4",
           msg: '내가 참여한 모임이 없습니다.'
@@ -186,14 +187,14 @@ const myMoim = async (req, res, next) => {
 
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
 
 const myComments = async (req, res, next) => {
   try {
-    console.log('myMoin 라우터 진입');
+    logger.info('myMoin 라우터 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const userId = res.locals.user.id;
@@ -215,7 +216,7 @@ const myComments = async (req, res, next) => {
       if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });
 
-    console.log('검색결과를 확인', myCommentList.length);
+    logger.info('검색결과를 확인', myCommentList.length);
     if (myCommentList.length === 0) {
       return res.status(200).send({
         result: 'true2',
@@ -223,7 +224,7 @@ const myComments = async (req, res, next) => {
       })
     }
 
-    console.log('댓글 조회 완료')
+    logger.info('댓글 조회 완료')
     return res.status(200).send({
       result: 'true1',
       myCommentList,
@@ -231,7 +232,7 @@ const myComments = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }

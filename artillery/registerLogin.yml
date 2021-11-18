@@ -12,11 +12,17 @@ config:
       name: makeUserMax
 
 scenarios:
-  - name: "register"
+  - name: "register and login"
     flow:
       - post:
           url: "/auth/signup"
           json:
             userEmail : "{{userId}}"
             userPw : "{{userPw}}"
+            userPwChk : "{{userPw}}"
             nickName : "{{userNick}}"
+      - post:
+          url: "/auth/local"
+          json:
+            userEmail : "{{userId}}"
+            userPw : "{{userPw}}"
