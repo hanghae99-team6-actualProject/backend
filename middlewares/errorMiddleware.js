@@ -1,4 +1,5 @@
 var createError = require('http-errors');
+const logger = require('../logger');
 
 const wrapAsync = (func) => {
   // 모든 오류를 .catch() 처리하고 체인의 next() 미들웨어에 전달하세요
@@ -14,7 +15,7 @@ const asyncErrorHandeler = wrapAsync(async function (req, res, next) {
 })
 
 const errorHandler = (err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(err.status || 500).send({ result: false, msg: `code ${err.status || 500}: ${err.message}` });
 }
 

@@ -22,37 +22,18 @@ function loginUser(auth) {
   };
 }
 
-describe('내 모임 관련', () => {
+describe('캐릭터 생성', () => {
   let auth = {};
   beforeEach(loginUser(auth));
 
-  test('내가 만든 모임 조회 API', (done) => {
+  test('캐릭터 생성 API', (done) => {
     request(app)
-      .post('/api/users/moims')
-      .set('accessToken', 'Bearer ' + auth.accessToken)
-      .set('refreshToken', 'Bearer ' + auth.refreshToken)
-      .send({
-        "userType": 1
-      })
-      .expect(200, done);
-  }),
-
-  test('내가 참여한 모임 조회 API', (done) => {
-    request(app)
-      .post('/api/users/moims')
-      .set('accessToken', 'Bearer ' + auth.accessToken)
-      .set('refreshToken', 'Bearer ' + auth.refreshToken)
-      .send({
-        "userType": 0
-      })
-      .expect(200, done);
-  }),
-
-  test('내 모임 댓글 API', (done) => {
-    request(app)
-      .get('/api/users/comments')
+      .post('/api/characters')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .expect(200, done);
   })
+
 })
+
+

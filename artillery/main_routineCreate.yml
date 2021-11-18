@@ -1,9 +1,9 @@
 config:
   target: "http://localhost:8080/api"
   payload:
-    path: "./payload/routine.csv"
+    path: "./payload/count.csv"
     fields:
-      - "routineCase"
+      - "count"
   phases:
     - duration: 10
       arrivalRate: 5
@@ -25,7 +25,7 @@ scenarios:
       - post:
           url: "/routines"
           json:
-            routineName : "테스트 루틴 넘버 test-{{routineCase}}"
+            routineName : "테스트 루틴 넘버 test-{{count}}"
             actions : 
               - actionName: "데드리프트"
                 actionType: "맨몸운동"
@@ -33,4 +33,4 @@ scenarios:
               - actionName: "사이드레터럴레이즈"
                 actionType: "스트레칭"
                 actionCnt: "20"
-            isMain" : false
+            isMain : false
