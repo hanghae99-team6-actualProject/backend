@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
+    <!-- <script type="text/javascript" src="/chatIndex.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
     <title>Moim 채팅방</title>
   </head>
   <body>
@@ -16,18 +18,16 @@
       </div>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script type="text/javascript" src="./chatIndex.js"></script>
+    <script src="/socket.io/socket.io.js"></script> -->
+    <!-- <script type="text/javascript" src="./chatIndex.js"></script> -->
+    <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
 
     <script>
-      // const socket = io('http://localhost:8080');
-      const socket = io();
-      // const url = window.location.href;
-
-      // console.log(window.location.href.split("/")[4]);
-      
-      const moimId = window.location.href.split("/")[4];
+      console.log("dassdasddas");
+      const moimId = window.location.href.split('/')[4];
       const socketMoim = io(`/chat/${moimId}`);
-      
+
       // socket.on('connect', () => {
       //   // 소켓 연결시!
       //   var name = prompt('대화명을 입력해주세요.', '');
@@ -99,6 +99,7 @@
       // });
 
       socketMoim.on('connect', () => {
+        console.log("sdadasdasda")
         var name = prompt('네임스페이스에서 쓸 대화명을 입력해주세요.', '');
 
         socketMoim.emit('newUserEnter', name);
@@ -164,12 +165,10 @@
         chatInput.value = ''; // 소켓.에밋으로 이벤트를 발생시켜 서버와 통신 후 메세지 인풋창을 공란으로 돌려 놓는다
       });
 
-      socketMoim.on('newRoom', function(data) {
+      socketMoim.on('newRoom', function (data) {
         console.log(data);
-        console.log("새로운 채팅방에 대한 랜딩이 필요하다");
-      })
-
+        console.log('새로운 채팅방에 대한 랜딩이 필요하다');
+      });
     </script>
-
   </body>
 </html>

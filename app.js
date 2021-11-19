@@ -5,7 +5,7 @@ const hpp = require('hpp');
 const helmet = require('helmet');
 const env = require('./env')
 const path = require('path');
-const http = require('http');
+const { createServer } = require('http');
 
 
 const configurePassport = require('./passport')
@@ -19,19 +19,88 @@ const userCron = require("./crons/user");
 
 //서버리슨 분리로 주석처리
 // const port = env.EXPRESS_PORT;
+
+//채팅방
+const { Server } = require("socket.io");
 const app = express()
-const server = http.createServer(app);
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
 
 // ejs 읽기!
-server.set("views", path.join(__dirname, "views"));
-server.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "views")));
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
-server.use('/chattt', (req, res) => {
+app.use('/chattt', (req, res) => {
   return res.render('chatIndex');
 });
 
-server.use('/chat/:moimId', (req, res) => {
+app.use('/chat/:moimId', (req, res) => {
   return res.render('chatIndex');
+});
+
+// server.on('request', function(req, res) {
+//   const moimId = 3;
+//   if(req.method == "GET" && req.url == `/chat/${moimId}`) {
+//     return res.render('chatIndex');
+//   }
+// });
+
+const moimId = 3;
+const moimNamespace = io.of(`/chat/${moimId}`);
+
+//특정 네임스페이스 지정시의 코드
+moimNamespace.on('connection', (socketMoim) => {
+  console.log("====================================================")
+  console.log("moim 네임스페이스 접속");
+  console.log("socketMoim의 Id", socketMoim.id)
+  // console.log("socketMoim의 name", socketMoim.name)
+  // console.log("socketMoim의 name", socketMoim.roomId)
+  console.log("socketMoim의 name", socketMoim.nsp.name)
+  // console.log("socketMoim의 name", socketMoim.handshake.address)
+
+  const roomId = socketMoim.nsp.name;
+  socketMoim.join(roomId);
+
+  socketMoim.on('newUserEnter', (data) => {
+    // console.log("newUserEnter의 data", data);
+    // console.log("newUserEnter의 socket", sock);
+    // console.log("newUserEnter의 socket", sock.name);
+    socketMoim.name = data;
+
+    var msg = socketMoim.name + '님이 접속했습니다.';
+    // console.log('서버 입장시 메세지', msg);
+    console.log(msg);
+
+    moimNamespace.to(roomId).emit('updateMsg', { 
+      name: 'SERVER',
+      msg: msg,
+    });
+  });
+
+  socketMoim.on('sendMsg', function (data) {
+    // console.log('전송받은 data', data);
+    data.name = socketMoim.name; //소켓 연결시 저장시켰던 socket.name을 불러와서 데이터의 이름값으로 전달
+    // console.log('전송받은 것에 이름을 추가한 data', data);
+
+    console.log(data);
+
+    moimNamespace.emit('updateMsg', data);
+  });
+
+  socketMoim.on('disconnect', function () {
+    // console.log(sock.id, "연결이 끊어졌어요!");
+
+    var msg = socketMoim.name + '님이 퇴장하셨습니다';
+    // console.log('서버가 송출하는 퇴장 메세지', msg);
+    console.log(msg);
+
+    moimNamespace.to(roomId).emit('updateMsg', {
+      name: 'SERVER',
+      msg: msg,
+    });
+  });
 });
 
 
@@ -85,4 +154,4 @@ app.use(errorHandler)
 
 userCron.destroyUser();
 
-module.exports = { app, server };
+module.exports = httpServer;
