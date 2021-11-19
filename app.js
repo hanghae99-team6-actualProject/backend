@@ -5,6 +5,8 @@ const hpp = require('hpp');
 const helmet = require('helmet');
 const env = require('./env')
 const path = require('path');
+const http = require('http');
+
 
 const configurePassport = require('./passport')
 const { sequelize } = require("./models");
@@ -18,16 +20,17 @@ const userCron = require("./crons/user");
 //서버리슨 분리로 주석처리
 // const port = env.EXPRESS_PORT;
 const app = express()
+const server = http.createServer(app);
 
-//ejs 읽기!
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+// ejs 읽기!
+server.set("views", path.join(__dirname, "views"));
+server.set("view engine", "ejs");
 
-app.use('/chattt', (req, res) => {
+server.use('/chattt', (req, res) => {
   return res.render('chatIndex');
 });
 
-app.use('/chat/:moimId', (req, res) => {
+server.use('/chat/:moimId', (req, res) => {
   return res.render('chatIndex');
 });
 
@@ -82,4 +85,4 @@ app.use(errorHandler)
 
 userCron.destroyUser();
 
-module.exports = app;
+module.exports = { app, server };

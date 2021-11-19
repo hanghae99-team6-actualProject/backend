@@ -17,16 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   MoimChatRoom.init({
-    moimId: {
-      require: true,
-      unique: true,
-      type: DataTypes.INTEGER,
-    },
-    moimUserId: {
-      require: true,
-      unique: true,
-      type: DataTypes.INTEGER,
-    },
+    moimId: DataTypes.INTEGER,
+    moimUserId: DataTypes.INTEGER,
     deleteAt: {
       allowNull: true,
       type: DataTypes.DATE

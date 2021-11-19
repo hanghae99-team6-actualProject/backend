@@ -1,17 +1,15 @@
 //채팅방용
 const express = require('express');
-const app = require('./app');
-const http = require('http');
+const { app, server } = require('./app');
 const socketIo = require('socket.io');
-const server = http.createServer(app);
 // const server = require('./server');
 
 const io = socketIo(server);
-app.set('io', io);
+// app.set('io', io);
 
 // app.use("io", io); //라우터에서 io 객체를 쓸 수 있게 하는 저장
 
-const moimId = 2;
+const moimId = 3;
 const moimNamespace = io.of(`/chat/${moimId}`);
 
 // io 기본 설정일 때의 코드
@@ -108,4 +106,4 @@ moimNamespace.on('connection', (socketMoim) => {
   });
 });
 
-module.exports = server, io;
+module.exports = { server, io } ;

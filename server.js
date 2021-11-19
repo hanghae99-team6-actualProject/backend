@@ -1,7 +1,8 @@
-const app = require('./app');
+const { app, server } = require('./app');
 const env = require('./env');
 const port = env.EXPRESS_PORT;
-const server = require('./socket');
+// const server = require('./socket');
+const path = require('path');
 
 // //채팅방용
 // const express = require('express');
@@ -48,6 +49,14 @@ const server = require('./socket');
 //       msg: msg,
 //     });
 //   });
+// });
+
+// app.set("views", path.join(__dirname, "views"));
+// app.set("view engine", "ejs");
+
+// app.use('/chat/:moimId', (req, res) => {
+//   console.log("클라이언트를 불러라!")
+//   return res.render('chatIndex');
 // });
 
 server.listen(port, () => {
