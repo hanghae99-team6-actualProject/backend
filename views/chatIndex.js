@@ -1,3 +1,6 @@
+//일단 이거 안쓰고 프론트에서 스크립트 구역에서 사용함!
+
+
 const io = require('socket.io-client');
 
 console.log('여기 읽는다!!!');

@@ -1,5 +1,5 @@
-const { Chat, MoimChatRoom } = require('../models');
-const { io } = require('../socket');
+const { User, MoimUser ,Chat, MoimChatRoom, MoimChatUser } = require('../models');
+const { moimNamespace } = require('../app');
 const myError = require('./utils/httpErrors')
 
 //방만들기 함수
@@ -9,8 +9,6 @@ const createNewRoom = async (moimId, userId) => {
       moimId,
       userId,
     })
-
-    console.log("함수안의 셋뉴룸", setNewRoom);
 
     return setNewRoom;
 
@@ -46,8 +44,9 @@ const createChatRoom = async (req, res, next) => {
     const newRoom = await createNewRoom(moimId, userId) // 함수로 새로운 채팅방을 만드는 동작을 정의
     console.log("newRoomInfo", newRoom);
 
-    // const io = req.app.use(io);
-    io.of(`/chat/${moimId}`).emit('newRoom', newRoom); // 새로운 방 생성이라는 이벤트를 던져준다
+    // const io = req.app.get('io');
+    const moimNamespace = req.app.get('moimNamespace');
+    moimNamespace.emit('newRoom', newRoom); // 새로운 방 생성이라는 이벤트를 던져준다
     
     //소켓 io의 js가 들어간 프론트가 있어야한다.
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
@@ -72,72 +71,60 @@ const enterChatRoom = async (req, res, next) => {
     const { moimId } = req.params;
 
     //조건을 줘야함. 조건에 해당하는 필요한 모임을 찾아 연결하고, 없으면 새로 만든다
-    const targetMoimChatromm = await MoimChatRoom.findOne({ 
+    const targetMoimChatroom = await MoimChatRoom.findOne({ 
       where: { moimId, deleteAt: null },
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) return next(new Error('모임 채팅방 찾기 중 db 에러'))
-    });
+    })
 
-    if(targetMoimChatromm.length === 0) {
+    if(targetMoimChatroom.length === 0) {
       return next(myError(400, '현재 채팅방이 없습니다. 생성하기 버튼을 눌러주세요.'));
     };
 
-    const addChatUser = await MoimChatRoom.update( //채팅방 사용 유저로 db에 추가 크리에이트로채팅멤버
-      { moimUserId },
-      { where: {id: targetMoimChatromm.id}},
-    ).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('모임 채팅방 유저 등록 중 db 에러'))
+    const addChatUser = await MoimChatUser.create({ //채팅방 사용 유저로 db에 추가 크리에이트로채팅멤버
+      moimUserId,
+      moimChatRoomId : targetMoimChatroom.id,
     });
 
     //그 후 새로운 채팅방 생성때와 같이 랜더링이 필요함
 
-    // const io = req.app.use(io);
-    io.of(`/chat/${moimId}`).emit('newRoom', targetMoimChatromm); // 새로운 방 생성이라는 이벤트를 던져준다
+    const moimNamespace = req.app.get('moimNamespace');
+    moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
 
     // 기존에 있던 모든 대화를 끌어온다.
     const chats = await Chat.findAll({
-      where: {moimId}
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('타겟 채팅방 대화 내용 불러오기 중 db 에러'))
-    });
+      where: {moimChatRoomId: targetMoimChatroom.id}
+    })
 
-    res.status(400).send({
+    res.status(200).send({
       result: true,
-      moimChatromm : targetMoimChatromm,
+      moimChatromm : targetMoimChatroom,
       chats: chats,
       msg: '채팅방 입장에 성공했습니다.',
     });
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
-const outChatRoom = async (req, res, next) => { 
+const exitChatRoom = async (req, res, next) => { 
   try {
     console.log('exitChatRomm router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { moimUserId } = req.body;
+    const { moimUserId, moimChatRoomId } = req.params;
 
-    const exitRomm = await MoimChatRoom.destroy({
-      where: {moimUserId: moimUserId},
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('모임 채팅방 유저 삭제 중 db 에러'))
-    });
+    const exitRoom = await MoimChatUser.destroy({
+      where: {moimUserId, moimChatRoomId},
+    })
+    console.log('exitRoom', exitRoom);
 
-   if(exitRomm !== 1) {
+   if(exitRoom !== 1) {
     return next(myError(400, '해당 채팅방의 유저가 아닙니다.')); //아마 벌어질 일이 없을 것으로 예상
    }
 
-   res.status(200).send({
+   res.status(200).send({ //해당 메세지를 받으면 채팅방에서 튕겨내야 함
      result: true,
      msg: "채팅방 나가기에 성공했습니다.",
    })
@@ -154,38 +141,36 @@ const deleteChatRoom = async (req, res, next) => {
     console.log('outChatRomm router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
-    const userId = res.locals.user.id;
-    const { chatRoomId } = req.params.chatRoomId;
-    
-    const deleteRomm = await MoimChatRoom.update(
-      {
-        deletAt: new Date()
-      }, 
-      {
-        where: {id: chatRoomId}
-      },
-    ).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('모임 채팅방 삭제 중 db 에러'))
-    });
+    console.log("파람스",req.params);
+    const { moimId, chatRoomId } = req.params;
 
-    if( deleteRomm !== 1 ) {
-      return next(myError(400, '해당 채팅방 없습니다.'));
+    // isHost 는 나중에
+
+    const date = new Date();
+
+    const deleteChatRoom = await MoimChatRoom.update(
+      { deleteAt: date }, 
+      { where: { id: chatRoomId } },
+    )
+    console.log(deleteChatRoom);
+
+    if(deleteChatRoom !== 1) {
+      return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
     }
 
-    setTimeout(() => { // 프론트에서 처리하는 작업
-      req.app.get('io').of(`/chat/${moimId}`).emit('removeRoom', req.params.chatRoomId);
-    }, 2000);
+    // 프론트에서 처리하는 작업
+    const moimNamespace = req.app.get('moimNamespace');
+    moimNamespace.emit('removeRoom', chatRoomId ); // 새로운 방 생성이라는 이벤트를 던져준다
 
     return res.status(200).send({
       result: true,
+      targetChatRoomId: chatRoomId,
       msg: '채팅방 삭제에 성공했습니다.'
     })
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
@@ -194,9 +179,12 @@ const loadTargetChat = async (req, res, next) => {
     console.log('loadChating router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
-    // 기존에 있던 모든 대화를 끌어온다.
+    const { moimId, chatRoomId } = req.params
+    console.log(req.params);
+
+    // 특정 채팅방의 속한 모든 대화를 끌어온다.
     const chats = await Chat.findAll({
-      where: {moimId},
+      where: { moimChatRoomId: chatRoomId },
       include: [
         {
           model: MoimUser,
@@ -209,10 +197,7 @@ const loadTargetChat = async (req, res, next) => {
           ],
         },
       ]
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('타겟 채팅방 대화 내용 불러오기 중 db 에러'))
-    });
+    })
 
     return res.status(200).send({
       result: true,
@@ -222,8 +207,7 @@ const loadTargetChat = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
@@ -233,38 +217,46 @@ const saveChat = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { moimId } = req.params.moimId;
-    const { chatRoomId } = req.params.chatRoomId;
+    const { moimId, chatRoomId } = req.params;
     const { contents } = req.body;
+    console.log(req.params);
+    console.log(contents)
 
-    const targetmoimUser = await moimUser.findOne({
-      where: {userId: userId, moimId: moimId}
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('모임의 타겟 이용 유저 정보 불러 오기 중 db 에러'))
+    const targetMoimUser = await MoimUser.findOne({
+      where: {userId: userId, id: moimId}
     });
 
-    console.log('현재 화면을 보고있는 타겟 유저 정보',targetmoimUser);
-    console.log('현재 화면을 보고있는 타겟 유저 정보',targetmoimUser.id);
+    console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser);
+    console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser.id);
+
+    if(!targetMoimUser) {
+      return next(myError(500, '해당 모임의 참여자가 아닙니다'));
+    }
 
     const saveChat = await Chat.create({
-      moimUserId: targetmoimUser.id,
-      chatRoomId,
+      moimUserId: targetMoimUser.id,
+      moimChatRoomId: chatRoomId,
       contents,
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) next(new Error('타겟 채팅방 대화 내용 저장 중 db 에러'))
-    });
+    })
+    console.log('saveChat', saveChat);
+    
+    const saveChatElements = {
+      "id": saveChat.id,
+      "moimUserId": saveChat.moimUserId,
+      "moimChatRoomId": saveChat.moimChatRoomId,
+      "contents": saveChat.contents,
+    } 
 
     return res.status(200).send({
       result: true,
+      saveChat,
+      saveChatElements,
       msg: "채팅 내용 저장에 성공했습니다."
     });
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(myError(err));
   }
 }
 
@@ -272,7 +264,7 @@ const saveChat = async (req, res, next) => {
 module.exports = { 
   createChatRoom,
   enterChatRoom,
-  outChatRoom,
+  exitChatRoom,
   deleteChatRoom,
   loadTargetChat,
   saveChat,

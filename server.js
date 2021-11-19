@@ -1,4 +1,4 @@
-const httpServer = require('./app');
+const {httpServer} = require('./app');
 const env = require('./env');
 const port = env.EXPRESS_PORT;
 // const server = require('./socket');

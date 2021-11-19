@@ -25,6 +25,7 @@ const { Server } = require("socket.io");
 const app = express()
 const httpServer = createServer(app);
 const io = new Server(httpServer);
+app.set('io', io);
 
 
 // ejs 읽기!
@@ -49,6 +50,8 @@ app.use('/chat/:moimId', (req, res) => {
 
 const moimId = 3;
 const moimNamespace = io.of(`/chat/${moimId}`);
+app.set('moimNamespace', moimNamespace);
+console.log("app moim스페이스", moimNamespace);
 
 //특정 네임스페이스 지정시의 코드
 moimNamespace.on('connection', (socketMoim) => {
@@ -154,4 +157,4 @@ app.use(errorHandler)
 
 userCron.destroyUser();
 
-module.exports = httpServer;
+module.exports = { httpServer, io, moimNamespace };

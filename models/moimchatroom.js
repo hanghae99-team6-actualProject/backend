@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       models.MoimChatRoom.hasMany(models.Chat, { foreignKey: 'moimChatRoomId', sourceKey: 'id' });
+      models.MoimChatRoom.hasMany(models.MoimChatUser, { foreignKey: 'moimChatRoomId', sourceKey: 'id' });
       models.MoimChatRoom.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
-      models.MoimChatRoom.belongsTo(models.MoimUser, { foreignKey: 'moimUserId', targetKey: 'id', onDelete: 'cascade' });
+
     }
   };
   MoimChatRoom.init({
     moimId: DataTypes.INTEGER,
-    moimUserId: DataTypes.INTEGER,
     deleteAt: {
       allowNull: true,
       type: DataTypes.DATE
