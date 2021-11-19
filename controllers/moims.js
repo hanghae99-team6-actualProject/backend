@@ -69,8 +69,8 @@ const getAllMoim = async (req, res, next) => {
 const getMoimByLocation = async (req, res, next) => {
   try {
     logger.info('getMoimByLocation router 진입');
-    const { locationGu } = req.params;
-    console.log(req.params);
+    const { locationGu } = req.body;
+    console.log(req.body);
 
     const guMoims = await Moim.findAll({
       where: { locationGu },
@@ -347,7 +347,7 @@ const enterMoim = async (req, res, next) => {
         moimId,
       }
     });
-    
+
     logger.info('0이면 유저생성가능', isUser.length)
     if (isUser.length > 0) {
       return next(new Error('이미 참가중인 모임입니다.'));
