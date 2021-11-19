@@ -113,12 +113,12 @@ const exitChatRoom = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { moimUserId, moimChatRoomId } = req.params;
+    const { moimId, chatRoomId } = req.params;
+    const { moimUserId } = req.body;
 
     const exitRoom = await MoimChatUser.destroy({
-      where: {moimUserId, moimChatRoomId},
+      where: {moimUserId, moimChatRoomId: chatRoomId},
     })
-    console.log('exitRoom', exitRoom);
 
    if(exitRoom !== 1) {
     return next(myError(400, '해당 채팅방의 유저가 아닙니다.')); //아마 벌어질 일이 없을 것으로 예상
@@ -141,7 +141,7 @@ const deleteChatRoom = async (req, res, next) => {
     console.log('outChatRomm router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
-    console.log("파람스",req.params);
+    // console.log("파람스",req.params);
     const { moimId, chatRoomId } = req.params;
 
     // isHost 는 나중에
@@ -152,9 +152,10 @@ const deleteChatRoom = async (req, res, next) => {
       { deleteAt: date }, 
       { where: { id: chatRoomId } },
     )
-    console.log(deleteChatRoom);
+    
+    console.log(deleteChatRoom[0]);
 
-    if(deleteChatRoom !== 1) {
+    if(deleteChatRoom[0] !== 1) {
       return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
     }
 
@@ -239,7 +240,7 @@ const saveChat = async (req, res, next) => {
       contents,
     })
     console.log('saveChat', saveChat);
-    
+
     const saveChatElements = {
       "id": saveChat.id,
       "moimUserId": saveChat.moimUserId,
