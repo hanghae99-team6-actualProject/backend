@@ -17,7 +17,7 @@ router.put('/comment/:commentId', authMiddleware, updateComment);
 router.delete('/comment/:commentId', authMiddleware, deleteComment);
 
 router.get('/', getAllMoim); //미들웨어 제거
-router.get('/search/:locationGu', getMoimByLocation); //미들웨어 제거
+router.post('/search/:locationGu', getMoimByLocation); //미들웨어 제거
 router.post('/', authMiddleware, createMoim);
 router.get('/:moimId', authMiddleware, detailMoim);
 router.put('/:moimId', authMiddleware, updateMoim);
