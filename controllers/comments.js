@@ -63,7 +63,6 @@ const getTargetMoimComments = async (req, res, next) => {
       targetMoimComments,
       msg: '특정 모임 전체 댓글 불러오기에 성공했습니다.',
     });
-
   } catch (err) {
     logger.error(err);
     return next(err);

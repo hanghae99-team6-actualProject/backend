@@ -21,7 +21,7 @@ function timeSet() {
 let routineExp = 0;
 
 //액션 루틴 완료 시 오늘 날짜 + 계정 기준으로 레코드 생성
-const chkDayLog = async (userId, res) => {
+const chkDayLog = async (userId) => {
   try {
     const { fromToday } = timeSet();
 
@@ -137,7 +137,7 @@ const calcRoutineExp = async (userId, routineId) => {
 };
 
 // 루틴완료 x 액션완료 일때 경험치 획득 + actionExpGrowth
-const upExpFinOneAction = async (userId, res) => {
+const upExpFinOneAction = async (userId) => {
   //당일 한계 경험치 체크함수
   if (await upDayActionExp(userId)) {
     logger.info('캐릭 액션 경험치 함수 진입');
@@ -267,4 +267,4 @@ const doneAction = async (req, res, next) => {
   }
 };
 
-module.exports = { doneAction };
+module.exports = { doneAction, chkDayLog};
