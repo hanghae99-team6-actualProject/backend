@@ -19,8 +19,7 @@ const errorHandler = (err, req, res, next) => {
   res.status(err.status || 500).send({ result: false, msg: `code ${err.status || 500}: ${err.message}` });
 }
 
-const error404 = (err, req, res, next) => {
-  console.log(err.stack);
+const error404 = (req, res, next) => {
   next(createError(404));
 }
 

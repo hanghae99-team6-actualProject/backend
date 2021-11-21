@@ -12,13 +12,14 @@ const { getRoutine,
   allPresetRoutine } = require('../controllers/routines');
 
 //API
-router.get('/', authMiddleware, getRoutine);
-router.post('/', authMiddleware, createRoutine);
-router.put('/:routineId', authMiddleware, modifyRoutine);
-router.delete('/:routineId', authMiddleware, deleteRoutine);
 router.post('/create/:routineId', authMiddleware, createNowRoutineActions);
 router.put('/reset/:routineId', authMiddleware, resetNowRoutineActions);
 // 프리셋 루틴 전체 목록 불러오기
 router.get('/preset', authMiddleware, allPresetRoutine);
+
+router.put('/:routineId', authMiddleware, modifyRoutine);
+router.delete('/:routineId', authMiddleware, deleteRoutine);
+router.get('/', authMiddleware, getRoutine);
+router.post('/', authMiddleware, createRoutine);
 
 module.exports = router;

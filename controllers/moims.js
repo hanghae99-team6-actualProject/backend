@@ -132,10 +132,6 @@ const createMoim = async (req, res, next) => {
       .catch((err) => {
         if (err) next(new Error('모임 중복 생성 검사 중 db 에러'))
       });
-    logger.info('0이면 모임생성가능', isMoim.length)
-    if (isMoim.length > 0) {
-      return next(new Error('동일한 모임이 있습니다.'));
-    }
 
     // 모임 db데이터 생성
     await Moim.create({
@@ -223,7 +219,7 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents, imgSrc, location } = req.body;
+    const { title, contents, imgSrc, location, startAt, finishAt } = req.body;
 
     //1. find?
     const targetMoim = await Moim.findAll({
@@ -348,8 +344,7 @@ const enterMoim = async (req, res, next) => {
       }
     });
 
-    logger.info('0이면 유저생성가능', isUser.length)
-    if (isUser.length > 0) {
+    if (isUser) {
       return next(new Error('이미 참가중인 모임입니다.'));
     }
 
@@ -385,7 +380,7 @@ const exitMoim = async (req, res, next) => {
 
     const exitUserNickName = isEnterMoim.User.nickName;
 
-    if (isEnterMoim.length === null) {
+    if (isEnterMoim) {
       return next(new Error('이미 비참가중인 모임입니다.'));
     }
 
