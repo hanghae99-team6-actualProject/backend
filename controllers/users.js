@@ -79,7 +79,7 @@ const setMainRoutine = async (req, res, next) => {
     //이전 isMain이 1인 루틴 전부 0으로 수정
     await Routine.update({ isMain: 0 }, {
       where: { userId, isMain: 1 }
-    })
+    });
 
     await Routine.update({ isMain: 1 }, {
       where: { id: routineId }
@@ -99,7 +99,7 @@ const myMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const userType = req.body.userType;
-    const hostType = Number(userType)
+    const hostType = Number(userType);
 
     const allMyMoim = await MoimUser.findAll({
       where: { userId: userId, host: hostType },

@@ -1,10 +1,9 @@
 const request = require('supertest');
-const {sequelize} = require('../models');
 const app = require('../app');
-const baseData = require("./baseData")
+const baseData = require("./baseData");
 
 function loginUser(auth) {
-  return function(done) {
+  return function (done) {
       request(app)
           .post('/api/auth/local')
           .send({
@@ -26,33 +25,33 @@ describe('내 모임 관련', () => {
   let auth = {};
   beforeEach(loginUser(auth));
 
-  test('내가 만든 모임 조회 API', (done) => {
-    request(app)
+  test('내가 만든 모임 조회 API', async () => {
+    await request(app)
       .post('/api/users/moims')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
         "userType": 1
       })
-      .expect(200, done);
+      .expect(200);
   }),
 
-  test('내가 참여한 모임 조회 API', (done) => {
-    request(app)
+  test('내가 참여한 모임 조회 API', async () => {
+    await request(app)
       .post('/api/users/moims')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
       .send({
         "userType": 0
       })
-      .expect(200, done);
+      .expect(200);
   }),
 
-  test('내 모임 댓글 API', (done) => {
-    request(app)
+  test('내 모임 댓글 API', async () => {
+    await request(app)
       .get('/api/users/comments')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
-      .expect(200, done);
+      .expect(200);
   })
 })

@@ -4,7 +4,7 @@
   "description": "항해99 6조 최종프로젝트 '밍기적'",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit",
     "dev": "nodemon server.js",
     "start": "NODE_ENV=production node server.js",
     "seedon": "npx sequelize-cli db:seed:all",

@@ -21,11 +21,11 @@ function timeSet() {
 let routineExp = 0;
 
 //액션 루틴 완료 시 오늘 날짜 + 계정 기준으로 레코드 생성
-const chkDayLog = async (userId, res) => {
+const chkDayLog = async (userId) => {
   try {
     const { fromToday } = timeSet();
 
-    const dayLogExist = ExpDayLog.findOrCreate({
+    const dayLogExist = await ExpDayLog.findOrCreate({
       where: {
         userId,
         date: {
@@ -49,6 +49,9 @@ const upDayActionExp = async (userId) => {
   const { fromToday } = timeSet();
 
   await chkDayLog(userId);
+  console.log('@@@@@@@@@@@@@@@@@@@@@@');
+  console.log(await chkDayLog(userId));
+  console.log('@@@@@@@@@@@@@@@@@@@@@@');
   const totalExpChk = await ExpDayLog.findAll({
     where: {
       userId,
@@ -267,4 +270,8 @@ const doneAction = async (req, res, next) => {
   }
 };
 
-module.exports = { doneAction };
+module.exports = {
+  chkDayLog,
+  upDayActionExp,
+  doneAction,
+};
