@@ -41,11 +41,11 @@ const createChatRoom = async (req, res, next) => {
     const newRoom = await createNewRoom(moimId, userId) // 함수로 새로운 채팅방을 만드는 동작을 정의
     console.log("newRoomInfo", newRoom);
 
-    // const io = req.app.get('io');
-    const moimNamespace = req.app.get('moimNamespace');
-    moimNamespace.emit('newRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
+    // // const io = req.app.get('io');
+    // const moimNamespace = req.app.get('moimNamespace');
+    // moimNamespace.emit('createNewRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
     
-    //소켓 io의 js가 들어간 프론트가 있어야한다.
+
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
       result : true,
       newRoom,
@@ -64,7 +64,7 @@ const enterChatRoom = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { moimUserId } = req.body;
+    const { moimUserId, nickName } = req.body;
     const { moimId } = req.params;
 
     //조건을 줘야함. 조건에 해당하는 필요한 모임을 찾아 연결하고, 없으면 새로 만든다
@@ -81,12 +81,13 @@ const enterChatRoom = async (req, res, next) => {
       moimChatRoomId : targetMoimChatroom.id,
     });
 
+    
     //그 후 새로운 채팅방 생성때와 같이 랜더링이 필요함
-    let roomId = targetMoimChatroom.moimId;
+    // const roomId = moimId;
 
-    const moimNamespace = req.app.get('moimNamespace');
-    moimNamespace.to(roomId).emit('newUserEnter', targetMoimChatroom, addChatUser); // 새로운 방 생성이라는 이벤트를 던져준다
-    // moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
+    // const moimNamespace = req.app.get('moimNamespace');
+    // moimNamespace.to(roomId).emit('newUserEnter', targetMoimChatroom, addChatUser); // 새로운 방 생성이라는 이벤트를 던져준다
+    // // moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
 
     // 기존에 있던 모든 대화를 끌어온다.
     const chats = await Chat.findAll({
@@ -95,9 +96,10 @@ const enterChatRoom = async (req, res, next) => {
 
     res.status(200).send({
       result: true,
-      moimChatromm : targetMoimChatroom,
+      moimChatroom : targetMoimChatroom,
+      moimChatroomId : targetMoimChatroom.id,
       chats: chats,
-      msg: '채팅방 입장에 성공했습니다.',
+      msg: '채팅방 유저 등록에 성공했습니다.',
     });
 
   } catch (err) {
@@ -123,12 +125,12 @@ const exitChatRoom = async (req, res, next) => {
     return next(myError(400, '해당 채팅방의 유저가 아닙니다.')); //아마 벌어질 일이 없을 것으로 예상
    }
 
-   const roomNum = moimId;
-   moimNamespace.to(roomNum).emit('exitRoom', roomNum);
+  //  const roomNum = moimId;
+  //  moimNamespace.to(roomNum).emit('exitRoom', roomNum);
 
    res.status(200).send({ //해당 메세지를 받으면 채팅방에서 튕겨내야 함
      result: true,
-     msg: "채팅방 나가기에 성공했습니다.",
+     msg: "채팅방 유저 나가기에 성공했습니다.",
    })
 
   } catch (err) {
@@ -160,9 +162,9 @@ const deleteChatRoom = async (req, res, next) => {
       return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
     }
 
-    // 프론트에서 처리하는 작업
-    const moimNamespace = req.app.get('moimNamespace');
-    moimNamespace.emit('removeRoom', chatRoomId ); // 새로운 방 생성이라는 이벤트를 던져준다
+    // // 프론트에서 처리하는 작업
+    // const moimNamespace = req.app.get('moimNamespace');
+    // moimNamespace.emit('removeRoom', chatRoomId ); // 새로운 방 생성이라는 이벤트를 던져준다
 
     return res.status(200).send({
       result: true,
