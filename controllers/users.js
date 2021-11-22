@@ -111,7 +111,7 @@ const myMoim = async (req, res, next) => {
         },
         {
           model: Moim,
-          attributes: ['id', 'title', 'contents', 'createdAt'],
+          attributes: ['id', 'title', 'contents', 'location', 'createdAt'],
           include: [
             {
               model: MoimUser,

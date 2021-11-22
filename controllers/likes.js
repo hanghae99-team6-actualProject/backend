@@ -1,5 +1,5 @@
 const env = require('../env')
-const { User, Like, Moim } = require('../models');
+const { User, Like, Moim, Comment } = require('../models');
 const myError = require('./utils/httpErrors')
 const logger = require('../logger');
 
@@ -13,9 +13,26 @@ const getMyLikes = async (req, res, next) => {
       where: {
         userId
       },
+      include: [
+        {
+          model: User,
+          attributes: ['nickName'],
+        },
+      ],
       include: [{
-        model: Moim
-      }]
+        model: Moim,
+        attributes: ['id'],
+        include:[
+          {
+            model: Like,
+            attributes: ['id'],
+          },
+          {
+            model: Comment,
+            attributes: ['id'],
+          },
+        ],
+      }],
     });
     return res.status(200).send({ result: true, myLikes });
   } catch (err) {
