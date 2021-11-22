@@ -34,8 +34,15 @@ const createChatRoom = async (req, res, next) => {
     console.log("이즈룸", isroom);
     // var newRoom = []; //함수 안에서 밖으로 빼내기 위한 변수, 새로운 채팅방을 담는다
 
-    if(isroom.length > 0) { //현재 방이 존재하는 경우 >> 입장하기로 들어가야함
-      return next(myError(500, '이미 채팅방이 존재합니다. 입장하기 버튼을 눌러주세요.'));
+    if(isroom.length > 0) { //현재 방이 존재하는 경우 >> 입장하기로 들어가야함 >> 그냥 바로 프론트에 입장하기로 쏴줌
+      let roomId = isroom[0].dataValues.id;
+      
+      return res.status(200).send({
+        result : true,
+        isroom,
+        roomId,
+        msg: "이미 채팅방이 존재합니다. 기존의 채팅방으로 안내합니다."
+      });
     }
 
     const newRoom = await createNewRoom(moimId, userId) // 함수로 새로운 채팅방을 만드는 동작을 정의
