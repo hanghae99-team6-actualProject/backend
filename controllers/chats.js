@@ -81,7 +81,6 @@ const enterChatRoom = async (req, res, next) => {
       moimChatRoomId : targetMoimChatroom.id,
     });
 
-    
     //그 후 새로운 채팅방 생성때와 같이 랜더링이 필요함
     // const roomId = moimId;
 
