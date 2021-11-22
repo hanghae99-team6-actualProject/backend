@@ -48,39 +48,49 @@ app.use('/chat/:moimId', (req, res) => {
 //   }
 // });
 
-const moimId = 3;
-const moimNamespace = io.of(`/chat/${moimId}`);
+const moimNamespace = io.of(`/chat`);
 app.set('moimNamespace', moimNamespace);
-console.log("app moim스페이스", moimNamespace);
+
+// console.log("app moim스페이스", moimNamespace);
 
 //특정 네임스페이스 지정시의 코드
 moimNamespace.on('connection', (socketMoim) => {
   console.log("====================================================")
   console.log("moim 네임스페이스 접속");
-  console.log("socketMoim의 Id", socketMoim.id)
-  // console.log("socketMoim의 name", socketMoim.name)
-  // console.log("socketMoim의 name", socketMoim.roomId)
-  console.log("socketMoim의 name", socketMoim.nsp.name)
-  // console.log("socketMoim의 name", socketMoim.handshake.address)
 
-  const roomId = socketMoim.nsp.name;
-  socketMoim.join(roomId);
+  console.log("socketMoim의 Id", socketMoim.id)
+  // const roomNum = socketMoim.id;
+
+  socketMoim.on('joinRoom', (roomNum, userNickName) => {
+    //조인 룸이라는 이벤트를 받아들이고 진짜 조인 기능을 실행시킨다
+    socketMoim.join(roomNum, () => {
+      console.log(`${userNickName} join a ${roomNum}`);
+
+      //프론트로 이벤트를 던져줌
+      moimNamespace.to(roomNum).emit('joinTargetRoom', roomNum, userNickName);
+    })
+  });
 
   socketMoim.on('newUserEnter', (data) => {
-    // console.log("newUserEnter의 data", data);
-    // console.log("newUserEnter의 socket", sock);
-    // console.log("newUserEnter의 socket", sock.name);
-    socketMoim.name = data;
+    
+    console.log('newUserEnter에 넘어온 data', data);
+    // console.log('newUserEnter에 넘어온 targetMoimChatroom', targetMoimChatroom);
+    // console.log('newUserEnter에 넘어온 addChatUser', addChatUser);
 
-    var msg = socketMoim.name + '님이 접속했습니다.';
+    var msg = data + '님이 접속했습니다.';
     // console.log('서버 입장시 메세지', msg);
     console.log(msg);
 
-    moimNamespace.to(roomId).emit('updateMsg', { 
+    // var roomId = targetMoimChatroom.moimId;
+
+    // moimNamespace.to(roomId).emit('updateMsg', { 
+    moimNamespace.emit('updateMsg', { 
       name: 'SERVER',
       msg: msg,
     });
   });
+
+
 
   socketMoim.on('sendMsg', function (data) {
     // console.log('전송받은 data', data);
@@ -99,7 +109,8 @@ moimNamespace.on('connection', (socketMoim) => {
     // console.log('서버가 송출하는 퇴장 메세지', msg);
     console.log(msg);
 
-    moimNamespace.to(roomId).emit('updateMsg', {
+    // moimNamespace.to(roomId).emit('updateMsg', {
+    moimNamespace.emit('updateMsg', {
       name: 'SERVER',
       msg: msg,
     });

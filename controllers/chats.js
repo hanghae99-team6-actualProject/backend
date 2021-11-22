@@ -29,9 +29,6 @@ const createChatRoom = async (req, res, next) => {
 
     const isroom = await MoimChatRoom.findAll({
       where : { moimId }
-    }).catch((err) => {
-      console.log("에러에러")
-      if (err) return next(new Error('모임 채팅방 생성 중 db 에러'))
     });
     
     console.log("이즈룸", isroom);
@@ -46,7 +43,7 @@ const createChatRoom = async (req, res, next) => {
 
     // const io = req.app.get('io');
     const moimNamespace = req.app.get('moimNamespace');
-    moimNamespace.emit('newRoom', newRoom); // 새로운 방 생성이라는 이벤트를 던져준다
+    moimNamespace.emit('newRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
     
     //소켓 io의 js가 들어간 프론트가 있어야한다.
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
@@ -85,9 +82,11 @@ const enterChatRoom = async (req, res, next) => {
     });
 
     //그 후 새로운 채팅방 생성때와 같이 랜더링이 필요함
+    let roomId = targetMoimChatroom.moimId;
 
     const moimNamespace = req.app.get('moimNamespace');
-    moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
+    moimNamespace.to(roomId).emit('newUserEnter', targetMoimChatroom, addChatUser); // 새로운 방 생성이라는 이벤트를 던져준다
+    // moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
 
     // 기존에 있던 모든 대화를 끌어온다.
     const chats = await Chat.findAll({
@@ -124,6 +123,9 @@ const exitChatRoom = async (req, res, next) => {
     return next(myError(400, '해당 채팅방의 유저가 아닙니다.')); //아마 벌어질 일이 없을 것으로 예상
    }
 
+   const roomNum = moimId;
+   moimNamespace.to(roomNum).emit('exitRoom', roomNum);
+
    res.status(200).send({ //해당 메세지를 받으면 채팅방에서 튕겨내야 함
      result: true,
      msg: "채팅방 나가기에 성공했습니다.",
@@ -131,8 +133,7 @@ const exitChatRoom = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
+    return next(err);
   }
 }
 
@@ -152,7 +153,7 @@ const deleteChatRoom = async (req, res, next) => {
       { deleteAt: date }, 
       { where: { id: chatRoomId } },
     )
-    
+
     console.log(deleteChatRoom[0]);
 
     if(deleteChatRoom[0] !== 1) {

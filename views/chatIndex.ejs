@@ -6,6 +6,7 @@
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
     <!-- <script type="text/javascript" src="/chatIndex.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>Moim 채팅방</title>
   </head>
   <body>
@@ -24,15 +25,39 @@
     <!-- <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script> -->
 
     <script>
+      // user me에서 가져온 닉네임을 입력시켜줌
+      // let userNickName = nickName;
+
+      let userNickName ="";
+
+      // api/user/me 를 통해 닉네임 얻어오기!
+      // $.ajax({
+      //   type: 'GET',
+      //   url: '/api/auth/me',
+      //   success: function(result) {
+      //     console.log("이것이 me의 결과", result);
+      //     return result;
+      //   },
+      //   error: function(err){
+      //     console.log(err);
+      //   },
+      // });
+
+      // userNickName = result.nickName;
+
+
       console.log("프론트의 스크립트 작동");
-      const moimId = window.location.href.split('/')[4];
-      const socketMoim = io(`/chat/${moimId}`);
+      // const moimId = window.location.href.split('/')[4];
+      const socketMoim = io(`/chat`);
 
       socketMoim.on('connect', () => {
-        console.log("sdadasdasda")
+        console.log("클라이언트 connect 진입");
         var name = prompt('네임스페이스에서 쓸 대화명을 입력해주세요.', '');
+        var userNickName = name;
 
-        socketMoim.emit('newUserEnter', name);
+        console.log('연결시 connect 하는 대상의 닉네임', userNickName);
+
+        socketMoim.emit('newUserEnter', userNickName);
       });
 
       function drawChatMessage(data) {
@@ -95,14 +120,55 @@
         chatInput.value = ''; // 소켓.에밋으로 이벤트를 발생시켜 서버와 통신 후 메세지 인풋창을 공란으로 돌려 놓는다
       });
 
-      socketMoim.on('newRoom', function (data) {
-        console.log(data);
-        console.log('새로운 채팅방에 대한 랜딩이 필요하다');
+      socketMoim.on('newRoom', (data) => {
+        console.log('newRoomInfo', data);
+        let roomNum = data.id;
+        let userNickName = userNickName;
         //프론트가 새로운 채팅방을 어떻게 랜더링 할 것인지 정해야 함
+
+        //네임스페이스 안의 채팅방으로 조인시켜주기(프론트 -> 서버)
+        socketMoim.emit('joinRoom', roomNum, userNickName );
+      })
+
+      // 서버 -> 프론트 의 이벤트
+      socketMoim.on('joinTargetRoom', (roomNum, userNickName) => {
+        console.log(`${roomNum}에 ${userNickName}이 들어왔습니다.`);
+        var enterRoomMsg = `${roomNum}에 ${userNickName}이 들어왔습니다.`
+
+
+        // 채팅창에 누군가 들어왔다는 공지문 노출
+        var infoContents = document.getElementById('info');
+
+          infoContents.innerHTML = enterRoomMsg;
+
+          //5초뒤에 인포의 html을 공란으로 만든다! 오호
+          setTimeout(() => {
+            info.innerHTML = '';
+          }, 10000);
+          //시간초는 설정할 수 있고 안할 수 있다.
+      })
+
+      socketMoim.on('exitRoom', (roomNum) => {
+        console.log('이벤트와 같이 온 chatRoomId', roomNum);
+
+        console.log(`${roomNum}에서 ${userNickName}이 퇴장 했습니다.`);
+        var exitRoomMsg = `${roomNum}에서 ${userNickName}이 퇴장 했습니다.`
+
+
+        // 채팅창에 누군가 들어왔다는 공지문 노출
+        var infoContents = document.getElementById('info');
+
+          infoContents.innerHTML = exitRoomMsg;
+
+          //5초뒤에 인포의 html을 공란으로 만든다! 오호
+          setTimeout(() => {
+            info.innerHTML = '';
+          }, 10000);
+          //시간초는 설정할 수 있고 안할 수 있다.
       });
 
       socketMoim.on('removeRoom', function (data) {
-        console.log(data);
+        console.log('removeRoom의 데이터', data);
         console.log('채팅방 삭제에 대한 프론트의 처리가 필요하다');
         //프론트의 채팅방 삭제에 대한 처리가 필요합니다.
       });
