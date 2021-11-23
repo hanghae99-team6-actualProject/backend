@@ -33,7 +33,7 @@ router.put('/comment/:commentId', authMiddleware, updateComment);
 router.delete('/comment/:commentId', authMiddleware, deleteComment);
 
 // chat
-const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat } = require('../controllers/chats');
+const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat, saveNotice, cancelNotice } = require('../controllers/chats');
 
 //API
 router.post('/:moimId/chatRoom', authMiddleware, createChatRoom) 
@@ -42,5 +42,7 @@ router.delete('/:moimId/:chatRoomId/exit', authMiddleware, exitChatRoom);
 router.put('/:moimId/:chatRoomId', authMiddleware, deleteChatRoom);
 router.get('/:moimId/:chatRoomId', authMiddleware, loadTargetChat);
 router.post('/:moimId/:chatRoomId', authMiddleware, saveChat);
+router.post('/:moimId/:chatRoomId/notice', authMiddleware, saveNotice);
+router.put('/:moimId/:chatRoomId/notice', authMiddleware, cancelNotice);
 
 module.exports = router;

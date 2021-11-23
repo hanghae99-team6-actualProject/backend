@@ -64,37 +64,34 @@ moimNamespace.on('connection', (socketMoim) => {
     socketMoim.name = userNickName;
     console.log('방 입장유저 닉네임', socketMoim.name)
     roomId = targetRoomId;
+    console.log(roomId);
     //DB의 고유 roomId를 참고하여 방에 join시킨다
 
-    socketMoim.join(roomId, () => {
-      console.log(`${userNickName} join a ${roomId}`);
+    // socketMoim.join(roomId, () => {
+    //   console.log(userNickName + ' is join a room#' + roomId );
 
-      var msg = `${userNickName}님이 채팅방에 참가했습니다.`
+    socketMoim.join(roomId);
+    var msg = userNickName + '님이 채팅방에 참가했습니다.'
 
-      moimNamespace.to(roomId).emit('updateMsg', {
-        name: SERVER,
-        msg: msg,
-      });
+    moimNamespace.to(roomId).emit('updateMsg', {
+      name: 'SERVER',
+      msg: msg,
     });
-
   });
+
 
   socketMoim.on('enterNewRoom', async (newRoom, userNickName) => {
     //DB의 고유 roomId를 참고하여 방에 join시킨다
     console.log(newRoom);
     let roomId = newRoom.id
 
-    socketMoim.join(roomId, () => {
-      console.log(`${userNickName} join a ${roomId}`);
-      
-      var msg = `${userNickName}님이 채팅방에 참가했습니다.`
-      
-      moimNamespace.to(roomId).emit('updateMsg', {
-        name: SERVER,
-        msg: msg,
-      });
-    });
+    socketMoim.join(roomId)
+    var msg = userNickName + '님이 채팅방에 참가했습니다.'
 
+    moimNamespace.to(roomId).emit('updateMsg', {
+      name: 'SERVER',
+      msg: msg,
+    });
   });
 
   socketMoim.on('sendMsg', async (userNickName, msg) => {

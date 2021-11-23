@@ -270,6 +270,88 @@ const saveChat = async (req, res, next) => {
   }
 }
 
+const saveNotice = async (req, res, next) => { 
+  try {
+    console.log('saveNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId, chatRoomId } = req.params;
+    const { contents } = req.body;
+    const notice = 1;
+
+    const targetMoimUser = await MoimUser.findOne({ // 해당 모임에 참여중인지, 호스트인지 확인
+      where: {userId: userId, id: moimId, host: 1}
+    });
+
+    if(targetMoimUser === null) {
+      return next(myError(500, '해당 모임의 참여자가 아니거나 호스트가 아닙니다'));
+    }
+
+    const makeNotice = await Chat.create({ //notice = 1 을통해 공지로 등록
+      moimUserId: targetMoimUser.id,
+      moimChatRoomId: chatRoomId,
+      contents,
+      notice,
+    })
+
+    return res.status(200).send({ //공지로 등록한 문구를 프론트로 전달
+      result: true,
+      notice: makeNotice,
+      msg: "공지 등록에 성공했습니다."
+    });
+
+  } catch (err) {
+    console.log(err);
+    return next(myError(err));
+  }
+}
+
+const cancelNotice = async (req, res, next) => { 
+  try {
+    console.log('cancelNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId, chatRoomId } = req.params;
+    const { contents } = req.body;
+
+    const checkMoimHost = await MoimUser.findOne({ //현재 유저가 호스트인지 확인
+      where: {userId: userId, moimId: moimId, host: 1}
+    })
+
+    if(checkMoimHost === null) {
+      return next(myError(500, '해당 모임의 호스트가 아닙니다'));
+    }
+
+    const checkNotice = await Chat.findOne({ //현재 채팅방에 공지의 유무 확인
+      where: {
+        moimUserId: checkMoimHost.id,
+        moimChatRoomId: chatRoomId,
+        contents: contents,
+        notice : 1,
+      }
+    });
+
+    if(checkNotice === null) {
+      return next(myError(500, '해당 모임의 공지가 없습니다. 공지 등록을 먼저 하시기 바랍니다.'));
+    }
+
+    const noticeChat = await Chat.update( //존재하는 공지의 공지여부를 취소
+      {notice : 0},
+      {where: {Id: checkNotice.id}},
+    );
+
+    return res.status(200).send({
+      result: true,
+      msg: "공지 취소에 성공했습니다.",
+    });
+
+  } catch (err) {
+    console.log(err);
+    return next(myError(err));
+  }
+}
 
 module.exports = { 
   createChatRoom,
@@ -278,4 +360,6 @@ module.exports = {
   deleteChatRoom,
   loadTargetChat,
   saveChat,
+  saveNotice,
+  cancelNotice,
 }

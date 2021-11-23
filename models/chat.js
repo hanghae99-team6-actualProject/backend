@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       require: true,
       type: DataTypes.STRING,
     },
+    notice: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   }, {
     sequelize,
     modelName: 'Chat',
