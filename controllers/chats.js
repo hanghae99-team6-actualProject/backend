@@ -231,7 +231,7 @@ const saveChat = async (req, res, next) => {
       where: {userId: userId, moimId: moimId}
     });
 
-    console.log('현재 화면을 보고있는 타겟 유저 정보에서 문젠가?',targetMoimUser);
+    console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser);
     console.log('현재 화면을 보고있는 타겟 유저 정보 id',targetMoimUser.id);
 
     if(!targetMoimUser) {
