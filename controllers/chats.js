@@ -240,7 +240,7 @@ const saveChat = async (req, res, next) => {
     }
 
     const saveChat = await Chat.create({
-      moimUserId: moimUserId,
+      moimUserId: targetMoimUser.id,
       moimChatRoomId: chatRoomId,
       contents: contents,
     })
