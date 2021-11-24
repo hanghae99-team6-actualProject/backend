@@ -222,8 +222,10 @@ const saveChat = async (req, res, next) => {
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
     const { contents } = req.body;
+
+    console.log("userId", userId);
     console.log(req.params);
-    console.log(contents)
+    console.log('contents', contents);
 
     const targetMoimUser = await MoimUser.findOne({
       where: {userId: userId, moimId: moimId}
@@ -231,7 +233,6 @@ const saveChat = async (req, res, next) => {
 
     console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser);
     console.log('현재 화면을 보고있는 타겟 유저 정보 id',targetMoimUser.id);
-    const moimUserId = targetMoimUser.id;
 
     if(!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
