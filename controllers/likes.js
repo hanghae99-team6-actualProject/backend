@@ -1,23 +1,59 @@
 const env = require('../env')
-const { User, Like, Moim } = require('../models');
+const { User, Like, Moim, Comment, MoimUser } = require('../models');
 const myError = require('./utils/httpErrors')
 const logger = require('../logger');
 
 //내가 좋아요한 모임 목록
-const getMyLikes = async (req, res, next) => {
+const getLikedMoims = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const { id: userId } = res.locals.user;
-    const myLikes = await Like.findAll({
+    const likedMoims = await Moim.findAll({
       where: {
-        userId
+        '$MoimUsers.userId$': userId,
+        '$Likes.userId$': userId,
       },
-      include: [{
-        model: Moim
-      }]
+      include: [
+        {
+          model: User,
+          attributes: ['nickName'],
+        },
+      ],
+      include: [
+        {
+          model: MoimUser,
+          attributes: ['id', 'userId', 'moimId', 'host'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          attributes: ['id', 'contents'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+          attributes: ['id'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        }
+      ]
     });
-    return res.status(200).send({ result: true, myLikes });
+    return res.status(200).send({ result: true, likedMoims });
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -30,8 +66,8 @@ const createLike = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id: userId } = res.locals.user;
     const { moimId } = req.params;
-    const userLike = await Like.findAll({ where: { userId, moimId } });
-    if (userLike.length > 0) {
+    const userLike = await Like.findOne({ where: { userId, moimId } });
+    if (userLike) {
       return next(new Error('이미 좋아요를 하셨습니다.'));
     }
     await Like.create({ userId, moimId })
@@ -64,4 +100,4 @@ const deleteLike = async (req, res, next) => {
   }
 }
 
-module.exports = { createLike, getMyLikes, deleteLike }
+module.exports = { createLike, getLikedMoims, deleteLike }

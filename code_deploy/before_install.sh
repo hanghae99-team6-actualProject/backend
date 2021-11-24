@@ -14,6 +14,7 @@ else
   mkdir ${DIR}
 fi
 
+sudo rm -rf /home/ubuntu/mingijuk/node_modules
 # 한국 시간(KST) 으로 Timezone 변경
 sudo rm -rf /etc/localtime
 sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime

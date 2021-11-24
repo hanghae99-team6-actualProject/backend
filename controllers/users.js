@@ -92,6 +92,7 @@ const setMainRoutine = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
 const myMoim = async (req, res, next) => {
   try {
     logger.info('myMoin 라우터 진입');
@@ -238,3 +239,6 @@ const myComments = async (req, res, next) => {
 }
 
 module.exports = { bye, collection, updateUser, setMainRoutine, myMoim, myComments };
+=======
+module.exports = { bye, collection, updateUser, setMainRoutine };
+>>>>>>> c57f13981fc66af3cec5d8dd1ce6007287c0d92c

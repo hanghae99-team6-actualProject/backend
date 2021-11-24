@@ -1,4 +1,4 @@
-const { Comment, User } = require('../models');
+const { Comment, User, Moim } = require('../models');
 const myError = require('./utils/httpErrors');
 const logger = require('../logger');
 
@@ -63,7 +63,6 @@ const getTargetMoimComments = async (req, res, next) => {
       targetMoimComments,
       msg: '특정 모임 전체 댓글 불러오기에 성공했습니다.',
     });
-
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -184,10 +183,58 @@ const deleteComment = async (req, res, next) => {
   }
 };
 
+
+
+const myComments = async (req, res, next) => {
+  try {
+    logger.info('myComments 라우터 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+
+    const userId = res.locals.user.id;
+
+    const myCommentList = await Comment.findAll({
+      where: { userId: userId },
+      attributes: ['id', 'userId', 'moimId', 'contents', 'createdAt'],
+      include: [
+        {
+          model: Moim,
+          attributes: ['title', 'contents'],
+        },
+        {
+          model: User,
+          attributes: ['nickName'],
+        }
+      ]
+    }).catch((err) => {
+      if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
+    });
+
+    logger.info('검색결과를 확인', myCommentList.length);
+    if (myCommentList.length === 0) {
+      return res.status(200).send({
+        result: 'true2',
+        msg: '내가 단 댓글이 없습니다. 댓글을 먼저 달아주세요.'
+      })
+    }
+
+    logger.info('댓글 조회 완료')
+    return res.status(200).send({
+      result: 'true1',
+      myCommentList,
+      msg: '나의 댓글 목록 정보 조회에 성공했습니다.'
+    });
+
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+}
+
 module.exports = {
   getAllComments,
   getTargetMoimComments,
   createComment,
   updateComment,
   deleteComment,
+  myComments
 };

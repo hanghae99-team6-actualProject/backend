@@ -70,23 +70,22 @@ const authMiddleware = async (req, res, next) => {
         //accessToken 발급
         const providerId = thisUser?.providerId;
 
+
         const newAccessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
           expiresIn: "1h",
           issuer: 'mingijuk'
         });
 
-        return res.status(418).send({
-          result: false,
+        return res.send({
+          result: 'true1',
           accessToken: newAccessToken,
-          msg: 'accessToken이 재발급되었습니다. 다시 로그인해주세요'
+          user: thisUser,
+          msg: 'accessToken 재발급'
         });
       }
       if (accessVerified && !refreshVerified) {
         const providerId = accessVerified?.providerId;
 
-        const thisUser = await User.findOne({ where: { providerId } })
-        if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')
-        console.log(providerId);
         //refreshToken 발급
         const newRefreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
           expiresIn: "14d",
@@ -95,14 +94,16 @@ const authMiddleware = async (req, res, next) => {
 
         //refreshToken은 발급 후 db에도 넣어주어야 한다.
         await User.update({ refreshToken: newRefreshToken }, { where: { providerId } })
-          .then(() => {
-            return res.status(418).send({
-              result: false,
-              refreshToken: newRefreshToken,
-              msg: 'refreshToken이 재발급되었습니다. 다시 로그인해주세요'
-            });
-          })
-          .catch((err) => { if (err) throw new Error('user refreshToken update 에러') })
+
+        const thisUser = await User.findOne({ where: { providerId } })
+        if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')
+
+        return res.send({
+          result: 'true2',
+          refreshToken: newRefreshToken,
+          user: thisUser,
+          msg: 'refreshToken 재발급'
+        });
       }
       if (accessVerified && refreshVerified) {
         const providerId = accessVerified.providerId;
