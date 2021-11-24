@@ -230,7 +230,7 @@ const saveChat = async (req, res, next) => {
     });
 
     console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser);
-    console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser.id);
+    console.log('현재 화면을 보고있는 타겟 유저 정보 id',targetMoimUser.id);
 
     if(!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
