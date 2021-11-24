@@ -223,14 +223,9 @@ const saveChat = async (req, res, next) => {
     const { moimId, chatRoomId } = req.params;
     const { contents } = req.body;
 
-    console.log(userId);
+    console.log("userId", userId);
     console.log(req.params);
-    console.log(contents)
-
-    console.log("여기까지1");
-    const allUser = await MoimUser.findAll({});
-
-    console.log('여기가 모든 유저!!!!!!!!!!!!!!!!!!!!!!!!', allUser);
+    console.log('contents', contents);
 
     const targetMoimUser = await MoimUser.findOne({
       where: {userId: userId, moimId: moimId}
