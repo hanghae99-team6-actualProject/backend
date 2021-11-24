@@ -37,8 +37,7 @@ if (env.NODE_ENV === 'production') {
   app.use(morgan('dev',{stream: logger.stream}))
 }
 
-async () => {
-  await sequelize
+sequelize
   .sync({ force: false }) //데이터 구조 변경하고 싶을 때, true
   .then(() => {
     logger.info('------ SQL Restructure Complete ------');
@@ -46,7 +45,18 @@ async () => {
   .catch((error) => {
     logger.error(error);
   });
-}
+
+
+// async () => {
+//   await sequelize
+//   .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
+//   .then(() => {
+//     logger.info('------ SQL Restructure Complete ------');
+//   })
+//   .catch((error) => {
+//     logger.error(error);
+//   });
+// }
 
 
 if (env.NODE_ENV === 'production') {

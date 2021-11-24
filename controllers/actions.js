@@ -49,9 +49,6 @@ const upDayActionExp = async (userId) => {
   const { fromToday } = timeSet();
 
   await chkDayLog(userId);
-  console.log('@@@@@@@@@@@@@@@@@@@@@@');
-  console.log(await chkDayLog(userId));
-  console.log('@@@@@@@@@@@@@@@@@@@@@@');
   const totalExpChk = await ExpDayLog.findAll({
     where: {
       userId,
@@ -98,6 +95,8 @@ const upDayRoutineExp = async (userId, routineId) => {
   try {
     logger.info('액션 + 루틴 한계 경험치 진입');
     if ((await totalExpChk.length) == 0) {
+      logger.info('액션 + 루틴 IF문 진입');
+      logger.info(totalExpChk.length);
       return false;
     } else {
       logger.info('액션 + 루틴 엘스로 진입');
@@ -272,6 +271,8 @@ const doneAction = async (req, res, next) => {
 
 module.exports = {
   chkDayLog,
+  calcRoutineExp,
   upDayActionExp,
+  upDayRoutineExp,
   doneAction,
 };

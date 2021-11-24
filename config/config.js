@@ -12,7 +12,7 @@ const development = {
 const test = {
   "username": "root",
   "password": "test1234",
-  "database": "testTest",
+  "database": "testTest2",
   "host": "127.0.0.1",
   "dialect": "mysql",
   "timezone": "+09:00"

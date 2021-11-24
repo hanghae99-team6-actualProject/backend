@@ -30,6 +30,22 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        userId: 2,
+        routineName: '2번 유저의 활기찬 루틴!',
+        isMain: 1,
+        preSet: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        userId: 3,
+        routineName: '3번 유저의 활기찬 루틴!',
+        isMain: 1,
+        preSet: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 

@@ -336,7 +336,7 @@ const enterMoim = async (req, res, next) => {
     const thisMoim = await Moim.findOne({ where: { id: moimId } });
     const now = new Date();
 
-    if (now < thisMoim.finishAt) {
+    if (now > thisMoim.finishAt) {
       return next(new Error('이미 기간이 지난 모임입니다'));
     }
 

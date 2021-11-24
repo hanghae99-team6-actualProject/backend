@@ -31,6 +31,18 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        providerId: 'testUser3@testmail.com',
+        userEmail: 'testUser3@testmail.com',
+        refreshToken: '',
+        nickName: 'user3',
+        userPw: encryptPw('test1234!'),
+        provider: 'local',
+        role: 'base_user',
+        deletedAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 

@@ -120,7 +120,27 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
+      {
+        userId: 2,
+        routineId: routineRows[3].id,
+        actionName: '전신운동',
+        actionType: 'body_exercise',
+        actionCnt: 10,
+        actionNum: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        userId: 3,
+        routineId: routineRows[4].id,
+        actionName: '웨이트트레이닝',
+        actionType: 'body_exercise',
+        actionCnt: 10,
+        actionNum: 2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ], {});
   },
 
