@@ -31,7 +31,7 @@ const createChatRoom = async (req, res, next) => {
       let roomId = isroom[0].dataValues.id;
       
       return res.status(200).send({
-        result : true,
+        result : "true2",
         isroom,
         roomId,
         msg: "이미 채팅방이 존재합니다. 기존의 채팅방으로 안내합니다."
@@ -47,7 +47,7 @@ const createChatRoom = async (req, res, next) => {
     
 
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
-      result : true,
+      result : "true1",
       newRoom,
       msg: "채팅방 생성이 완료되었습니다."
     });
@@ -72,7 +72,7 @@ const enterChatRoom = async (req, res, next) => {
       where: { moimId, deleteAt: null },
     })
 
-    if(targetMoimChatroom.length === 0) {
+    if(targetMoimChatroom === null) {
       return next(myError(400, '현재 채팅방이 없습니다. 생성하기 버튼을 눌러주세요.'));
     };
 
@@ -226,20 +226,21 @@ const saveChat = async (req, res, next) => {
     console.log(contents)
 
     const targetMoimUser = await MoimUser.findOne({
-      where: {userId: userId, id: moimId}
+      where: {userId: userId, moimId: moimId}
     });
 
     console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser);
-    console.log('현재 화면을 보고있는 타겟 유저 정보',targetMoimUser.id);
+    console.log('현재 화면을 보고있는 타겟 유저 정보 id',targetMoimUser.id);
+    const moimUserId = targetMoimUser.id;
 
     if(!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
     }
 
     const saveChat = await Chat.create({
-      moimUserId: targetMoimUser.id,
+      moimUserId: moimUserId,
       moimChatRoomId: chatRoomId,
-      contents,
+      contents: contents,
     })
     console.log('saveChat', saveChat);
 
@@ -263,9 +264,9 @@ const saveChat = async (req, res, next) => {
   }
 }
 
-const saveNotice = async (req, res, next) => { 
+const makeNotice = async (req, res, next) => { 
   try {
-    console.log('saveNotice router 진입');
+    console.log('makeNotice router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
@@ -300,7 +301,53 @@ const saveNotice = async (req, res, next) => {
   }
 }
 
-const cancelNotice = async (req, res, next) => { 
+const updateNotice = async (req, res, next) => { 
+  try {
+    console.log('cancelNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId, chatRoomId } = req.params;
+    const { contents } = req.body;
+
+    const checkMoimHost = await MoimUser.findOne({ //현재 유저가 호스트인지 확인
+      where: {userId: userId, moimId: moimId, host: 1}
+    })
+
+    if(checkMoimHost === null) {
+      return next(myError(500, '해당 모임의 호스트가 아닙니다'));
+    }
+
+    const checkNotice = await Chat.findOne({ //현재 채팅방에 공지의 유무 확인
+      where: {
+        moimUserId: checkMoimHost.id,
+        moimChatRoomId: chatRoomId,
+        contents: contents,
+        notice : 1,
+      }
+    });
+
+    if(checkNotice === null) {
+      return next(myError(500, '해당 모임의 공지가 없습니다. 공지 등록을 먼저 하시기 바랍니다.'));
+    }
+
+    const noticeChat = await Chat.update( //존재하는 공지의 공지여부를 취소
+      {notice : 0},
+      {where: {Id: checkNotice.id}},
+    );
+
+    return res.status(200).send({
+      result: true,
+      msg: "공지 취소에 성공했습니다.",
+    });
+
+  } catch (err) {
+    console.log(err);
+    return next(myError(err));
+  }
+}
+
+const deleteNotice = async (req, res, next) => { 
   try {
     console.log('cancelNotice router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
@@ -353,6 +400,7 @@ module.exports = {
   deleteChatRoom,
   loadTargetChat,
   saveChat,
-  saveNotice,
-  cancelNotice,
+  makeNotice,
+  updateNotice,
+  deleteNotice,
 }

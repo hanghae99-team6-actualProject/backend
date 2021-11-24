@@ -28,7 +28,7 @@ router.get('/', getAllMoim); //미들웨어 제거
 router.post('/', authMiddleware, createMoim);
 
 // chat
-const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat, saveNotice, cancelNotice } = require('../controllers/chats');
+const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat, makeNotice, updateNotice, deleteNotice } = require('../controllers/chats');
 
 //API
 router.post('/:moimId/chatRoom', authMiddleware, createChatRoom)
@@ -37,7 +37,8 @@ router.delete('/:moimId/:chatRoomId/exit', authMiddleware, exitChatRoom);
 router.put('/:moimId/:chatRoomId', authMiddleware, deleteChatRoom);
 router.get('/:moimId/:chatRoomId', authMiddleware, loadTargetChat);
 router.post('/:moimId/:chatRoomId', authMiddleware, saveChat);
-router.post('/:moimId/:chatRoomId/notice', authMiddleware, saveNotice);
-router.put('/:moimId/:chatRoomId/notice', authMiddleware, cancelNotice);
+router.post('/:moimId/:chatRoomId/notice', authMiddleware, makeNotice);
+router.put('/:moimId/:chatRoomId/:noticeId', authMiddleware, updateNotice);
+router.delete('/:moimId/:chatRoomId/:noticeId', authMiddleware, deleteNotice);
 
 module.exports = router;
