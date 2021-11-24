@@ -69,11 +69,11 @@ const getAllMoim = async (req, res, next) => {
 const getMoimByLocation = async (req, res, next) => {
   try {
     logger.info('getMoimByLocation router 진입');
-    const { locationGu } = req.body;
+    const { filter } = req.body;
     console.log(req.body);
 
-    const guMoims = await Moim.findAll({
-      where: { locationGu },
+    const filterMoims = await Moim.findAll({
+      where: { filter },
       include: [
         {
           model: MoimUser,
@@ -105,7 +105,7 @@ const getMoimByLocation = async (req, res, next) => {
 
     return res.status(200).send({
       result: true,
-      guMoims,
+      filterMoims,
       msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
     });
   } catch (err) {
@@ -120,7 +120,7 @@ const createMoim = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { title, contents, imgSrc, location, locationGu, startAt, finishAt } = req.body;
+    const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
 
     // 생성 중복검사
     const isMoim = await Moim.findAll({
@@ -129,9 +129,6 @@ const createMoim = async (req, res, next) => {
         contents: contents,
       }
     })
-      .catch((err) => {
-        if (err) next(new Error('모임 중복 생성 검사 중 db 에러'))
-      });
 
     // 모임 db데이터 생성
     await Moim.create({
@@ -139,7 +136,7 @@ const createMoim = async (req, res, next) => {
       contents,
       imgSrc,
       location,
-      locationGu,
+      filter,
       startAt,
       finishAt
     })
@@ -219,7 +216,7 @@ const updateMoim = async (req, res, next) => {
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
-    const { title, contents, imgSrc, location, startAt, finishAt } = req.body;
+    const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
 
     //1. find?
     const targetMoim = await Moim.findAll({
@@ -247,6 +244,7 @@ const updateMoim = async (req, res, next) => {
           contents,
           imgSrc,
           location,
+          filter,
           startAt,
           finishAt
         },
@@ -332,7 +330,7 @@ const enterMoim = async (req, res, next) => {
     const thisMoim = await Moim.findOne({ where: { id: moimId } });
     const now = new Date();
 
-    if (now < thisMoim.finishAt) {
+    if (now > thisMoim.finishAt) {
       return next(new Error('이미 기간이 지난 모임입니다'));
     }
 
@@ -380,7 +378,7 @@ const exitMoim = async (req, res, next) => {
 
     const exitUserNickName = isEnterMoim.User.nickName;
 
-    if (isEnterMoim) {
+    if (!isEnterMoim) {
       return next(new Error('이미 비참가중인 모임입니다.'));
     }
 
@@ -404,4 +402,96 @@ const exitMoim = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim };
+
+const myMoims = async (req, res, next) => {
+  try {
+    logger.info('myMoin 라우터 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+
+    const userId = res.locals.user.id;
+    const userType = req.body.userType;
+    const hostType = Number(userType)
+
+    const allMyMoims = await Moim.findAll({
+      where: {
+        userId,
+        '$MoimUser.host$': hostType
+      },
+      include: [
+        {
+          model: MoimUser,
+          where: { host: 1 },
+          attributes: ['id', 'userId', 'moimId', 'host'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          attributes: ['id', 'contents'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+          attributes: ['id'],
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        }
+      ]
+    });
+
+    if (hostType === 1) {
+      logger.info('호스트인 경우')
+      logger.info(allMyMoims.length);
+      if (allMyMoims.length === 0) {
+        logger.info('개설한 모임이 없습니다.');
+        return res.status(200).send({
+          result: "true2",
+          msg: '내가 만든 모임이 없습니다.'
+        })
+      }
+
+      logger.info('조회 완료')
+      return res.status(200).send({
+        result: "true1",
+        allMyMoims,
+        msg: '내가 만든 모임 정보 불러오기에 성공했습니다.'
+      })
+    } else if (hostType === 0) {
+      logger.info('참여자인 경우')
+      logger.info(allMyMoims.length);
+      if (allMyMoims.length === 0) {
+        logger.info('참여한 모임이 없습니다.');
+        return res.status(200).send({
+          result: "true4",
+          msg: '내가 참여한 모임이 없습니다.'
+        })
+      }
+
+      return res.status(200).send({
+        result: "true3",
+        allMyMoims,
+        msg: '내가 참여한 모임 정보 불러오기에 성공했습니다.'
+      })
+    }
+
+
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+}
+
+module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };

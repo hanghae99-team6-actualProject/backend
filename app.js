@@ -98,7 +98,7 @@ moimNamespace.on('connection', (socketMoim) => {
   socketMoim.on('sendMsg', async (userNickName, msg) => {
     console.log('전송받은 data', userNickName);
     console.log('전송받은 data', msg);
-    
+
     let targetRoomId = roomId
 
     moimNamespace.to(targetRoomId).emit('updateMsg', {
@@ -119,7 +119,7 @@ moimNamespace.on('connection', (socketMoim) => {
     console.log('퇴장 메세지', msg);
 
     moimNamespace.to(targetRoomId).emit('updateMsg', {
-    // moimNamespace.emit('updateMsg', {
+      // moimNamespace.emit('updateMsg', {
       name: 'SERVER',
       msg: msg,
     });
@@ -137,12 +137,12 @@ if (env.NODE_ENV === 'production') {
   );
   // production 환경일 때 morgan -> winston에서 로그 출력 및 파일 기록
   // app.use(morgan('combined'));
-  app.use(morgan('combined',{stream: logger.stream}));
+  app.use(morgan('combined', { stream: logger.stream }));
 
   app.use(hpp());
 } else {
   // app.use(morgan('dev'))
-  app.use(morgan('dev',{stream: logger.stream}))
+  app.use(morgan('dev', { stream: logger.stream }))
 }
 
 sequelize
