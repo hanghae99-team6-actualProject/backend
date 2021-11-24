@@ -233,7 +233,7 @@ const saveChat = async (req, res, next) => {
     console.log('여기가 모든 유저!!!!!!!!!!!!!!!!!!!!!!!!', allUser);
 
     const targetMoimUser = await MoimUser.findOne({
-      where: {userId: userId, id: moimId}
+      where: {userId: userId, moimId: moimId}
     });
 
     console.log('현재 화면을 보고있는 타겟 유저 정보에서 문젠가?',targetMoimUser);
