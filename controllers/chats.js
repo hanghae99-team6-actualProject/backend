@@ -4,19 +4,12 @@ const myError = require('./utils/httpErrors')
 
 //방만들기 함수
 const createNewRoom = async (moimId, userId) => {
-  try {
     const setNewRoom = await MoimChatRoom.create({
       moimId,
       userId,
-    })
+    });
 
     return setNewRoom;
-
-  } catch (err) {
-    console.log(err);
-    console.log('catch에서 에러감지');
-    return next(myError(400, err.message));
-  }
 }
 
 const createChatRoom = async (req, res, next) => {
