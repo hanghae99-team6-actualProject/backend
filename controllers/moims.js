@@ -405,7 +405,7 @@ const exitMoim = async (req, res, next) => {
 
 const myMoims = async (req, res, next) => {
   try {
-    logger.info('myMoin 라우터 진입');
+    logger.info('myMoims 라우터 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const userId = res.locals.user.id;
@@ -414,13 +414,12 @@ const myMoims = async (req, res, next) => {
 
     const allMyMoims = await Moim.findAll({
       where: {
-        userId,
-        '$MoimUser.host$': hostType
+        '$MoimUsers.userId$': userId,
+        '$MoimUsers.host$': hostType,
       },
       include: [
         {
           model: MoimUser,
-          where: { host: 1 },
           attributes: ['id', 'userId', 'moimId', 'host'],
           include: [
             {

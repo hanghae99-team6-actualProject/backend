@@ -1,4 +1,4 @@
-const { Comment, User } = require('../models');
+const { Comment, User, Moim } = require('../models');
 const myError = require('./utils/httpErrors');
 const logger = require('../logger');
 
@@ -187,7 +187,7 @@ const deleteComment = async (req, res, next) => {
 
 const myComments = async (req, res, next) => {
   try {
-    logger.info('myMoin 라우터 진입');
+    logger.info('myComments 라우터 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const userId = res.locals.user.id;

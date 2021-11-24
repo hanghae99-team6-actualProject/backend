@@ -1,5 +1,5 @@
 const env = require('../env')
-const { User, Like, Moim, Comment } = require('../models');
+const { User, Like, Moim, Comment, MoimUser } = require('../models');
 const myError = require('./utils/httpErrors')
 const logger = require('../logger');
 
@@ -11,8 +11,8 @@ const getLikedMoims = async (req, res, next) => {
     const { id: userId } = res.locals.user;
     const likedMoims = await Moim.findAll({
       where: {
-        userId,
-        '$Like.userId$': userId
+        '$MoimUsers.userId$': userId,
+        '$Likes.userId$': userId,
       },
       include: [
         {
@@ -23,7 +23,6 @@ const getLikedMoims = async (req, res, next) => {
       include: [
         {
           model: MoimUser,
-          where: { host: 1 },
           attributes: ['id', 'userId', 'moimId', 'host'],
           include: [
             {
