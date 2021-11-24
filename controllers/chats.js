@@ -1,4 +1,4 @@
-const { User, MoimUser ,Chat, MoimChatRoom, MoimChatUser } = require('../models');
+const { User, MoimUser ,Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
 const { moimNamespace } = require('../app');
 const myError = require('./utils/httpErrors')
 
@@ -31,7 +31,7 @@ const createChatRoom = async (req, res, next) => {
       let roomId = isroom[0].dataValues.id;
       
       return res.status(200).send({
-        result : true,
+        result : "true2",
         isroom,
         roomId,
         msg: "이미 채팅방이 존재합니다. 기존의 채팅방으로 안내합니다."
@@ -47,8 +47,9 @@ const createChatRoom = async (req, res, next) => {
     
 
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
-      result : true,
+      result : "true1",
       newRoom,
+      roomId: newRoom.id,
       msg: "채팅방 생성이 완료되었습니다."
     });
 
@@ -72,7 +73,7 @@ const enterChatRoom = async (req, res, next) => {
       where: { moimId, deleteAt: null },
     })
 
-    if(targetMoimChatroom.length === 0) {
+    if(targetMoimChatroom === null) {
       return next(myError(400, '현재 채팅방이 없습니다. 생성하기 버튼을 눌러주세요.'));
     };
 
@@ -239,9 +240,9 @@ const saveChat = async (req, res, next) => {
     }
 
     const saveChat = await Chat.create({
-      moimUserId: targetMoimUser.id,
+      moimUserId: moimUserId,
       moimChatRoomId: chatRoomId,
-      contents,
+      contents: contents,
     })
     console.log('saveChat', saveChat);
 
@@ -261,33 +262,42 @@ const saveChat = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(err));
+    return next(err);
   }
 }
 
-const saveNotice = async (req, res, next) => { 
+const makeNotice = async (req, res, next) => { 
   try {
-    console.log('saveNotice router 진입');
+    console.log('makeNotice router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
     const { contents } = req.body;
-    const notice = 1;
 
-    const targetMoimUser = await MoimUser.findOne({ // 해당 모임에 참여중인지, 호스트인지 확인
-      where: {userId: userId, id: moimId, host: 1}
+    const isHost = await MoimUser.findOne({ // 해당 모임에 참여중인지, 호스트인지 확인
+      where: {
+        userId: userId,
+        moimId: moimId,
+        host: 1
+      }
     });
 
-    if(targetMoimUser === null) {
-      return next(myError(500, '해당 모임의 참여자가 아니거나 호스트가 아닙니다'));
+    if(isHost === null) {
+      return next(myError(500, '해당 모임의 호스트가 아닙니다'));
     }
 
-    const makeNotice = await Chat.create({ //notice = 1 을통해 공지로 등록
-      moimUserId: targetMoimUser.id,
+    const isNotice = await Notice.findAll({ // 해당 모임에 참여중인지, 호스트인지 확인
+      where: { moimChatRoomId: chatRoomId }
+    });
+
+    if( isNotice.length !== 0 ) {
+      return next(myError(500, '이미 공지가 존재합니다.'));
+    }
+
+    const makeNotice = await Notice.create({
       moimChatRoomId: chatRoomId,
       contents,
-      notice,
     })
 
     return res.status(200).send({ //공지로 등록한 문구를 프론트로 전달
@@ -298,53 +308,91 @@ const saveNotice = async (req, res, next) => {
 
   } catch (err) {
     console.log(err);
-    return next(myError(err));
+    return next(err);
   }
 }
 
-const cancelNotice = async (req, res, next) => { 
+const updateNotice = async (req, res, next) => { 
   try {
-    console.log('cancelNotice router 진입');
+    console.log('updateNotice router 진입');
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
-    const { moimId, chatRoomId } = req.params;
+    const { moimId, chatRoomId, noticeId } = req.params;
     const { contents } = req.body;
 
-    const checkMoimHost = await MoimUser.findOne({ //현재 유저가 호스트인지 확인
-      where: {userId: userId, moimId: moimId, host: 1}
+    const isNotice = await Notice.findOne({
+      where: { 
+        id: noticeId,
+        moimChatRoomId: chatRoomId,
+       }
     })
 
-    if(checkMoimHost === null) {
-      return next(myError(500, '해당 모임의 호스트가 아닙니다'));
+    if(isNotice === null) {
+      return next(myError(500, '등록된 공지가 없습니다.'));
     }
 
-    const checkNotice = await Chat.findOne({ //현재 채팅방에 공지의 유무 확인
-      where: {
-        moimUserId: checkMoimHost.id,
-        moimChatRoomId: chatRoomId,
-        contents: contents,
-        notice : 1,
-      }
-    });
-
-    if(checkNotice === null) {
-      return next(myError(500, '해당 모임의 공지가 없습니다. 공지 등록을 먼저 하시기 바랍니다.'));
-    }
-
-    const noticeChat = await Chat.update( //존재하는 공지의 공지여부를 취소
-      {notice : 0},
-      {where: {Id: checkNotice.id}},
+    const updateNotice = await Notice.update(
+      { contents: contents },
+      { where: { id: noticeId }},
     );
+
+    if(updateNotice == 0) {
+      return next(myError(500, '공지 수정에 실패했습니다.'));
+    }
+
+    const nowNotice = await Notice.findOne({
+      where: { id: noticeId },
+    });
 
     return res.status(200).send({
       result: true,
-      msg: "공지 취소에 성공했습니다.",
+      nowNotice: nowNotice,
+      msg: "공지 수정에 성공했습니다.",
     });
 
   } catch (err) {
     console.log(err);
-    return next(myError(err));
+    return next(err);
+  }
+}
+
+const deleteNotice = async (req, res, next) => { 
+  try {
+    console.log('deleteNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId, chatRoomId, noticeId } = req.params;
+
+    const isNotice = await Notice.findOne({
+      where: { 
+        id: noticeId,
+        moimChatRoomId: chatRoomId,
+       },
+    })
+
+    if(isNotice === null) {
+      return next(myError(500, '등록된 공지가 없습니다.'));
+    }
+
+    const deleteNotice = await Notice.destroy({
+      where: { id: noticeId },
+    });
+
+    if(deleteNotice == 0) {
+      return next(myError(500, '공지 삭제에 실패했습니다.'));
+    }
+
+    return res.status(200).send({
+      result: true,
+      targetNotice: isNotice,
+      msg: "공지 삭제에 성공했습니다.",
+    });
+
+  } catch (err) {
+    console.log(err);
+    return next(err);
   }
 }
 
@@ -355,6 +403,7 @@ module.exports = {
   deleteChatRoom,
   loadTargetChat,
   saveChat,
-  saveNotice,
-  cancelNotice,
+  makeNotice,
+  updateNotice,
+  deleteNotice,
 }
