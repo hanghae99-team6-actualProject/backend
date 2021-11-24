@@ -95,11 +95,11 @@ moimNamespace.on('connection', (socketMoim) => {
     });
   });
 
-  socketMoim.on('sendMsg', async (userNickName, msg) => {
+  socketMoim.on('sendMsg', async (userNickName, msg, FromProntRoomId) => {
     console.log('전송받은 data', userNickName);
     console.log('전송받은 data', msg);
 
-    let targetRoomId = roomId
+    let targetRoomId = FromProntRoomId
 
     moimNamespace.to(targetRoomId).emit('updateMsg', {
       name: userNickName,
