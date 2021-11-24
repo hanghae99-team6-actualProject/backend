@@ -49,6 +49,7 @@ const createChatRoom = async (req, res, next) => {
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
       result : "true1",
       newRoom,
+      roomId: newRoom.id,
       msg: "채팅방 생성이 완료되었습니다."
     });
 
