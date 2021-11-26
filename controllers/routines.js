@@ -236,18 +236,11 @@ const allPresetRoutine = async (req, res, next) => {
       where: { userId, preSet: 1 },
       include: [
         {
-          model: RoutineFin,
-        },
-        {
           model: Action,
-          include: [
-            {
-              model: ActionFin
-            }
-          ]
         },
       ],
     });
+
     logger.info("전체 프리셋 루틴 불러오기 완료");
 
     return res.status(200).send({
