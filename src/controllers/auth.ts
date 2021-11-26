@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const env = require('../env')
 const { User } = require('../models');
 const userValidation = require('./utils/joi');
-const { encryptPw, pwCompare } = require('./utils/bcrypt');
+const { encrypt, compare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
 const {
   createRoutineFn
@@ -47,7 +47,7 @@ const localLogin = async (req:Request, res:Response, next:NextFunction) => {
     if (!user) {
       throw new Error('존재하지 않는 아이디입니다.');
     }
-    if (!pwCompare(userPw, user.userPw)) {
+    if (!compare(userPw, user.userPw)) {
       throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
     }
     // const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
@@ -101,7 +101,7 @@ const signup = async (req:Request, res:Response, next:NextFunction) => {
     const role = 'base_user';
 
     // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encryptPw(userPw)
-    await User.create({ providerId, userEmail, userPw: encryptPw(userPw), nickName, provider, exp, role })
+    await User.create({ providerId, userEmail, userPw: encrypt(userPw), nickName, provider, exp, role })
       .then(async (result) => {
         const userId = result.id;
         const presetRoutine1 = presetConst.presetRoutine1;

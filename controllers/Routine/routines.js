@@ -528,6 +528,38 @@ const allPresetRoutine = async (req, res, next) => {
 };
 
 
+//메인 루틴 설정 API
+const setMainRoutine = async (req, res, next) => {
+  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
+  logger.info("setMainRoutine router 진입");
+  const { id: userId } = res.locals.user;
+  const { routineId } = req.body;
+
+  try {
+    //바꾸려는 루틴 확인, 검증용
+    const thisRoutine = await Routine.findOne({
+      where: { id: routineId },
+      include: { model: Action }
+    });
+    logger.info('thisRoutine', thisRoutine)
+
+    //이전 isMain이 1인 루틴 전부 0으로 수정
+    await Routine.update({ isMain: 0 }, {
+      where: { userId, isMain: 1 }
+    });
+
+    await Routine.update({ isMain: 1 }, {
+      where: { id: routineId }
+    });
+    return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
+    // }
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+};
+
+
 module.exports = {
   getRoutine,
   createRoutine,
@@ -541,4 +573,5 @@ module.exports = {
   upDayActionExp,
   upDayRoutineExp,
   doneAction,
+  setMainRoutine
 };

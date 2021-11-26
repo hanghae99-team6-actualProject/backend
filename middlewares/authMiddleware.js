@@ -12,8 +12,7 @@ const authMiddleware = async (req, res, next) => {
     if (!req.headers) {
       res.locals.user = null;
       console.log('미들웨어 !req.headers')
-      next();
-      return;
+      return next();
     }
 
     const { refreshtoken: refreshToken, accesstoken: accessToken } = req.headers;
@@ -23,8 +22,7 @@ const authMiddleware = async (req, res, next) => {
       res.locals.user = null;
       console.log('미들웨어 !accessToken')
       // next();
-      res.status(401).json({ result: false, msg: "미들웨어 !accessToken" });
-      return;
+      return res.status(401).json({ result: false, msg: "미들웨어 !accessToken" });
     }
     const accessTokenType = accessToken.split(' ')[0];
     const accessTokenValue = accessToken.split(' ')[1];
@@ -33,17 +31,13 @@ const authMiddleware = async (req, res, next) => {
 
     if (accessTokenType !== "Bearer" || refreshTokenType !== "Bearer") {
       console.log('미들웨어 TokenType !== "Bearer"')
-      // next();
-      res.status(401).json({ result: false, msg: '미들웨어 accessTokenType !== "Bearer"' });
-      return;
+      return res.status(401).json({ result: false, msg: '미들웨어 accessTokenType !== "Bearer"' });
     }
 
     if (accessTokenValue === null || !accessTokenValue || accessTokenValue === 'undefined'
       || refreshTokenValue === null || !refreshTokenValue || refreshTokenValue === 'undefined') {
       console.log('미들웨어 TokenValue === null || !TokenValue || TokenValue === "undefined"')
-      // next();
-      res.status(401).json({ result: false, msg: '미들웨어 TokenValue === null || !TokenValue || TokenValue === "undefined"' });
-      return;
+      return res.status(401).json({ result: false, msg: '미들웨어 TokenValue === null || !TokenValue || TokenValue === "undefined"' });
     }
 
     let accessVerified = null;
@@ -69,7 +63,6 @@ const authMiddleware = async (req, res, next) => {
         if (!thisUser) throw new Error('refreshVerified에러, db에 유저가 없습니다.');
         //accessToken 발급
         const providerId = thisUser?.providerId;
-
 
         const newAccessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
           expiresIn: "1h",
@@ -107,17 +100,14 @@ const authMiddleware = async (req, res, next) => {
       }
       if (accessVerified && refreshVerified) {
         const providerId = accessVerified.providerId;
-        console.log(providerId);
 
         const thisUser = await User.findOne({ where: { providerId } })
         if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')
         res.locals.user = thisUser;
         console.log('미들웨어 통과')
-        next();
-        return;
+        return next();
       }
     } catch (err) {
-      console.log(err);
       return res.status(400).send({ result: false, msg: err.message });
     }
   }

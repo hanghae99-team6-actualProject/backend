@@ -1,27 +1,21 @@
 const { Character } = require('../../models');
 const crtConst = require('../../constants/characters');
-const myError = require('../utils/httpErrors');
 const logger = require('../../logger');
 
 const createCharacter = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
     // 현재 유저가 만랩 캐릭터가 있는 것인지 확인
-    const crtMax = await Character.findAll({
+    const isCrtMax = await Character.findOne({
       where: { userId, expMax: 1 },
       attributes: ['characterName'],
-      raw: true,
     });
 
     // 현재 유저가 키우고 있는 캐릭터가 있는지 확인
-    const nowCrt = await Character.findAll({
+    const isNowCrt = await Character.findOne({
       where: { userId: userId, expMax: 0 },
     });
-
-    const isCrtMax = crtMax.length !== 0;
-    const isNowCrt = nowCrt.length !== 0;
 
     // 만랩X, 현재 성장중인 캐릭터가 있는 경우
     if (isNowCrt) {
@@ -34,7 +28,6 @@ const createCharacter = async (req, res, next) => {
       // 아무런 캐릭터가 없는 경우
       // 프리셋 캐릭터 풀에서 난수로 지급
       if (!isCrtMax) {
-        console.log("여긴 캐릭터가 하나도 없는 경우!");
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
         // 캐릭터 뽑기 중 인덱스 번호 주기
         if (newCrtName === '무지') {
@@ -63,10 +56,10 @@ const createCharacter = async (req, res, next) => {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
         }
       }
-      
+
       logger.info(newCrtName, '랜덤화 한 새로운 캐릭터의 이름');
       logger.info(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스');
-      
+
       await Character.create({
         userId: Number(userId),
         preSet: 1,
@@ -81,28 +74,20 @@ const createCharacter = async (req, res, next) => {
             characterIndex: newCrtIndex,
             msg: '신규 캐릭터가 생성되었습니다.',
           });
-        }).catch((err) => {
-          if (err) return next(new Error('db생성 문제 발생'));
-        });
-
+        })
     }
   } catch (err) {
-    logger.error(err);
     //'캐릭터 만들기에 실패했습니다. 관리자에게 문의하세요.',
-    return next(err);
+    next(err);
   }
 }
 
 const getCharacter = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
-    logger.info(userId, "유저아이디!");
-    // 현재 유저의 캐릭터 (만랩이 아님)
     const userCharacter = await Character.findAll({
       where: { userId, expMax: 0 },
-      raw: true,
     });
     return res.send({ result: true, character: userCharacter, msg: "유저의 현재 캐릭터 확인" })
   }

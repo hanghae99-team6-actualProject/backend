@@ -16,11 +16,7 @@
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-<<<<<<< HEAD
-    "ejs": "^3.1.6",
-=======
     "express": "^4.17.1",
->>>>>>> 3da6d98f2f122fbffe5e79e7a3fd6b6c0cf00696
     "express-session": "^1.17.2",
     "helmet": "^4.6.0",
     "hpp": "^0.2.3",
@@ -44,6 +40,7 @@
     "socket.io": "^4.3.2",
     "socket.io-client": "^4.4.0"
   },
+  "type": "module",
   "author": "",
   "license": "ISC",
   "repository": {

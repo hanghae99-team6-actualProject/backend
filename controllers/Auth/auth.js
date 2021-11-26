@@ -2,39 +2,30 @@ const jwt = require('jsonwebtoken');
 const env = require('../../env')
 const { User } = require('../../models');
 const userValidation = require('../utils/joi');
-const { encryptPw, pwCompare } = require('../utils/bcrypt');
-const myError = require('../utils/httpErrors')
-const {
-  createRoutineFn
-} = require('../utils/routineFn');
-const presetConst = require('../../constants/presetRoutines')
-const logger = require('../../logger');
+const { encrypt, compare } = require('../utils/bcrypt');
+const myError = require('../utils/httpErrors');
+const makePreset = require('./utils/makePreset');
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { user } = res.locals;
     res.status(200).send({ result: true, user });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 }
 
 //로그아웃 API
 const logout = (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { providerId } = res.locals.user;
 
     User.update({ refreshToken: "" }, { where: { providerId } })
-      .catch((err) => { return next(new Error('User.update refreshToken db 에러')) })
 
     res.status(200).json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
@@ -42,17 +33,16 @@ const logout = (req, res, next) => {
 const localLogin = async (req, res, next) => {
   try {
     const { userEmail, userPw } = req.body;
-    const providerId = `local${userEmail}`
+    const providerId = encrypt(userEmail);
 
     const user = await User.findOne({ where: { providerId } });
 
     if (!user) {
-      throw new Error('존재하지 않는 아이디입니다.');
+      throw myError(400, '존재하지 않는 아이디입니다.');
     }
-    if (!pwCompare(userPw, user.userPw)) {
-      throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
+    if (!compare(userPw, user.userPw)) {
+      throw myError(400, '아이디 또는 비밀번호가 틀렸습니다.');
     }
-    // const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
 
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
@@ -69,12 +59,11 @@ const localLogin = async (req, res, next) => {
     await User.update(
       { refreshToken },
       { where: { providerId } }
-    ).catch((err) => { if (err) return next(myError(401, 'User.update refreshToken db 에러')) });
+    );
 
     return res.status(200).send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 }
 
@@ -82,8 +71,7 @@ const localLogin = async (req, res, next) => {
 const signup = async (req, res, next) => {
   try {
     const { userEmail, userPw, userPwChk, nickName } = await userValidation.validateAsync(req.body);
-
-    const providerId = `local${userEmail}`
+    const providerId = encrypt(userEmail)
 
     //혹시나 해서 만듬
     if (!userEmail || !userPw || !nickName || userEmail === null || userPw === null || nickName === null) {
@@ -91,10 +79,10 @@ const signup = async (req, res, next) => {
     }
     // 중복 확인
     if (await User.findOne({ where: { providerId } })) {
-      throw new Error('이미 존재하는 이메일입니다.');
+      throw myError(400, '이미 존재하는 이메일입니다.');
     }
     if (await User.findOne({ where: { nickName } })) {
-      throw new Error('이미 존재하는 닉네임입니다.');
+      throw myError(400, '이미 존재하는 닉네임입니다.');
     }
 
     //추가 정보
@@ -102,25 +90,15 @@ const signup = async (req, res, next) => {
     const exp = 0;
     const role = 'base_user';
 
-    // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encryptPw(userPw)
-    await User.create({ providerId, userEmail, userPw: encryptPw(userPw), nickName, provider, exp, role })
+    // 모든 조건 통과 시 비밀번호 단방향 암호화 및 user 생성 encryptPw(userPw)
+    await User.create({ providerId, userEmail, userPw: encrypt(userPw), nickName, provider, exp, role })
       .then(async (result) => {
-        const userId = result.id;
-        const presetRoutine1 = presetConst.presetRoutine1;
-        const presetRoutine2 = presetConst.presetRoutine2;
-
-        await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
-        await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
-
+        await makePreset(result.id);
         return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
-      })
-      .catch((err) => {
-        if (err) return next(new Error("User 생성 db 에러"));
       });
     //회원가입시 프리셋 루틴을 모든 유저에게 생성해주기!
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
