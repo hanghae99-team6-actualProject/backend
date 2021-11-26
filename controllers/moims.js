@@ -412,43 +412,40 @@ const myMoims = async (req, res, next) => {
     const userType = req.body.userType;
     const hostType = Number(userType)
 
-    const allMyMoims = await Moim.findAll({
+    const allMyMoims = await MoimUser.findAll({
       where: {
-        '$MoimUsers.userId$': userId,
-        '$MoimUsers.host$': hostType,
+        userId,
+        host: userType,
       },
-      include: [
-        {
-          model: MoimUser,
-          attributes: ['id', 'userId', 'moimId', 'host'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        },
-        {
-          model: Comment,
-          attributes: ['id', 'contents'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        },
-        {
-          model: Like,
-          attributes: ['id'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        }
-      ]
+      include: [{
+        model: Moim,
+        include: [
+          {
+            model: MoimUser,
+            include: [
+              {
+                model: User,
+              }
+            ]
+          },
+          {
+            model: Comment,
+            include: [
+              {
+                model: User,
+              }
+            ]
+          },
+          {
+            model: Like,
+            include: [
+              {
+                model: User,
+              }
+            ]
+          }
+        ]
+      }]
     });
 
     if (hostType === 1) {

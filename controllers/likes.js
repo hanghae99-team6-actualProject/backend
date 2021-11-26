@@ -9,50 +9,43 @@ const getLikedMoims = async (req, res, next) => {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const { id: userId } = res.locals.user;
-    const likedMoims = await Moim.findAll({
+    const likedMoims = await Like.findAll({
       where: {
-        '$MoimUsers.userId$': userId,
-        '$Likes.userId$': userId,
+        userId,
       },
       include: [
         {
-          model: User,
-          attributes: ['nickName'],
-        },
-      ],
-      include: [
-        {
-          model: MoimUser,
-          attributes: ['id', 'userId', 'moimId', 'host'],
+          model: Moim,
           include: [
             {
-              model: User,
-              attributes: ['nickName'],
+              model: MoimUser,
+              include: [
+                {
+                  model: User,
+                }
+              ]
+            },
+            {
+              model: Comment,
+              include: [
+                {
+                  model: User,
+                }
+              ]
+            },
+            {
+              model: Like,
+              include: [
+                {
+                  model: User,
+                }
+              ]
             }
           ]
         },
-        {
-          model: Comment,
-          attributes: ['id', 'contents'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        },
-        {
-          model: Like,
-          attributes: ['id'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        }
       ]
     });
+
     return res.status(200).send({ result: true, likedMoims });
   } catch (err) {
     logger.error(err);
