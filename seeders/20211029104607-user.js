@@ -1,5 +1,5 @@
 'use strict';
-const { encryptPw } = require('../controllers/utils/bcrypt')
+const { encrypt } = require('../controllers/utils/bcrypt')
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -12,7 +12,7 @@ module.exports = {
         userEmail: 'test@testmail.com',
         refreshToken: '',
         nickName: 'testtest',
-        userPw: encryptPw('test1234!'),
+        userPw: encrypt('test1234!'),
         provider: 'local',
         role: 'base_user',
         deletedAt: null,
@@ -24,7 +24,7 @@ module.exports = {
         userEmail: 'tmp@testmail.com',
         refreshToken: '',
         nickName: 'tmp',
-        userPw: encryptPw('test1234!'),
+        userPw: encrypt('test1234!'),
         provider: 'local',
         role: 'base_user',
         deletedAt: null,
@@ -36,7 +36,7 @@ module.exports = {
         userEmail: 'testUser3@testmail.com',
         refreshToken: '',
         nickName: 'user3',
-        userPw: encryptPw('test1234!'),
+        userPw: encrypt('test1234!'),
         provider: 'local',
         role: 'base_user',
         deletedAt: null,

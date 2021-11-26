@@ -9,48 +9,40 @@ const getLikedMoims = async (req, res, next) => {
     logger.info('getLikedMoims 라우터 진입');
 
     const { id: userId } = res.locals.user;
-    const likedMoims = await Moim.findAll({
+    const likedMoims = await Like.findAll({
       where: {
-        '$MoimUsers.userId$': userId,
-        '$Likes.userId$': userId,
+        userId,
       },
       include: [
         {
-          model: User,
-          attributes: ['nickName'],
-        },
-      ],
-      include: [
-        {
-          model: MoimUser,
-          attributes: ['id', 'userId', 'moimId', 'host'],
+          model: Moim,
           include: [
             {
-              model: User,
-              attributes: ['nickName'],
+              model: MoimUser,
+              include: [
+                {
+                  model: User,
+                }
+              ]
+            },
+            {
+              model: Comment,
+              include: [
+                {
+                  model: User,
+                }
+              ]
+            },
+            {
+              model: Like,
+              include: [
+                {
+                  model: User,
+                }
+              ]
             }
           ]
         },
-        {
-          model: Comment,
-          attributes: ['id', 'contents'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        },
-        {
-          model: Like,
-          attributes: ['id'],
-          include: [
-            {
-              model: User,
-              attributes: ['nickName'],
-            }
-          ]
-        }
       ]
     });
     return res.status(200).send({ result: true, likedMoims });

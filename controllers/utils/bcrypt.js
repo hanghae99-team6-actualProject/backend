@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 const env = require('../../env')
 
-const encryptPw = (userPw) => {
-  return bcrypt.hashSync(userPw, Number(env.SALT));
+const encrypt = (planeText) => {
+  return bcrypt.hashSync(planeText, Number(env.SALT));
 }
 
-const pwCompare = async (pw, pwHash) => {
-  return await bcrypt.compare(pw, pwHash)
+const compare = async (planeText, textHash) => {
+  return await bcrypt.compare(planeText, textHash)
 }
 
-module.exports = { encryptPw, pwCompare };
+module.exports = { encrypt, compare };

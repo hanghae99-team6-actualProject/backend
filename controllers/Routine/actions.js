@@ -1,21 +1,11 @@
-const { actionExpGrowth, routineExpGrowth, expLimitPerDay } = require('../constants/characters');
-const { Action, Character, ExpDayLog, ActionFin, RoutineFin } = require('../models');
+const { actionExpGrowth, routineExpGrowth, expLimitPerDay } = require('../../constants/characters');
+const { Action, Character, ExpDayLog, ActionFin, RoutineFin } = require('../../models');
 const Sequelize = require('sequelize');
 const myError = require('./utils/httpErrors');
 const { thisCycle, findLastRoutineFinId, countNullAction } = require('./utils/routineFn');
-const logger = require('../logger');
+const { timeSet } = require("../utils/timeSet");
+const logger = require('../../logger');
 const Op = Sequelize.Op;
-
-//upDayTotalExp 함수 내 활용될 변수들
-function timeSet() {
-  const today = new Date();
-  const year = today.getFullYear(); // 년도
-  const month = today.getMonth(); // 월
-  const date = today.getDate(); // 날짜
-  const fromToday = new Date(year, month, date, 0, 0, 0);
-
-  return { fromToday };
-}
 
 //루틴완료 경험치 계산 시 활용
 let routineExp = 0;
@@ -40,7 +30,7 @@ const chkDayLog = async (userId) => {
     return dayLogExist;
   } catch (err) {
     logger.error(err);
-    throw new Error('chkDayLog 함수 실행 에러 발생');
+    next(err);
   }
 };
 
@@ -122,7 +112,7 @@ const upDayRoutineExp = async (userId, routineId) => {
     }
   } catch (err) {
     logger.error(err);
-    return false;
+    next(err);
   }
 };
 
@@ -146,10 +136,7 @@ const upExpFinOneAction = async (userId) => {
     await Character.update(
       { exp: Sequelize.literal(`exp + ${actionExpGrowth}`) },
       { where: { userId, expMax: 0 } }
-    ).catch((err) => {
-      logger.error(err);
-      if (err) throw new Error('upExpFinOneAction 함수 실행 에러 발생');
-    });
+    );
     return true;
   } else {
     logger.info('캐릭 루틴 경험치 함수 엘스 진입');
@@ -167,10 +154,7 @@ const upExpAllAction = async (userId, routineId) => {
       //아래에서 routine경험치 상수로 박아주는게아니라, 별도로 변수 지정값 리턴 받아서 합산
       { exp: Sequelize.literal(`exp + ${actionExpGrowth} + ${routineExp}`) },
       { where: { userId, expMax: 0 } }
-    ).catch((err) => {
-      logger.error(err);
-      if (err) throw new Error('upExpAllAction 함수 실행 에러 발생');
-    });
+    );
     return true;
   } else {
     logger.info('캐릭 루틴 경험치 함수 엘스 진입');
@@ -215,15 +199,9 @@ const doneAction = async (req, res, next) => {
     //액션에 맞는 ActionFin의 실 데이터 생성
     logger.info('setActionFinDate 진입');
     await setActionFinDate(actionId, lastRoutineFinId, finDate)
-      .catch((err) => {
-        if (err) next(new Error('setActionFinDate db 에러'));
-      });
 
     //date가 null인 액션들의 count확인
     const count = await countNullAction(lastRoutineFinId)
-      .catch((err) => {
-        if (err) next(new Error('date null인 ActionFin count db 에러'));
-      });
 
     logger.info('date: null인 카운트', count);
 
@@ -246,9 +224,7 @@ const doneAction = async (req, res, next) => {
     } else {
       logger.info('액션과 루틴이 함께 완료된 경우');
       //루틴에는 finDate추가
-      await setRoutineFinDate(routineId, finDate).catch((err) => {
-        if (err) return next(new Error('setRoutineFinDate db 에러'));
-      });
+      await setRoutineFinDate(routineId, finDate)
 
       //액션과 루틴이 함께 완료되었을때 경험치
       if (await upExpAllAction(userId, routineId)) {

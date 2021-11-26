@@ -16,6 +16,7 @@ const asyncErrorHandeler = wrapAsync(async function (req, res, next) {
 
 const errorHandler = (err, req, res, next) => {
   logger.error(err.stack);
+  logger.error(err);
   res.status(err.status || 500).send({ result: false, msg: `code ${err.status || 500}: ${err.message}` });
 }
 
