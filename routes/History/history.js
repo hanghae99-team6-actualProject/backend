@@ -1,13 +1,10 @@
 var express = require('express');
 var router = express.Router();
 const authMiddleware = require('../../middlewares/authMiddleware')
+const historyCtrl = require('../controllers/History/history');
 
-//controller import
-const mainCtrl = require('../controllers/main');
-
-// getOngoing = mainCtrl.getOngoing;
-getTrackerHistory = mainCtrl.getTrackerHistory;
-getGraphHistory = mainCtrl.getGraphHistory
+getTrackerHistory = historyCtrl.getTrackerHistory;
+getGraphHistory = historyCtrl.getGraphHistory
 
 //API
 // router.get('/ongoing', authMiddleware, getOngoing);

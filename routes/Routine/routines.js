@@ -9,7 +9,7 @@ const { getRoutine,
   deleteRoutine,
   createNowRoutineActions,
   resetNowRoutineActions,
-  allPresetRoutine } = require('../controllers/routines');
+  allPresetRoutine } = require('../controllers/Routine/routines');
 
 //API
 router.post('/create/:routineId', authMiddleware, createNowRoutineActions);

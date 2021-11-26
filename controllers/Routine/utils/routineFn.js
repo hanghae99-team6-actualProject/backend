@@ -1,6 +1,4 @@
 const { Routine, Action, User, RoutineFin, ActionFin } = require("../../models");
-const myError = require('./httpErrors');
-
 
 //현재 루틴의 가장 최신 RoutineFin의 id를 찾아줍니다!
 const findLastRoutineFinId = async (routineId, getCycle) => {
