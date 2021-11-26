@@ -3,7 +3,7 @@ const myError = require("./utils/httpErrors");
 const Op = Sequelize.Op;
 const logger = require('../logger');
 
-function timeSet () {
+function timeSet() {
   const today = new Date();
   const year = today.getFullYear(); // 년도
   const month = today.getMonth(); // 월
@@ -31,21 +31,25 @@ const getOngoing = async (req, res, next) => {
       return res.status(200).send({ result: true, mainRoutine: presetMainRoutine, msg: "진행중 루틴 및 액션 조회완료" });
     }
     else if (presetMainRoutine.length === 0) {
-      const userMainRoutine = await Routine.findAll({
+      const userMainRoutine = await Routine.findOne({
         where: { userId, isMain: 1 },
         include: [
           {
-          model: Action,
+            model: Action,
           }
         ]
       });
-      const targetRoutineId = userMainRoutine[0].id;
+      if (!userMainRoutine) return res.status(200).send({
+        result: false,
+        msg: "진행중인 루틴이 없습니다."
+      });
+      const targetRoutineId = userMainRoutine.id;
 
       const userMainRoutineFin = await RoutineFin.findAll({
         where: { routineId: targetRoutineId },
         include: [
           {
-          model: ActionFin,
+            model: ActionFin,
           }
         ]
       });
@@ -58,7 +62,8 @@ const getOngoing = async (req, res, next) => {
         mainRoutine: userMainRoutine,
         mainRoutineFin: userMainRoutineFin,
         character: userCharacter,
-        msg: "진행중 루틴 및 액션 조회완료" });
+        msg: "진행중 루틴 및 액션 조회완료"
+      });
     }
     else {
       return next(new Error('2개 이상의 루틴이 mainRoutine인 상황, 서버 에러'))
@@ -84,7 +89,7 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finRoutines = await RoutineFin.findAll({
-      where: { 
+      where: {
         userId: authId,
         date: {
           [Op.not]: null,
@@ -142,7 +147,7 @@ const getGraphHistory = async (req, res, next) => {
     // });
 
     const finRoutines = await RoutineFin.findAll({
-      where: { 
+      where: {
         userId: authId,
         date: {
           [Op.not]: null,
