@@ -346,12 +346,11 @@ const getTargetNotice = async (req, res, next) => {
       where: { moimId, moimChatRoomId : chatRoomId }
     })
 
-    res.status(200).send({
+    return res.status(200).send({
       result: true,
       targetNotice,
-      targetNoticeId: targetNotice.id,
       msg: "특정 모임 채팅방의 공지를 불러오기에 성공했습니다."
-    })
+    });
 
   } catch (err) {
     console.log(err);
