@@ -274,10 +274,6 @@ const getAllNotice = async (req, res, next) => {
     const allNotice = await Notice.findAll({});
     console.log("전체 공지", allNotice);
 
-    if(allNotice.length === 0){
-      return next(myError(500, '어떤 공지도 존재하지 않습니다.'));
-    }
-
     return res.status(200).send({
       resutl: true,
       allNotice: allNotice,
@@ -350,16 +346,11 @@ const getTargetNotice = async (req, res, next) => {
       where: { moimId, moimChatRoomId : chatRoomId }
     })
 
-    if (targetNotice === null) {
-      return next(myError(500, '해당 모임의 공지가 존재하지 않습니다.'));
-    }
-
-    res.status(200).send({
+    return res.status(200).send({
       result: true,
       targetNotice,
-      targetNoticeId: targetNotice.id,
       msg: "특정 모임 채팅방의 공지를 불러오기에 성공했습니다."
-    })
+    });
 
   } catch (err) {
     console.log(err);
