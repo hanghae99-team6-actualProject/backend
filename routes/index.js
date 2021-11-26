@@ -2,21 +2,47 @@ var express = require('express');
 var router = express.Router();
 const env = require('../env');
 
-const authRouter = require("./auth");
-const usersRouter = require("./users");
-const routineRouter = require('./routines');
-const mainRouter = require('./main');
-const moimRouter = require('./moims');
-const characterRouter = require('./characters');
-const actionRouter = require('./actions');
+//auth
+const authRouter = require("./Auth/auth");
 
-router.use('/main', mainRouter);
+//user
+const usersRouter = require("./User/users");
+
+//character
+const characterRouter = require('./Character/characters');
+
+//moim
+const chatRouter = require('./Moim/chat');
+const commentsRouter = require('./Moim/comments');
+const likesRouter = require('./Moim/likes');
+const moimsRouter = require('./Moim/moims');
+const noticeRouter = require('./Moim/notice');
+
+//routine
+const actionsRouter = require('./Routine/actions');
+const routinesRouter = require('./Routine/routines');
+const mainRouter = require('./Routine/main');
+
+//auth router use
 router.use('/auth', authRouter);
+
+//user router use
 router.use('/users', usersRouter);
-router.use('/routines', routineRouter);
-router.use('/moims', moimRouter);
+
+//character router use
 router.use('/characters', characterRouter);
-router.use('/actions', actionRouter);
+
+//moim router use
+router.use('/moims', chatRouter);
+router.use('/moims', commentsRouter);
+router.use('/moims', likesRouter);
+router.use('/moims', moimsRouter);
+router.use('/moims', noticeRouter);
+
+//routine router use
+router.use('/actions', actionsRouter);
+router.use('/routines', routinesRouter);
+router.use('/main', mainRouter);
 
 router.get("/", async (req, res, next) => {
   console.log('테스트용');
