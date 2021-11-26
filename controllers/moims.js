@@ -66,6 +66,54 @@ const getAllMoim = async (req, res, next) => {
   }
 };
 
+const getPagedMoim = async (req, res, next) => {
+  const { pageNum } = req.params;
+  let offset = 0;
+
+  if(pageNum > 1){
+    offset = 10 * (pageNum - 1);
+  }
+
+  try {
+    logger.info('getPagedMoim router 진입');
+
+    const pagedMoims = await Moim.findAll({
+      include: [
+        {
+          model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+        },
+      ],
+    })
+
+    return res.status(200).send({
+      result: true,
+      allMoims,
+      msg: '전체 모임정보 불러오기에 성공했습니다.',
+    });
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+};
+
 const getMoimByLocation = async (req, res, next) => {
   try {
     logger.info('getMoimByLocation router 진입');
@@ -493,4 +541,4 @@ const myMoims = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };
+module.exports = { getAllMoim, getMoimByLocation, getPagedMoim, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };
