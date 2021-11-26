@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Routine.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
       models.Routine.hasMany(models.Action, { foreignKey: 'routineId', sourceKey: 'id' });
-
+      models.Routine.hasMany(models.RoutineFin, { foreignKey: 'routineId', sourceKey: 'id' });
     }
   };
   Routine.init({
