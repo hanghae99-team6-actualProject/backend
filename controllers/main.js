@@ -8,7 +8,7 @@ function timeSet () {
   const year = today.getFullYear(); // 년도
   const month = today.getMonth(); // 월
   const day = today.getDate();  // 날짜
-  const fromThisMonth = new Date(year, month, day, 1, 0, 0, 0);
+  const fromThisMonth = new Date(year, month, 1, 0, 0, 0);
   const fromYearAgo = new Date(year - 1, month, day, 0, 0, 0);
 
   return { fromThisMonth, fromYearAgo }
@@ -114,6 +114,8 @@ const getGraphHistory = async (req, res, next) => {
   const authId = id
 
   const { fromYearAgo } = timeSet();
+  console.log('@@@@@@@@@@@@프롬이어어고!')
+  console.log(fromYearAgo)
 
   try {
     const finUser = await User.findOne({
