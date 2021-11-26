@@ -38,7 +38,7 @@ router.put('/:moimId/:chatRoomId', authMiddleware, deleteChatRoom);
 router.get('/:moimId/:chatRoomId', authMiddleware, loadTargetChat);
 router.post('/:moimId/:chatRoomId', authMiddleware, saveChat);
 
-router.get('/notices', authMiddleware, getAllNotice);
+// router.get('/notices', authMiddleware, getAllNotice); 현재 사용 하지 않음!
 router.post('/:moimId/:chatRoomId/notice', authMiddleware, makeNotice);
 router.get('/:moimId/:chatRoomId/notice', authMiddleware, getTargetNotice);
 router.put('/:moimId/:chatRoomId/:noticeId', authMiddleware, updateNotice);
