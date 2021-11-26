@@ -232,7 +232,7 @@ const allPresetRoutine = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
-    const routines = await Routine.findAll({
+    const preRoutines = await Routine.findAll({
       where: { userId, preSet: 1 },
       include: [
         {
@@ -241,11 +241,37 @@ const allPresetRoutine = async (req, res, next) => {
       ],
     });
 
+    // console.log('preRoutines', preRoutines);
+    // console.log('preRoutines', preRoutines[0].id);
+    const preRoutines0 = preRoutines[0].id;
+    // console.log('preRoutines', preRoutines[1].id);
+    const preRoutines1 = preRoutines[1].id;
+
+    const preRoutineFins0 = await RoutineFin.findAll({
+      where: { userId, routineId: preRoutines0 },
+      include: [
+        {
+          model: ActionFin,
+        },
+      ],
+    });
+
+    const preRoutineFins1 = await RoutineFin.findAll({
+      where: { userId, routineId: preRoutines1 },
+      include: [
+        {
+          model: ActionFin,
+        },
+      ],
+    });
+
     logger.info("전체 프리셋 루틴 불러오기 완료");
 
     return res.status(200).send({
       result: true,
-      routines,
+      preRoutines,
+      preRoutineFins0,
+      preRoutineFins1,
       msg: '프리셋 루틴 목록 불러오기 완료',
     });
   } catch (err) {
