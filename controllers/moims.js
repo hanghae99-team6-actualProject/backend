@@ -1,5 +1,6 @@
-const { Moim, MoimUser, Comment, Like, User } = require('../models');
+const { Moim, MoimUser, Comment, Like, User, Sequelize, sequelize} = require('../models');
 const myError = require('./utils/httpErrors');
+const Op = Sequelize.Op;
 const logger = require('../logger');
 
 const makeMoimUser = async (userId, moimId, userType, next) => {
@@ -108,6 +109,140 @@ const getMoimByLocation = async (req, res, next) => {
       filterMoims,
       msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
     });
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+};
+
+const getMoreMoim = async (req, res, next) => {
+  try {
+    logger.info('getMoreMoim router 진입');
+
+    let { lastId } = req.params;
+    lastId = Number(lastId);
+    let targetMoimId = 9999999;
+
+    if (lastId !== 0) {
+      targetMoimId = lastId;
+    }
+
+    const moreMoims = await Moim.findAll({
+      order: [['id','DESC']],
+      where: {
+        id: {
+          [Op.lt]: targetMoimId
+        }
+      },
+      limit: 3,
+      include: [
+        {
+          model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+        },
+      ],
+    })
+
+    if (moreMoims.length < 3) {
+      return res.status(200).send({
+        result: true,
+        last: true,
+        moreMoims,
+        msg: '모임정보 불러오기에 성공했습니다.',
+      });
+    } else {
+      return res.status(200).send({
+        result: true,
+        last: false,
+        moreMoims,
+        msg: '모임정보 불러오기에 성공했습니다.',
+      });
+    }
+  } catch (err) {
+    logger.error(err);
+    return next(err);
+  }
+};
+
+const getMoreMoimByLocation = async (req, res, next) => {
+  try {
+    logger.info('getMoimByLocation router 진입');
+    let { lastId } = req.params;
+    const { filter } = req.body;
+    lastId = Number(lastId);
+    let targetMoimId = 99999999;
+
+    if (lastId !== 0) {
+      targetMoimId = lastId;
+    }
+
+    const filterMoims = await Moim.findAll({
+      order: [['id','DESC']],
+      //where: { filter },
+      where: {
+        id: {
+          [Op.lt]: targetMoimId
+        },
+        filter: filter
+      },
+      limit: 3,
+      include: [
+        {
+          model: MoimUser,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ['nickName'],
+            }
+          ]
+        },
+        {
+          model: Like,
+        },
+      ],
+    })
+
+    if (filterMoims.length < 3) {
+      return res.status(200).send({
+        result: true,
+        last: true,
+        filterMoims,
+        msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
+      });
+    } else {
+      return res.status(200).send({
+        result: true,
+        last: false,
+        filterMoims,
+        msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
+      });
+    }
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -483,11 +618,10 @@ const myMoims = async (req, res, next) => {
       })
     }
 
-
   } catch (err) {
     logger.error(err);
     return next(err);
   }
 }
 
-module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };
+module.exports = { getAllMoim, getMoimByLocation, getMoreMoim, getMoreMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };

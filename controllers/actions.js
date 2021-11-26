@@ -25,7 +25,7 @@ const chkDayLog = async (userId) => {
   try {
     const { fromToday } = timeSet();
 
-    const dayLogExist = ExpDayLog.findOrCreate({
+    const dayLogExist = await ExpDayLog.findOrCreate({
       where: {
         userId,
         date: {
@@ -95,6 +95,8 @@ const upDayRoutineExp = async (userId, routineId) => {
   try {
     logger.info('액션 + 루틴 한계 경험치 진입');
     if ((await totalExpChk.length) == 0) {
+      logger.info('액션 + 루틴 IF문 진입');
+      logger.info(totalExpChk.length);
       return false;
     } else {
       logger.info('액션 + 루틴 엘스로 진입');
@@ -267,4 +269,10 @@ const doneAction = async (req, res, next) => {
   }
 };
 
-module.exports = { doneAction, chkDayLog};
+module.exports = {
+  chkDayLog,
+  calcRoutineExp,
+  upDayActionExp,
+  upDayRoutineExp,
+  doneAction,
+};

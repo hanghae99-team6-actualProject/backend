@@ -26,8 +26,8 @@ describe('루틴 CRUD', () => {
   let auth = {};
   beforeEach(loginUser(auth));
 
-  test('루틴, 액션 생성 API', (done) => {
-    request(app)
+  test('루틴, 액션 생성 API', async () => {
+    await request(app)
       .post('/api/routines/')
       .set('accessToken', 'Bearer ' + auth.accessToken)
       .set('refreshToken', 'Bearer ' + auth.refreshToken)
@@ -44,7 +44,7 @@ describe('루틴 CRUD', () => {
         }],
         isMain : false
       })
-      .expect(200, done);
+      .expect(200);
   })
 
   test('루틴조회 API', (done) => {

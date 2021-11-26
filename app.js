@@ -171,6 +171,19 @@ sequelize
     logger.error(error);
   });
 
+
+// async () => {
+//   await sequelize
+//   .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
+//   .then(() => {
+//     logger.info('------ SQL Restructure Complete ------');
+//   })
+//   .catch((error) => {
+//     logger.error(error);
+//   });
+// }
+
+
 if (env.NODE_ENV === 'production') {
   logger.info('배포 환경입니다');
 }
