@@ -5,7 +5,6 @@ const logger = require('../../logger');
 const getAllComments = async (req, res, next) => {
   try {
     logger.info('getAllComments router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const allComments = await Comment.findAll({
       include: [
@@ -14,9 +13,7 @@ const getAllComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('전체 댓글 불러오기 중 db 에러'));
-    });
+    })
 
     logger.info('전체 댓글 불러오기 완료');
     return res.status(200).send({
@@ -24,16 +21,15 @@ const getAllComments = async (req, res, next) => {
       allComments,
       msg: '전체 댓글 불러오기에 성공했습니다.',
     });
+
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 };
 
 const getTargetMoimComments = async (req, res, next) => {
   try {
     logger.info('getTargetMoimComments router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const { moimId } = req.params;
 
@@ -45,9 +41,7 @@ const getTargetMoimComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('특정 모임 댓글 불러오기 중 db 에러'));
-    });
+    })
 
     if (targetMoimComments.length === 0) {
       logger.info('특정 모임에 댓글이 없음');
@@ -57,22 +51,22 @@ const getTargetMoimComments = async (req, res, next) => {
         msg: '특정 모임에 댓글이 존재하지 않습니다.',
       });
     }
+
     logger.info('특정 모임 전체 댓글 불러오기 완료');
     return res.status(200).send({
       result: 'true1',
       targetMoimComments,
       msg: '특정 모임 전체 댓글 불러오기에 성공했습니다.',
     });
+
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 };
 
 const createComment = async (req, res, next) => {
   try {
     logger.info('createComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
@@ -90,19 +84,15 @@ const createComment = async (req, res, next) => {
           msg: '댓글 작성에 성공했습니다.',
         });
       })
-      .catch((err) => {
-        if (err) next(new Error('댓글 작성 중 db 에러'));
-      });
+
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 };
 
 const updateComment = async (req, res, next) => {
   try {
     logger.info('updateComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { commentId } = req.params;
@@ -114,9 +104,7 @@ const updateComment = async (req, res, next) => {
         id: commentId,
         userId: userId,
       },
-    }).catch((err) => {
-      if (err) next(new Error('target 댓글 찾기 중 db 에러'));
-    });
+    })
 
     logger.info('target', isComment);
     if (!isComment) {
@@ -133,19 +121,15 @@ const updateComment = async (req, res, next) => {
           msg: '댓글 수정에 성공했습니다.',
         });
       })
-      .catch((err) => {
-        if (err) next(new Error('댓글 수정 중 db 에러'));
-      });
+      
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 };
 
 const deleteComment = async (req, res, next) => {
   try {
     logger.info('deleteComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { commentId } = req.params;
@@ -155,9 +139,7 @@ const deleteComment = async (req, res, next) => {
         id: commentId,
         userId: userId,
       },
-    }).catch((err) => {
-      if (err) next(new Error('target 댓글 찾기 중 db 에러'));
-    });
+    })
 
     logger.info('삭제하고자 하는 댓글 정보', isComment);
     if (!isComment) {
@@ -173,13 +155,9 @@ const deleteComment = async (req, res, next) => {
         msg: '댓글 삭제에 성공했습니다.',
       });
     })
-      .catch((err) => {
-        if (err) next(new Error('댓글 삭제 중 db 에러'));
-      });
 
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 };
 
@@ -205,9 +183,7 @@ const myComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
-    });
+    })
 
     logger.info('검색결과를 확인', myCommentList.length);
     if (myCommentList.length === 0) {
@@ -225,8 +201,7 @@ const myComments = async (req, res, next) => {
     });
 
   } catch (err) {
-    logger.error(err);
-    return next(err);
+   next(err);
   }
 }
 

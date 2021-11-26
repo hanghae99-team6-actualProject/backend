@@ -4,21 +4,13 @@ const logger = require('../../logger');
 
 const makeMoimUser = async (userId, moimId, userType, next) => {
   //모임의 유저를 만드는 함수
-  try {
-    await MoimUser.create({
-      userId,
-      moimId,
-      host: userType,
-    });
-    if (userType === 1) {
-      logger.info('host 유저생성 완료');
-    } else if (userType === 0) {
-      logger.info('nomal 유저생성 완료');
-    }
-  } catch (err) {
-    logger.error(err);
-    return next(err);
-  }
+  logger.info('makeMoimUser 함수 진입');
+
+  await MoimUser.create({
+    userId,
+    moimId,
+    host: userType,
+  });
 };
 
 const getAllMoim = async (req, res, next) => {
@@ -33,8 +25,8 @@ const getAllMoim = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Comment,
@@ -42,18 +34,14 @@ const getAllMoim = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Like,
         },
       ],
-    })
-    //catch가 두 군데서  걸려서 이중리턴 에러 발생함
-    // .catch((err) => {
-    //   if (err) next(new Error('전체 모임정보 불러오기 중 db 에러'));
-    // });
+    });
 
     return res.status(200).send({
       result: true,
@@ -61,14 +49,14 @@ const getAllMoim = async (req, res, next) => {
       msg: '전체 모임정보 불러오기에 성공했습니다.',
     });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const getMoimByLocation = async (req, res, next) => {
   try {
     logger.info('getMoimByLocation router 진입');
+
     const { filter } = req.body;
     console.log(req.body);
 
@@ -81,8 +69,8 @@ const getMoimByLocation = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Comment,
@@ -90,18 +78,14 @@ const getMoimByLocation = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Like,
         },
       ],
-    })
-    //catch가 두 군데서  걸려서 이중리턴 에러 발생함
-    // .catch((err) => {
-    //   if (err) next(new Error('전체 모임정보 불러오기 중 db 에러'));
-    // });
+    });
 
     return res.status(200).send({
       result: true,
@@ -109,15 +93,13 @@ const getMoimByLocation = async (req, res, next) => {
       msg: '선택한 구 기준 모임정보 불러오기에 성공했습니다.',
     });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const createMoim = async (req, res, next) => {
   try {
     logger.info('createMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
@@ -127,38 +109,43 @@ const createMoim = async (req, res, next) => {
       where: {
         title: title,
         contents: contents,
-      }
-    })
+      },
+    });
+
+    if(isMoim.length > 0) {
+      return next(myError(500, '중복된 모임이 존재합니다.'));
+    }
 
     // 모임 db데이터 생성
-    await Moim.create({
+    const newMoim = await Moim.create({
       title,
       contents,
       imgSrc,
       location,
       filter,
       startAt,
-      finishAt
-    })
-      .then(async (result) => {
-        // 생성된 모임의 호스트 데이터 생성
-        await makeMoimUser(userId, result.id, 1);
-        return res.status(200)
-          .send({ result: true, msg: '모임과 호스트가 생성되었습니다.' });
-      })
-      .catch((err) => {
-        if (err) next(new Error('create 중 db 에러'));
-      });
+      finishAt,
+    });
+
+    if (newMoim.length < 1) {
+      return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
+    }
+
+    await makeMoimUser(userId, result.id, 1); // 호스트 사용자 생성
+
+    return res.status(200).send({
+      result: true,
+      msg: '모임과 호스트가 생성되었습니다.',
+    });
+
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const detailMoim = async (req, res, next) => {
   try {
     logger.info('detailMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const { moimId } = req.params;
 
@@ -172,7 +159,7 @@ const detailMoim = async (req, res, next) => {
               model: User,
               attributes: ['nickName'],
             },
-          ]
+          ],
         },
         {
           model: Comment,
@@ -180,65 +167,63 @@ const detailMoim = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
-          model: Like
+          model: Like,
         },
-      ]
-    }).catch((err) => {
-      if (err) next(new Error("타겟 모임 조회 db 에러"))
+      ],
     })
 
-    logger.info('디테일이 필요한 모임 정보', targetMoim)
+    logger.info('디테일이 필요한 모임 정보', targetMoim);
+
     if (targetMoim === null) {
-      return next(new Error('모임 정보가 존재하지 않습니다. 먼저 모임 등록을 하시기바랍니다.'))
+      return next(myError(500, '모임 정보가 존재하지 않습니다. 먼저 모임 등록을 하시기바랍니다.'));
     }
 
-    logger.info('타겟 모임 조회 완료')
+    logger.info('타겟 모임 조회 완료');
+
     return res.status(200).send({
       result: true,
       targetMoim,
-      msg: '특정 모임의 정보 불러오기에 성공했습니다.'
-    })
+      msg: '특정 모임의 정보 불러오기에 성공했습니다.',
+    });
 
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
-}
+};
 
 const updateMoim = async (req, res, next) => {
   try {
     logger.info('updateMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
 
     //1. find?
-    const targetMoim = await Moim.findAll({
+    const targetMoim = await Moim.findOne({
       where: { id: moimId },
       include: [
         {
           model: MoimUser,
-          attributes: ['userId']
-        }
-      ]
-    }).catch((err) => {
-      logger.error('update의 targetMoim find 중 db 에러');
-      if (err) next(new Error('update의 targetMoim find 중 db 에러'));
-    });
+          attributes: ['userId'],
+        },
+      ],
+    })
 
-    if (targetMoim[0].MoimUsers[0].userId !== userId) {
-      return next(new Error('모임의 작성자만 수정이 가능합니다.'))
+    if(!targetMoim) {
+      return next(MyError(400, 'moimId 에러'));
     }
 
-    if (targetMoim.length > 0) {
-      //2. update 실행
-      await Moim.update(
+    if (targetMoim[0].MoimUsers[0].userId !== userId) {
+      return next(MyError(500,'모임의 작성자만 수정이 가능합니다.'));
+    }
+
+    //2. update 실행
+      const updateMoim = await Moim.update(
         {
           title,
           contents,
@@ -246,36 +231,30 @@ const updateMoim = async (req, res, next) => {
           location,
           filter,
           startAt,
-          finishAt
+          finishAt,
         },
         {
           where: { id: moimId },
         }
       )
-        .then((result) => {
-          return res.status(200).send({
-            result: true,
-            msg: '모임 정보 수정에 성공했습니다.',
-          });
-        })
-        .catch((err) => {
-          logger.info('updateMiom db 에러');
-          if (err) next(new Error('updateMiom db 에러'));
-        });
-    } else {
-      logger.info('수정할 모임이 없습니다.');
-      next(new Error('수정할 모임이 없습니다.')); //이렇게 쓰는 것이 맞는가?!
+
+    if(updateMoim == 0) {
+      return next(MyError(500,'업데이트 함수 실행에 실패했습니다.'));
     }
+
+    return res.status(200).send({
+      result: true,
+      msg: '모임 정보 수정에 성공했습니다.',
+    });
+    
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const deleteMoim = async (req, res, next) => {
   try {
     logger.info('deleteMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
@@ -285,15 +264,13 @@ const deleteMoim = async (req, res, next) => {
       include: [
         {
           model: MoimUser,
-          attributes: ['userId']
-        }
-      ]
-    }).catch((err) => {
-      if (err) next(new Error('delete의 targetMoim find 중 db 에러'));
-    });
+          attributes: ['userId'],
+        },
+      ],
+    })
 
     if (targetMoim[0].MoimUsers[0].userId !== userId) {
-      return next(new Error('모임의 작성자만 삭제가 가능합니다.'))
+      return next(new Error('모임의 작성자만 삭제가 가능합니다.'));
     }
 
     if (targetMoim.length > 0) {
@@ -306,23 +283,18 @@ const deleteMoim = async (req, res, next) => {
             msg: '모임 삭제에 성공했습니다.',
           });
         })
-        .catch((err) => {
-          console.log(err);
-          if (err) next(new Error('모임 삭제 db 실행 에러 발생'));
-        });
+
     } else {
       next(new Error('삭제할 대상이 존재하지 않습니다.'));
     }
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const enterMoim = async (req, res, next) => {
   try {
     logger.info('enterMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
@@ -339,7 +311,7 @@ const enterMoim = async (req, res, next) => {
       where: {
         userId: userId,
         moimId,
-      }
+      },
     });
 
     if (isUser) {
@@ -352,16 +324,15 @@ const enterMoim = async (req, res, next) => {
       result: true,
       msg: '모임 참가자 생성에 성공했습니다.',
     });
+
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
 const exitMoim = async (req, res, next) => {
   try {
     logger.info('enterMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
@@ -371,10 +342,10 @@ const exitMoim = async (req, res, next) => {
       include: [
         {
           model: User,
-          attributes: ['nickName']
+          attributes: ['nickName'],
         },
-      ]
-    }).catch((err) => { if (err) next(new Error('모임 참가 유저 검색 중 db 에러')) });
+      ],
+    })
 
     const exitUserNickName = isEnterMoim.User.nickName;
 
@@ -383,34 +354,35 @@ const exitMoim = async (req, res, next) => {
     }
 
     const exitMoim = await MoimUser.destroy({
-      where: { userId: userId, moimId }
-    }).catch((err) => { if (err) next(new Error('모임 참가 취소 중 db 에러')) });
+      where: { userId: userId, moimId },
+    })
 
     if (exitMoim !== 1) {
-      return next(new Error('모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'));
+      return next(
+        new Error(
+          '모임 참가 취소 중 원인을 알 수 없는 에러 발생. 관리자에게 문의 바랍니다.'
+        )
+      );
     }
 
     return res.status(200).send({
       result: true,
       msg: '참가 취소 성공',
-      exitUserNickName
-    })
+      exitUserNickName,
+    });
 
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
-}
-
+};
 
 const myMoims = async (req, res, next) => {
   try {
     logger.info('myMoims 라우터 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
 
     const userId = res.locals.user.id;
     const userType = req.body.userType;
-    const hostType = Number(userType)
+    const hostType = Number(userType);
 
     const allMyMoims = await Moim.findAll({
       where: {
@@ -425,8 +397,8 @@ const myMoims = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Comment,
@@ -435,8 +407,8 @@ const myMoims = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
+            },
+          ],
         },
         {
           model: Like,
@@ -445,52 +417,63 @@ const myMoims = async (req, res, next) => {
             {
               model: User,
               attributes: ['nickName'],
-            }
-          ]
-        }
-      ]
+            },
+          ],
+        },
+      ],
     });
 
     if (hostType === 1) {
-      logger.info('호스트인 경우')
+      logger.info('호스트인 경우');
       logger.info(allMyMoims.length);
+
       if (allMyMoims.length === 0) {
         logger.info('개설한 모임이 없습니다.');
         return res.status(200).send({
-          result: "true2",
-          msg: '내가 만든 모임이 없습니다.'
-        })
+          result: 'true2',
+          msg: '내가 만든 모임이 없습니다.',
+        });
       }
 
-      logger.info('조회 완료')
+      logger.info('조회 완료');
       return res.status(200).send({
-        result: "true1",
+        result: 'true1',
         allMyMoims,
-        msg: '내가 만든 모임 정보 불러오기에 성공했습니다.'
-      })
+        msg: '내가 만든 모임 정보 불러오기에 성공했습니다.',
+      });
+
     } else if (hostType === 0) {
-      logger.info('참여자인 경우')
+      logger.info('참여자인 경우');
       logger.info(allMyMoims.length);
+
       if (allMyMoims.length === 0) {
         logger.info('참여한 모임이 없습니다.');
         return res.status(200).send({
-          result: "true4",
-          msg: '내가 참여한 모임이 없습니다.'
-        })
+          result: 'true4',
+          msg: '내가 참여한 모임이 없습니다.',
+        });
       }
 
       return res.status(200).send({
-        result: "true3",
+        result: 'true3',
         allMyMoims,
-        msg: '내가 참여한 모임 정보 불러오기에 성공했습니다.'
-      })
+        msg: '내가 참여한 모임 정보 불러오기에 성공했습니다.',
+      });
     }
 
-
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
-}
+};
 
-module.exports = { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims };
+module.exports = {
+  getAllMoim,
+  getMoimByLocation,
+  detailMoim,
+  createMoim,
+  updateMoim,
+  deleteMoim,
+  enterMoim,
+  exitMoim,
+  myMoims,
+};

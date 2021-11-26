@@ -1,5 +1,4 @@
 const { User, MoimUser ,Chat, MoimChatRoom, MoimChatUser, Notice } = require('../../models');
-const { moimNamespace } = require('../../app');
 const myError = require('../utils/httpErrors')
 
 //방만들기 함수
@@ -15,7 +14,6 @@ const createNewRoom = async (moimId, userId) => {
 const createChatRoom = async (req, res, next) => {
   try {
     console.log('createChatRomm router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId } = req.params;
@@ -25,7 +23,6 @@ const createChatRoom = async (req, res, next) => {
     });
     
     console.log("이즈룸", isroom);
-    // var newRoom = []; //함수 안에서 밖으로 빼내기 위한 변수, 새로운 채팅방을 담는다
 
     if(isroom.length > 0) { //현재 방이 존재하는 경우 >> 입장하기로 들어가야함 >> 그냥 바로 프론트에 입장하기로 쏴줌
       let roomId = isroom[0].dataValues.id;
@@ -41,11 +38,6 @@ const createChatRoom = async (req, res, next) => {
     const newRoom = await createNewRoom(moimId, userId) // 함수로 새로운 채팅방을 만드는 동작을 정의
     console.log("newRoomInfo", newRoom);
 
-    // // const io = req.app.get('io');
-    // const moimNamespace = req.app.get('moimNamespace');
-    // moimNamespace.emit('createNewRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
-    
-
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
       result : "true1",
       newRoom,
@@ -54,15 +46,13 @@ const createChatRoom = async (req, res, next) => {
     });
 
   } catch(err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const enterChatRoom = async (req, res, next) => { 
   try {
     console.log('makeChatRomm router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimUserId, nickName } = req.body;
@@ -85,10 +75,6 @@ const enterChatRoom = async (req, res, next) => {
     //그 후 새로운 채팅방 생성때와 같이 랜더링이 필요함
     // const roomId = moimId;
 
-    // const moimNamespace = req.app.get('moimNamespace');
-    // moimNamespace.to(roomId).emit('newUserEnter', targetMoimChatroom, addChatUser); // 새로운 방 생성이라는 이벤트를 던져준다
-    // // moimNamespace.emit('newRoom', targetMoimChatroom); // 새로운 방 생성이라는 이벤트를 던져준다
-
     // 기존에 있던 모든 대화를 끌어온다.
     const chats = await Chat.findAll({
       where: {moimChatRoomId: targetMoimChatroom.id}
@@ -103,15 +89,13 @@ const enterChatRoom = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const exitChatRoom = async (req, res, next) => { 
   try {
     console.log('exitChatRomm router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
@@ -125,24 +109,19 @@ const exitChatRoom = async (req, res, next) => {
     return next(myError(400, '해당 채팅방의 유저가 아닙니다.')); //아마 벌어질 일이 없을 것으로 예상
    }
 
-  //  const roomNum = moimId;
-  //  moimNamespace.to(roomNum).emit('exitRoom', roomNum);
-
    res.status(200).send({ //해당 메세지를 받으면 채팅방에서 튕겨내야 함
      result: true,
      msg: "채팅방 유저 나가기에 성공했습니다.",
    })
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const deleteChatRoom = async (req, res, next) => { 
   try {
     console.log('outChatRomm router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     // console.log("파람스",req.params);
     const { moimId, chatRoomId } = req.params;
@@ -162,10 +141,6 @@ const deleteChatRoom = async (req, res, next) => {
       return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
     }
 
-    // // 프론트에서 처리하는 작업
-    // const moimNamespace = req.app.get('moimNamespace');
-    // moimNamespace.emit('removeRoom', chatRoomId ); // 새로운 방 생성이라는 이벤트를 던져준다
-
     return res.status(200).send({
       result: true,
       targetChatRoomId: chatRoomId,
@@ -173,15 +148,13 @@ const deleteChatRoom = async (req, res, next) => {
     })
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const loadTargetChat = async (req, res, next) => { 
   try {
     console.log('loadChating router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const { moimId, chatRoomId } = req.params
     console.log(req.params);
@@ -210,8 +183,7 @@ const loadTargetChat = async (req, res, next) => {
     })
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
@@ -261,15 +233,13 @@ const saveChat = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const getAllNotice = async (req, res, next) => { 
   try {
     console.log('getAllNotice router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const allNotice = await Notice.findAll({});
     console.log("전체 공지", allNotice);
@@ -285,15 +255,13 @@ const getAllNotice = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const makeNotice = async (req, res, next) => { 
   try {
     console.log('makeNotice router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
@@ -333,15 +301,13 @@ const makeNotice = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const getTargetNotice = async (req, res, next) => { 
   try {
     console.log('getTargetNotice router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
@@ -362,15 +328,14 @@ const getTargetNotice = async (req, res, next) => {
     })
 
   } catch (err) {
-    console.log(err);
-    return next(err);
+    next(err);
   }
 }
 
 const updateNotice = async (req, res, next) => { 
   try {
     console.log('updateNotice router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId, noticeId } = req.params;
@@ -416,7 +381,6 @@ const updateNotice = async (req, res, next) => {
 const deleteNotice = async (req, res, next) => { 
   try {
     console.log('deleteNotice router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { moimId, chatRoomId, noticeId } = req.params;
