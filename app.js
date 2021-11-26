@@ -1,16 +1,29 @@
-const express = require("express");
-const cors = require("cors");
-const morgan = require('morgan');
-const hpp = require('hpp');
-const helmet = require('helmet');
-const env = require('./env');
-const logger = require('./logger');
+import express, { Request, Response, NextFunction } from "express";
+import cors from("cors");
+import morgan from('morgan');
+import hpp from ('hpp');
+import helmet from ('helmet');
+import env from ('./env');
+import logger from ('./logger');
+import configurePassport from ('./passport')
+import { sequelize } from ("./models");
 
-const configurePassport = require('./passport')
-const { sequelize } = require("./models");
-//routes imports
-const indexRouter = require("./routes/index");
-const { errorHandler, error404, asyncErrorHandeler } = require('./middlewares/errorMiddleware');
+import indexRouter from("./routes/index");
+import { errorHandler, error404, asyncErrorHandeler } from ('./middlewares/errorMiddleware');
+
+// const express = require("express");
+// const cors = require("cors");
+// const morgan = require('morgan');
+// const hpp = require('hpp');
+// const helmet = require('helmet');
+// const env = require('./env');
+// const logger = require('./logger');
+
+// const configurePassport = require('./passport')
+// const { sequelize } = require("./models");
+// //routes imports
+// const indexRouter = require("./routes/index");
+// const { errorHandler, error404, asyncErrorHandeler } = require('./middlewares/errorMiddleware');
 
 //crons imports
 const userCron = require("./crons/user");
