@@ -33,19 +33,32 @@ const getOngoing = async (req, res, next) => {
     else if (presetMainRoutine.length === 0) {
       const userMainRoutine = await Routine.findAll({
         where: { userId, isMain: 1 },
-        include: [{
+        include: [
+          {
           model: Action,
-          include: [{
-            model: ActionFin
-          }]
-        }, {
-          model: RoutineFin
-        }]
-      })
+          }
+        ]
+      });
+      const targetRoutineId = userMainRoutine[0].id;
+
+      const userMainRoutineFin = await RoutineFin.findAll({
+        where: { routineId: targetRoutineId },
+        include: [
+          {
+          model: ActionFin,
+          }
+        ]
+      });
+
       const userCharacter = await Character.findOne({
         where: { userId, expMax: 0 }
       });
-      return res.status(200).send({ result: true, mainRoutine: userMainRoutine, character: userCharacter, msg: "진행중 루틴 및 액션 조회완료" });
+      return res.status(200).send({
+        result: true,
+        mainRoutine: userMainRoutine,
+        mainRoutineFin: userMainRoutineFin,
+        character: userCharacter,
+        msg: "진행중 루틴 및 액션 조회완료" });
     }
     else {
       return next(new Error('2개 이상의 루틴이 mainRoutine인 상황, 서버 에러'))
@@ -70,41 +83,31 @@ const getTrackerHistory = async (req, res, next) => {
       where: { id: authId },
     });
 
-    const finRoutines = await Routine.findAll({
-      where: { userId: authId },
-      include: [
-        {
-          model: RoutineFin,
-          where: {
-            date: {
-              [Op.not]: null,
-              [Op.gte]: fromThisMonth
-            }
-          }
-        }
-      ]
+    const finRoutines = await RoutineFin.findAll({
+      where: { 
+        userId: authId,
+        date: {
+          [Op.not]: null,
+          [Op.gte]: fromThisMonth
+        },
+      },
     });
 
-    const finActions = await Action.findAll({
-      where: { userId: authId },
-      include: [
-        {
-          model: ActionFin,
-          where: {
-            date: {
-              [Op.not]: null,
-              [Op.gte]: fromThisMonth
-            }
-          }
-        }
-      ]
+    const finActions = await ActionFin.findAll({
+      where: {
+        userId: authId,
+        date: {
+          [Op.not]: null,
+          [Op.gte]: fromThisMonth
+        },
+      },
     });
 
     res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "해빗트래커 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
@@ -123,40 +126,61 @@ const getGraphHistory = async (req, res, next) => {
       where: { id: authId },
     });
 
-    const finRoutines = await Routine.findAll({
-      where: { userId: authId },
-      include: [
-        {
-          model: RoutineFin,
-          where: {
-            date: {
-              [Op.not]: null,
-              [Op.gte]: fromYearAgo
-            }
-          }
-        }
-      ]
+    // const finRoutines = await Routine.findAll({
+    //   where: { userId: authId },
+    //   include: [
+    //     {
+    //       model: RoutineFin,
+    //       where: {
+    //         date: {
+    //           [Op.not]: null,
+    //           [Op.gte]: fromYearAgo
+    //         }
+    //       }
+    //     }
+    //   ]
+    // });
+
+    const finRoutines = await RoutineFin.findAll({
+      where: { 
+        userId: authId,
+        date: {
+          [Op.not]: null,
+          [Op.gte]: fromThisMonth
+        },
+      },
     });
 
-    const finActions = await Action.findAll({
-      where: { userId: authId },
-      include: [
-        {
-          model: ActionFin,
-          where: {
-            date: {
-              [Op.not]: null,
-              [Op.gte]: fromYearAgo
-            }
-          }
-        }
-      ]
+    // const finActions = await Action.findAll({
+    //   where: { userId: authId },
+    //   include: [
+    //     {
+    //       model: ActionFin,
+    //       where: {
+    //         date: {
+    //           [Op.not]: null,
+    //           [Op.gte]: fromYearAgo
+    //         }
+    //       }
+    //     }
+    //   ]
+    // });
+
+    const finActions = await ActionFin.findAll({
+      where: {
+        userId: authId,
+        date: {
+          [Op.not]: null,
+          [Op.gte]: fromThisMonth
+        },
+      },
     });
+
     res.status(200).send({ result: true, finUser, finRoutines, finActions, msg: "그래프 히스토리 루틴 및 액션 조회완료" });
 
   } catch (err) {
     logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
