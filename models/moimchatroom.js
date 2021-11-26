@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.MoimChatRoom.hasMany(models.Chat, { foreignKey: 'moimChatRoomId', sourceKey: 'id' });
       models.MoimChatRoom.hasMany(models.MoimChatUser, { foreignKey: 'moimChatRoomId', sourceKey: 'id' });
+      models.MoimChatRoom.hasMany(models.Notice, { foreignKey: 'moimChatRoomId', sourceKey: 'id' });
       models.MoimChatRoom.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
 
     }

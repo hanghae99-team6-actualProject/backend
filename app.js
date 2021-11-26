@@ -80,6 +80,21 @@ moimNamespace.on('connection', (socketMoim) => {
     });
   });
 
+  socketMoim.on('leaveRoom',async (userNickName, targetRoomId) => {
+    // 프론트로부터 전달 받은 roomId를 타겟으로 하여 방에서 leave시킨다
+    console.log(userNickName)
+    console.log(targetRoomId)
+
+    socketMoim.leave(targetRoomId);
+
+    var msg = userNickName + '님이 퇴장하셨습니다';
+    console.log('퇴장 메세지', msg);
+
+    moimNamespace.to(targetRoomId).emit('updateMsg', {
+      name: 'SERVER',
+      msg: msg,
+    });
+  })
 
   socketMoim.on('enterNewRoom', async (newRoom, userNickName) => {
     //DB의 고유 roomId를 참고하여 방에 join시킨다
@@ -95,11 +110,13 @@ moimNamespace.on('connection', (socketMoim) => {
     });
   });
 
-  socketMoim.on('sendMsg', async (userNickName, msg) => {
+
+
+  socketMoim.on('sendMsg', async (userNickName, msg, FromProntRoomId) => {
     console.log('전송받은 data', userNickName);
     console.log('전송받은 data', msg);
 
-    let targetRoomId = roomId
+    let targetRoomId = FromProntRoomId
 
     moimNamespace.to(targetRoomId).emit('updateMsg', {
       name: userNickName,
