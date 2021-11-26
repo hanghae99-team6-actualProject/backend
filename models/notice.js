@@ -10,10 +10,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      models.Notice.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
       models.Notice.belongsTo(models.MoimChatRoom, { foreignKey: 'moimChatRoomId', targetKey: 'id', onDelete: 'cascade' });
     }
   };
   Notice.init({
+    moimId: {
+      require: true,
+      type: DataTypes.INTEGER,
+    },
     moimChatRoomId: {
       require: true,
       type: DataTypes.INTEGER,

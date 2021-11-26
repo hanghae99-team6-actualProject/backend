@@ -266,6 +266,30 @@ const saveChat = async (req, res, next) => {
   }
 }
 
+const getAllNotice = async (req, res, next) => { 
+  try {
+    console.log('getAllNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const allNotice = await Notice.findAll({});
+    console.log("전체 공지", allNotice);
+
+    if(allNotice.length === 0){
+      return next(myError(500, '어떤 공지도 존재하지 않습니다.'));
+    }
+
+    return res.status(200).send({
+      resutl: true,
+      allNotice: allNotice,
+      msg: "전체 공지 불러오기에 성공했습니다."
+    });
+
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+}
+
 const makeNotice = async (req, res, next) => { 
   try {
     console.log('makeNotice router 진입');
@@ -287,7 +311,7 @@ const makeNotice = async (req, res, next) => {
       return next(myError(500, '해당 모임의 호스트가 아닙니다'));
     }
 
-    const isNotice = await Notice.findAll({ // 해당 모임에 참여중인지, 호스트인지 확인
+    const isNotice = await Notice.findAll({ // 해당 모임 채팅방에 공지가 있는지 여부 확인
       where: { moimChatRoomId: chatRoomId }
     });
 
@@ -296,6 +320,7 @@ const makeNotice = async (req, res, next) => {
     }
 
     const makeNotice = await Notice.create({
+      moimId,
       moimChatRoomId: chatRoomId,
       contents,
     })
@@ -303,8 +328,38 @@ const makeNotice = async (req, res, next) => {
     return res.status(200).send({ //공지로 등록한 문구를 프론트로 전달
       result: true,
       notice: makeNotice,
+      noticeId : makeNotice.id,
       msg: "공지 등록에 성공했습니다."
     });
+
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+}
+
+const getTargetNotice = async (req, res, next) => { 
+  try {
+    console.log('getTargetNotice router 진입');
+    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
+
+    const userId = res.locals.user.id;
+    const { moimId, chatRoomId } = req.params;
+
+    const targetNotice = await Notice.findOne({
+      where: { moimId, moimChatRoomId : chatRoomId }
+    })
+
+    if (targetNotice === null) {
+      return next(myError(500, '해당 모임의 공지가 존재하지 않습니다.'));
+    }
+
+    res.status(200).send({
+      result: true,
+      targetNotice,
+      targetNoticeId: targetNotice.id,
+      msg: "특정 모임 채팅방의 공지를 불러오기에 성공했습니다."
+    })
 
   } catch (err) {
     console.log(err);
@@ -324,6 +379,7 @@ const updateNotice = async (req, res, next) => {
     const isNotice = await Notice.findOne({
       where: { 
         id: noticeId,
+        moimId,
         moimChatRoomId: chatRoomId,
        }
     })
@@ -368,6 +424,7 @@ const deleteNotice = async (req, res, next) => {
     const isNotice = await Notice.findOne({
       where: { 
         id: noticeId,
+        moimId,
         moimChatRoomId: chatRoomId,
        },
     })
@@ -403,7 +460,9 @@ module.exports = {
   deleteChatRoom,
   loadTargetChat,
   saveChat,
+  getAllNotice,
   makeNotice,
+  getTargetNotice,
   updateNotice,
   deleteNotice,
 }
