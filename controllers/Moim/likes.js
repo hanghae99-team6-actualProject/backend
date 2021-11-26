@@ -1,7 +1,7 @@
-const env = require('../env')
-const { User, Like, Moim, Comment, MoimUser } = require('../models');
-const myError = require('./utils/httpErrors')
-const logger = require('../logger');
+const env = require('../../env')
+const { User, Like, Moim, Comment, MoimUser } = require('../../models');
+const myError = require('../utils/httpErrors')
+const logger = require('../../logger');
 
 //내가 좋아요한 모임 목록
 const getLikedMoims = async (req, res, next) => {

@@ -1,6 +1,6 @@
-const { Comment, User, Moim } = require('../models');
-const myError = require('./utils/httpErrors');
-const logger = require('../logger');
+const { Comment, User, Moim } = require('../../models');
+const myError = require('../utils/httpErrors');
+const logger = require('../../logger');
 
 const getAllComments = async (req, res, next) => {
   try {

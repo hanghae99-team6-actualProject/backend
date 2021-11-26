@@ -1,7 +1,7 @@
 require('dotenv').config();
-const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../models');
-const myError = require('./utils/httpErrors');
-const logger = require('../logger');
+const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../../models');
+const myError = require('../utils/httpErrors');
+const logger = require('../../logger');
 
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {

@@ -1,6 +1,6 @@
-const { Moim, MoimUser, Comment, Like, User } = require('../models');
-const myError = require('./utils/httpErrors');
-const logger = require('../logger');
+const { Moim, MoimUser, Comment, Like, User } = require('../../models');
+const myError = require('../utils/httpErrors');
+const logger = require('../../logger');
 
 const makeMoimUser = async (userId, moimId, userType, next) => {
   //모임의 유저를 만드는 함수

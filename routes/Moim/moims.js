@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const authMiddleware = require('../middlewares/authMiddleware');
-const { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims } = require('../controllers/moims');
-const { createLike, getLikedMoims, deleteLike } = require('../controllers/likes');
-const { getAllComments, getTargetMoimComments, createComment, updateComment, deleteComment, myComments } = require('../controllers/comments');
+const authMiddleware = require('../../middlewares/authMiddleware');
+const { getAllMoim, getMoimByLocation, detailMoim, createMoim, updateMoim, deleteMoim, enterMoim, exitMoim, myMoims } = require('../../controllers/Moim/moims');
+const { createLike, getLikedMoims, deleteLike } = require('../../controllers/Moim/likes');
+const { getAllComments, getTargetMoimComments, createComment, updateComment, deleteComment, myComments } = require('../../controllers/Moim/comments');
 
 //API
 router.get('/like/mylikes', authMiddleware, getLikedMoims);
@@ -28,7 +28,7 @@ router.get('/', getAllMoim); //미들웨어 제거
 router.post('/', authMiddleware, createMoim);
 
 // chat
-const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat, getAllNotice, makeNotice, updateNotice, deleteNotice, getTargetNotice } = require('../controllers/chats');
+const { createChatRoom, enterChatRoom, exitChatRoom, deleteChatRoom, loadTargetChat, saveChat, getAllNotice, makeNotice, updateNotice, deleteNotice, getTargetNotice } = require('../../controllers/Moim/chats');
 
 //API
 router.post('/:moimId/chatRoom', authMiddleware, createChatRoom)

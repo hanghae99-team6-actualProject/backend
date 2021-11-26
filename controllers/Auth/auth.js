@@ -1,14 +1,14 @@
 const jwt = require('jsonwebtoken');
-const env = require('../env')
-const { User } = require('../models');
-const userValidation = require('./utils/joi');
-const { encryptPw, pwCompare } = require('./utils/bcrypt');
-const myError = require('./utils/httpErrors')
+const env = require('../../env')
+const { User } = require('../../models');
+const userValidation = require('../utils/joi');
+const { encryptPw, pwCompare } = require('../utils/bcrypt');
+const myError = require('../utils/httpErrors')
 const {
   createRoutineFn
-} = require('./utils/routineFn');
-const presetConst = require('../constants/presetRoutines')
-const logger = require('../logger');
+} = require('../utils/routineFn');
+const presetConst = require('../../constants/presetRoutines')
+const logger = require('../../logger');
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {

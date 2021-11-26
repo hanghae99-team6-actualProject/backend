@@ -1,5 +1,5 @@
 const passport = require('passport')
-const logger = require('../logger');
+const logger = require('../../logger');
 
 const naverLogin = passport.authenticate('naver', {
   scope: ['profile']

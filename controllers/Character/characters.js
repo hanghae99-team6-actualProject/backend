@@ -1,7 +1,7 @@
-const { Character } = require('../models');
-const crtConst = require('../constants/characters');
-const myError = require('./utils/httpErrors');
-const logger = require('../logger');
+const { Character } = require('../../models');
+const crtConst = require('../../constants/characters');
+const myError = require('../utils/httpErrors');
+const logger = require('../../logger');
 
 const createCharacter = async (req, res, next) => {
   try {
