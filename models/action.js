@@ -13,11 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       models.Action.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
       models.Action.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
-<<<<<<< HEAD
-      models.Action.hasMany(models.ActionFin, { foreignKey: 'actionId', sourceKey: 'id' });
-=======
       // models.Action.hasMany(models.ActionFin, { foreignKey: 'actionId', targetKey: 'id' });
->>>>>>> 임성찬
     }
   };
   Action.init({
