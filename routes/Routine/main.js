@@ -3,7 +3,7 @@ var router = express.Router();
 const authMiddleware = require('../../middlewares/authMiddleware')
 
 //controller import
-const mainCtrl = require('../controllers/Routine/main');
+const mainCtrl = require('../../controllers/Routine/main');
 getOngoing = mainCtrl.getOngoing;
 
 //API

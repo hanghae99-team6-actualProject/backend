@@ -1,6 +1,6 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware')
-const { logout, signup, me, localLogin } = require('../controllers/auth')
+const { logout, signup, me, localLogin } = require('../../controllers/Auth/auth')
 const {
   naverLogin,
   kakaoLogin,
@@ -8,7 +8,7 @@ const {
   naverCallback,
   kakaoCallback,
   googleCallback,
-} = require('../controllers/passportAuth');
+} = require('../../controllers/Auth/passportAuth');
 
 const router = express.Router();
 

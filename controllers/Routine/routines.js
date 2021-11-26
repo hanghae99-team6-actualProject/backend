@@ -1,5 +1,5 @@
-const { Routine, Action, RoutineFin, ActionFin } = require('../models');
-const myError = require('./utils/httpErrors');
+const { Routine, Action, RoutineFin, ActionFin } = require('../../models');
+const myError = require('../utils/httpErrors');
 const {
   findLastRoutineFinId,
   thisCycle,
@@ -8,28 +8,8 @@ const {
   deleteActionFn,
   createRoutineFn
 } = require('./utils/routineFn');
-const logger = require('../logger');
-const {
-  actionExpGrowth,
-  routineExpGrowth,
-  expLimitPerDay,
-} = require('../constants/characters');
-const {
-  Action,
-  Character,
-  ExpDayLog,
-  ActionFin,
-  RoutineFin,
-} = require('../models');
 const Sequelize = require('sequelize');
-const myError = require('./utils/httpErrors');
-const {
-  thisCycle,
-  findLastRoutineFinId,
-  countNullAction
-} = require('./utils/routineFn');
-const logger = require('../logger');
-const Op = Sequelize.Op;
+const logger = require('../../logger');
 
 //Action 수정 함수
 async function modifyAction(routineId, userId, routineFinId, actions) {
@@ -287,10 +267,5 @@ module.exports = {
   createNowRoutineActions,
   resetNowRoutineActions,
   allPresetRoutine,
-  chkDayLog,
-  calcRoutineExp,
-  upDayActionExp,
-  upDayRoutineExp,
-  doneAction,
   setMainRoutine
 };

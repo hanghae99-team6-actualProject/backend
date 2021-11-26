@@ -29,12 +29,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { cors: { origin: "*" } });
 app.set('io', io);
 
-
-// ejs 읽기!
-app.use(express.static(path.join(__dirname, "views")));
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
 app.use('/chattt', (req, res) => {
   return res.render('chatIndex');
 });
@@ -110,8 +104,6 @@ moimNamespace.on('connection', (socketMoim) => {
     });
   });
 
-
-
   socketMoim.on('sendMsg', async (userNickName, msg, FromProntRoomId) => {
     console.log('전송받은 data', userNickName);
     console.log('전송받은 data', msg);
@@ -163,26 +155,13 @@ if (env.NODE_ENV === 'production') {
 }
 
 sequelize
-  .sync({ force: false }) //데이터 구조 변경하고 싶을 때, true
+  .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
   .then(() => {
     logger.info('------ SQL Restructure Complete ------');
   })
   .catch((error) => {
     logger.error(error);
   });
-
-
-// async () => {
-//   await sequelize
-//   .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
-//   .then(() => {
-//     logger.info('------ SQL Restructure Complete ------');
-//   })
-//   .catch((error) => {
-//     logger.error(error);
-//   });
-// }
-
 
 if (env.NODE_ENV === 'production') {
   logger.info('배포 환경입니다');

@@ -1,4 +1,4 @@
-const presetConst = require('../../constants/presetRoutines')
+const presetConst = require('../../../constants/presetRoutines');
 
 const makePreset = async (userId) => {
   const presetRoutine1 = presetConst.presetRoutine1;

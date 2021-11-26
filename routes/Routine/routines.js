@@ -4,14 +4,16 @@ const authMiddleware = require('../../middlewares/authMiddleware')
 
 //controller import
 const { getRoutine,
+  setMainRoutine,
   createRoutine,
   modifyRoutine,
   deleteRoutine,
   createNowRoutineActions,
   resetNowRoutineActions,
-  allPresetRoutine } = require('../controllers/Routine/routines');
+  allPresetRoutine } = require('../../controllers/Routine/routines');
 
 //API
+router.put('/mainRoutine', authMiddleware, setMainRoutine);
 router.post('/create/:routineId', authMiddleware, createNowRoutineActions);
 router.put('/reset/:routineId', authMiddleware, resetNowRoutineActions);
 // 프리셋 루틴 전체 목록 불러오기

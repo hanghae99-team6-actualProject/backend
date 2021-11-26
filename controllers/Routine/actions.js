@@ -1,7 +1,7 @@
 const { actionExpGrowth, routineExpGrowth, expLimitPerDay } = require('../../constants/characters');
 const { Action, Character, ExpDayLog, ActionFin, RoutineFin } = require('../../models');
 const Sequelize = require('sequelize');
-const myError = require('./utils/httpErrors');
+const myError = require('../utils/httpErrors');
 const { thisCycle, findLastRoutineFinId, countNullAction } = require('./utils/routineFn');
 const { timeSet } = require("../utils/timeSet");
 const logger = require('../../logger');

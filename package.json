@@ -39,7 +39,6 @@
     "socket.io": "^4.3.2",
     "socket.io-client": "^4.4.0"
   },
-  "type": "module",
   "author": "",
   "license": "ISC",
   "repository": {
