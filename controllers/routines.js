@@ -1,4 +1,4 @@
-const { Routine, Action, RoutineFin, ActionFin } = require("../models");
+const { Routine, Action, RoutineFin, ActionFin, User } = require("../models");
 const myError = require('./utils/httpErrors');
 const {
   findLastRoutineFinId,
@@ -29,27 +29,37 @@ const getRoutine = async (req, res, next) => {
   const authId = id
 
   try {
-    const routines = await Routine.findAll({
+    const routinesAndActions = await Routine.findAll({
       where: { userId: authId, preSet: 0 },
       include: [
         {
-          model: RoutineFin
-        },
-        {
           model: Action,
-          include: [
-            {
-              model: ActionFin
-            },
-          ]
-        },
+        }
       ]
+    })
+
+    const allFins = await RoutineFin.findAll({
+      where: {userId: authId},
+      include: [
+        {
+          model: ActionFin,
+        }
+      ]
+    })
+
+    console.log('routinesAndActions', routinesAndActions)
+    console.log('allFins', allFins)
+
+    return res.status(200).send({
+      result: true,
+      routinesAndActions,
+      allFins,
+      msg: "조회완료"
     });
-    res.status(200).send({ result: true, routines, msg: "조회완료" });
 
   } catch (err) {
     logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
