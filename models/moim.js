@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Moim.hasMany(models.MoimUser, { foreignKey: 'moimId', sourceKey: 'id' });
       models.Moim.hasMany(models.Comment, { foreignKey: 'moimId', sourceKey: 'id' });
       models.Moim.hasMany(models.Like, { foreignKey: 'moimId', sourceKey: 'id' });
+      models.Moim.hasMany(models.Notice, { foreignKey: 'moimId', sourceKey: 'id' });
     }
   };
   Moim.init({
@@ -21,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     contents: DataTypes.STRING,
     imgSrc: DataTypes.STRING,
     location: DataTypes.STRING,
-    locationGu: DataTypes.STRING,
+    filter: DataTypes.STRING,
     startAt: DataTypes.DATE,
     finishAt: DataTypes.DATE
   }, {

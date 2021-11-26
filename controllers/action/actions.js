@@ -139,7 +139,7 @@ const calcRoutineExp = async (userId, routineId) => {
 };
 
 // 루틴완료 x 액션완료 일때 경험치 획득 + actionExpGrowth
-const upExpFinOneAction = async (userId, res) => {
+const upExpFinOneAction = async (userId) => {
   //당일 한계 경험치 체크함수
   if (await upDayActionExp(userId)) {
     logger.info('캐릭 액션 경험치 함수 진입');

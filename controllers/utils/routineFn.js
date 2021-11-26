@@ -14,7 +14,7 @@ const findLastRoutineFinId = async (routineId, getCycle) => {
     }
   });
 
-  return lastRoutineFin?.id;
+  return lastRoutineFin.id;
 }
 
 //현재 루틴의 가장 최신 사이클을 찾아줍니다!
