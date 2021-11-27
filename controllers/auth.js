@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const env = require('../env')
-const { User } = require('../models');
+const { User, Character } = require('../models');
 const userValidation = require('./utils/joi');
 const { encryptPw, pwCompare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
@@ -13,12 +13,16 @@ const logger = require('../logger');
 //본인 정보 확인 API
 const me = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { user } = res.locals;
-    res.status(200).send({ result: true, user });
+    const character = await Character.findOne({
+      where: {
+        userId: user.id,
+        expMax: 0
+      }
+    })
+    res.status(200).send({ result: true, user, character });
   } catch (err) {
-    logger.error(err);
-    return next(err);
+    next(err);
   }
 }
 

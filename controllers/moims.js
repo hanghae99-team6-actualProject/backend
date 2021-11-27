@@ -1,4 +1,4 @@
-const { Moim, MoimUser, Comment, Like, User, Sequelize, sequelize} = require('../models');
+const { Moim, MoimUser, Comment, Like, User, Sequelize, sequelize } = require('../models');
 const myError = require('./utils/httpErrors');
 const Op = Sequelize.Op;
 const logger = require('../logger');
@@ -128,7 +128,7 @@ const getMoreMoim = async (req, res, next) => {
     }
 
     const moreMoims = await Moim.findAll({
-      order: [['id','DESC']],
+      order: [['id', 'DESC']],
       where: {
         id: {
           [Op.lt]: targetMoimId
@@ -194,7 +194,7 @@ const getMoreMoimByLocation = async (req, res, next) => {
     }
 
     const filterMoims = await Moim.findAll({
-      order: [['id','DESC']],
+      order: [['id', 'DESC']],
       //where: { filter },
       where: {
         id: {

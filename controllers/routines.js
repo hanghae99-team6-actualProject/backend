@@ -1,4 +1,4 @@
-const { Routine, Action, RoutineFin, ActionFin } = require("../models");
+const { Routine, Action, RoutineFin, ActionFin, User } = require("../models");
 const myError = require('./utils/httpErrors');
 const {
   findLastRoutineFinId,
@@ -29,27 +29,37 @@ const getRoutine = async (req, res, next) => {
   const authId = id
 
   try {
-    const routines = await Routine.findAll({
+    const routinesAndActions = await Routine.findAll({
       where: { userId: authId, preSet: 0 },
       include: [
         {
-          model: RoutineFin
-        },
-        {
           model: Action,
-          include: [
-            {
-              model: ActionFin
-            },
-          ]
-        },
+        }
       ]
+    })
+
+    const allFins = await RoutineFin.findAll({
+      where: {userId: authId},
+      include: [
+        {
+          model: ActionFin,
+        }
+      ]
+    })
+
+    console.log('routinesAndActions', routinesAndActions)
+    console.log('allFins', allFins)
+
+    return res.status(200).send({
+      result: true,
+      routinesAndActions,
+      allFins,
+      msg: "조회완료"
     });
-    res.status(200).send({ result: true, routines, msg: "조회완료" });
 
   } catch (err) {
     logger.error(err);
-    return next(err);
+    next(err);
   }
 };
 
@@ -222,27 +232,46 @@ const allPresetRoutine = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
-    const routines = await Routine.findAll({
+    const preRoutines = await Routine.findAll({
       where: { userId, preSet: 1 },
       include: [
         {
-          model: RoutineFin,
-        },
-        {
           model: Action,
-          include: [
-            {
-              model: ActionFin
-            }
-          ]
         },
       ],
     });
+
+    // console.log('preRoutines', preRoutines);
+    // console.log('preRoutines', preRoutines[0].id);
+    const preRoutines0 = preRoutines[0].id;
+    // console.log('preRoutines', preRoutines[1].id);
+    const preRoutines1 = preRoutines[1].id;
+
+    const preRoutineFins0 = await RoutineFin.findAll({
+      where: { userId, routineId: preRoutines0 },
+      include: [
+        {
+          model: ActionFin,
+        },
+      ],
+    });
+
+    const preRoutineFins1 = await RoutineFin.findAll({
+      where: { userId, routineId: preRoutines1 },
+      include: [
+        {
+          model: ActionFin,
+        },
+      ],
+    });
+
     logger.info("전체 프리셋 루틴 불러오기 완료");
 
     return res.status(200).send({
       result: true,
-      routines,
+      preRoutines,
+      preRoutineFins0,
+      preRoutineFins1,
       msg: '프리셋 루틴 목록 불러오기 완료',
     });
   } catch (err) {
