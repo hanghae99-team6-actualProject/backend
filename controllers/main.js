@@ -83,7 +83,7 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      where: { userId: authId, isDel: 0 },
+      where: { userId: authId },
       include: [
         {
           model: RoutineFin,
@@ -98,7 +98,7 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      where: { userId: authId, isDel: 0 },
+      where: { userId: authId },
       include: [
         {
           model: ActionFin,
@@ -136,7 +136,7 @@ const getGraphHistory = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      where: { userId: authId, isDel: 0 },
+      where: { userId: authId },
       include: [
         {
           model: RoutineFin,
@@ -151,7 +151,7 @@ const getGraphHistory = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      where: { userId: authId, isDel: 0 },
+      where: { userId: authId },
       include: [
         {
           model: ActionFin,
