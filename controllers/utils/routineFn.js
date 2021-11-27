@@ -52,8 +52,6 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
       .then(async (result) => {
         console.log((result.actionCnt + 1) + '번째 AnctionFin 생성');
         await ActionFin.create({
-          userId: userId,
-          routineId: routineId,
           actionId: result.id,
           routineFinId
         })
@@ -67,15 +65,10 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
 const deleteActionFn = async (routineId) => {
   await Action.destroy({
     where: { routineId }
-  }).then( async () => {
-    await ActionFin.destroy({
-      where: { routineId }
-    });
-  });
+  })
   console.log('action 및 연관 actionfin 삭제 완료')
   // 액션이 삭제되면서 ActionFin에 있는 데이터도 같이 삭제됨
 }
-
 
 const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => {
 
@@ -87,7 +80,6 @@ const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => 
   }).catch((err) => { next(new Error('Routine 생성 중 db 에러')) })
 
   const routineFin = await RoutineFin.create({
-    userId: authId,
     routineId: routines.id,
     cycle: 1
   }).catch((err) => { next(new Error('RoutineFin 생성 중 db 에러')) }) //이것이 실패하면 116번째 줄부터 .then으로 해보자

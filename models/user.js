@@ -18,8 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.ExpDayLog, { foreignKey: 'userId', sourceKey: 'id' });
       models.User.hasMany(models.MoimUser, { foreignKey: 'userId', sourceKey: 'id' });
       models.User.hasMany(models.Comment, { foreignKey: 'userId', sourceKey: 'id' });
-      models.User.hasMany(models.RoutineFin, { foreignKey: 'userId', sourceKey: 'id' });
-      models.User.hasMany(models.ActionFin, { foreignKey: 'userId', sourceKey: 'id' });
     }
   };
   User.init({
