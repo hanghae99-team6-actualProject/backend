@@ -13,6 +13,7 @@ module.exports = {
         preSet: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -21,6 +22,7 @@ module.exports = {
         preSet: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -29,6 +31,7 @@ module.exports = {
         preSet: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 2,
@@ -37,6 +40,7 @@ module.exports = {
         preSet: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 3,
@@ -45,6 +49,7 @@ module.exports = {
         preSet: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
     ], {});
   },

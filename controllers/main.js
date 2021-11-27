@@ -22,7 +22,7 @@ const getOngoing = async (req, res, next) => {
 
   try {
     const presetMainRoutine = await Routine.findAll({
-      where: { userId: null, isMain: 1 },
+      where: { userId: null, isMain: 1, isDel: 0 },
       include: [{
         model: Action
       }]
@@ -32,7 +32,7 @@ const getOngoing = async (req, res, next) => {
     }
     else if (presetMainRoutine.length === 0) {
       const userMainRoutine = await Routine.findOne({
-        where: { userId, isMain: 1 },
+        where: { userId, isMain: 1, isDel: 0 },
         include: [{
           model: Action,
           include: [{
@@ -83,7 +83,7 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      where: { userId: authId },
+      where: { userId: authId, isDel: 0 },
       include: [
         {
           model: RoutineFin,
@@ -98,7 +98,7 @@ const getTrackerHistory = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      where: { userId: authId },
+      where: { userId: authId, isDel: 0 },
       include: [
         {
           model: ActionFin,
@@ -136,7 +136,7 @@ const getGraphHistory = async (req, res, next) => {
     });
 
     const finRoutines = await Routine.findAll({
-      where: { userId: authId },
+      where: { userId: authId, isDel: 0 },
       include: [
         {
           model: RoutineFin,
@@ -151,7 +151,7 @@ const getGraphHistory = async (req, res, next) => {
     });
 
     const finActions = await Action.findAll({
-      where: { userId: authId },
+      where: { userId: authId, isDel: 0 },
       include: [
         {
           model: ActionFin,

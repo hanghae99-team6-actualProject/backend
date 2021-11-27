@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     routineName: DataTypes.STRING,
     isMain: DataTypes.INTEGER,
     preSet: DataTypes.INTEGER,
+    isDel: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Routine',

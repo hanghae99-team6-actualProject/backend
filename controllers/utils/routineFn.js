@@ -10,7 +10,7 @@ const findLastRoutineFinId = async (routineId, getCycle) => {
   const lastRoutineFin = await RoutineFin.findOne({
     where: {
       routineId,
-      cycle
+      cycle,
     }
   });
 
@@ -47,7 +47,8 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
       actionName,
       actionCnt,
       actionType,
-      actionNum: index
+      actionNum: index,
+      isDel: 0,
     })
       .then(async (result) => {
         console.log((result.actionCnt + 1) + '번째 AnctionFin 생성');
@@ -63,20 +64,21 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
 
 //--Action 삭제 함수--
 const deleteActionFn = async (routineId) => {
-  await Action.destroy({
-    where: { routineId }
-  })
+  await Action.update(
+    { isDel: 1 },
+    { where: { routineId }},
+  )
   console.log('action 및 연관 actionfin 삭제 완료')
-  // 액션이 삭제되면서 ActionFin에 있는 데이터도 같이 삭제됨
+  // 액션의 isDel에 1값이 추가되면서 데이터는 보존, 삭제 처리
 }
 
 const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => {
-
   const routines = await Routine.create({
     userId: authId,
     routineName,
     isMain,
-    preSet
+    preSet,
+    isDel: 0,
   }).catch((err) => { next(new Error('Routine 생성 중 db 에러')) })
 
   const routineFin = await RoutineFin.create({

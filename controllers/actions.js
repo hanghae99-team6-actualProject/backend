@@ -129,7 +129,7 @@ const upDayRoutineExp = async (userId, routineId) => {
 //당일 한계 경험치 체크
 const calcRoutineExp = async (userId, routineId) => {
   await Action.findAndCountAll({
-    where: { userId, routineId },
+    where: { userId, routineId, isDel: 0 },
   }).then((result) => {
     routineExp = result.count * `${routineExpGrowth}`;
     logger.info('루틴 경험치 계산 진입');

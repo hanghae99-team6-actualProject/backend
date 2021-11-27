@@ -20,6 +20,7 @@ module.exports = {
         actionNum: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -30,6 +31,7 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -40,6 +42,7 @@ module.exports = {
         actionNum: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -50,6 +53,7 @@ module.exports = {
         actionNum: 4,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -60,6 +64,7 @@ module.exports = {
         actionNum: 5,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -70,6 +75,7 @@ module.exports = {
         actionNum: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -80,6 +86,7 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -90,6 +97,7 @@ module.exports = {
         actionNum: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -100,6 +108,7 @@ module.exports = {
         actionNum: 4,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -110,6 +119,7 @@ module.exports = {
         actionNum: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 1,
@@ -120,6 +130,7 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 2,
@@ -130,6 +141,7 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
       {
         userId: 3,
@@ -140,6 +152,7 @@ module.exports = {
         actionNum: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isDel: 0,
       },
     ], {});
   },

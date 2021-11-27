@@ -85,7 +85,7 @@ const setMainRoutine = async (req, res, next) => {
       where: { id: routineId }
     });
     return res.send({ result: true, msg: "메인 루틴으로 설정하였습니다" });
-    // }
+
   } catch (err) {
     logger.error(err);
     return next(err);
