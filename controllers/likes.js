@@ -65,7 +65,6 @@ const createLike = async (req, res, next) => {
     }
     await Like.create({ userId, moimId })
       .then(() => { return res.status(200).send({ result: true, msg: `${userId} 유저가 ${moimId} 게시글에 좋아요 생성` }) })
-      .catch((err) => { if (err) return next(new Error('like 생성 db 에러')); })
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -86,7 +85,6 @@ const deleteLike = async (req, res, next) => {
       .then(() => {
         return res.status(200).send({ result: true, msg: `${userId} 유저가 ${moimId} 게시글에 좋아요 취소` });
       })
-      .catch((err) => { if (err) return next(new Error('deleteLike db 에러')) });
   } catch (err) {
     logger.error(err);
     return next(err);

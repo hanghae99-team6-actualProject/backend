@@ -63,10 +63,10 @@ const createCharacter = async (req, res, next) => {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
         }
       }
-      
+
       logger.info(newCrtName, '랜덤화 한 새로운 캐릭터의 이름');
       logger.info(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스');
-      
+
       await Character.create({
         userId: Number(userId),
         preSet: 1,
@@ -81,10 +81,7 @@ const createCharacter = async (req, res, next) => {
             characterIndex: newCrtIndex,
             msg: '신규 캐릭터가 생성되었습니다.',
           });
-        }).catch((err) => {
-          if (err) return next(new Error('db생성 문제 발생'));
-        });
-
+        })
     }
   } catch (err) {
     logger.error(err);

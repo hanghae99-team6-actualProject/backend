@@ -14,8 +14,6 @@ const getAllComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('전체 댓글 불러오기 중 db 에러'));
     });
 
     logger.info('전체 댓글 불러오기 완료');
@@ -45,9 +43,7 @@ const getTargetMoimComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('특정 모임 댓글 불러오기 중 db 에러'));
-    });
+    })
 
     if (targetMoimComments.length === 0) {
       logger.info('특정 모임에 댓글이 없음');
@@ -89,9 +85,6 @@ const createComment = async (req, res, next) => {
           newCommentId: result.id,
           msg: '댓글 작성에 성공했습니다.',
         });
-      })
-      .catch((err) => {
-        if (err) next(new Error('댓글 작성 중 db 에러'));
       });
   } catch (err) {
     logger.error(err);
@@ -114,8 +107,6 @@ const updateComment = async (req, res, next) => {
         id: commentId,
         userId: userId,
       },
-    }).catch((err) => {
-      if (err) next(new Error('target 댓글 찾기 중 db 에러'));
     });
 
     logger.info('target', isComment);
@@ -132,9 +123,6 @@ const updateComment = async (req, res, next) => {
           result: true,
           msg: '댓글 수정에 성공했습니다.',
         });
-      })
-      .catch((err) => {
-        if (err) next(new Error('댓글 수정 중 db 에러'));
       });
   } catch (err) {
     logger.error(err);
@@ -155,8 +143,6 @@ const deleteComment = async (req, res, next) => {
         id: commentId,
         userId: userId,
       },
-    }).catch((err) => {
-      if (err) next(new Error('target 댓글 찾기 중 db 에러'));
     });
 
     logger.info('삭제하고자 하는 댓글 정보', isComment);
@@ -172,10 +158,7 @@ const deleteComment = async (req, res, next) => {
         result: true,
         msg: '댓글 삭제에 성공했습니다.',
       });
-    })
-      .catch((err) => {
-        if (err) next(new Error('댓글 삭제 중 db 에러'));
-      });
+    });
 
   } catch (err) {
     logger.error(err);
@@ -205,8 +188,6 @@ const myComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });
 
     logger.info('검색결과를 확인', myCommentList.length);

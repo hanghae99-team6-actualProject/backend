@@ -33,7 +33,6 @@ const logout = (req, res, next) => {
     const { providerId } = res.locals.user;
 
     User.update({ refreshToken: "" }, { where: { providerId } })
-      .catch((err) => { return next(new Error('User.update refreshToken db 에러')) })
 
     res.status(200).json({ result: true, msg: "로그아웃되었습니다." });
   } catch (err) {
@@ -89,7 +88,6 @@ const signup = async (req, res, next) => {
 
     const providerId = `local${userEmail}`
 
-    //혹시나 해서 만듬
     if (!userEmail || !userPw || !nickName || userEmail === null || userPw === null || nickName === null) {
       throw new Error('입력 정보가 존재하지 않습니다. 개발팀에 문의해주세요');
     }

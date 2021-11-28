@@ -14,11 +14,9 @@ const logger = require('../logger');
 
 //Action 수정 함수
 async function modifyAction(routineId, userId, routineFinId, actions) {
-  await deleteActionFn(routineId)
-    .catch((err) => { if (err) next(new Error('deleteAction db 에러')) })
+  await deleteActionFn(routineId);
 
-  await createActionFn(routineId, userId, routineFinId, actions)
-    .catch((err) => { if (err) next(new Error('createAction db 에러')) })
+  await createActionFn(routineId, userId, routineFinId, actions);
 
   logger.info('action 수정 완료')
 }
@@ -84,8 +82,7 @@ const createRoutine = async (req, res, next) => {
     await createRoutineFn(authId, routineName, isMain, 0, actions)
       .then(() => {
         res.status(200).send({ result: true, msg: '루틴이 생성되었습니다.' });
-      })
-      .catch((err) => { if (err) next(new Error('actionCreate db 에러')) })
+      });
   } catch (err) {
     logger.error(err);
     next(err);
@@ -142,17 +139,16 @@ const deleteRoutine = async (req, res, next) => {
     await Action.update(
       { isDel: 1 },
       { where: { routineId } }
-    ).catch((err) => { if (err) next(new Error('actionDelete 중 db 에러')) })
+    );
     logger.info('routine 종속 action 및 actionFin 삭제완료')
 
     await Routine.update(
       { isDel: 1 },
-      {where: { id: routineId } }
+      { where: { id: routineId } }
     )
       .then(() => {
         res.status(200).send({ result: true, routineId, msg: '루틴이 삭제되었습니다.' });
-      })
-      .catch((err) => { if (err) next(new Error('deleteRoutine 중 db 에러')) })
+      });
 
   } catch (err) {
     logger.error(err);
@@ -170,10 +166,8 @@ const createNowRoutineActions = async (req, res, next) => {
     let newRoutineFinId = 0;
     const getNewRoutineFinId = (input) => newRoutineFinId = input;
 
-    const count = await countNullAction(routineFinId)
-      .catch((err) => {
-        if (err) next(new Error('date null인 ActionFin count db 에러'));
-      });
+    const count = await countNullAction(routineFinId);
+
     logger.info('count', count);
     if (count > 0) return next(myError(400, "이전 액션이 모두 완료되지 않았습니다"));
 
@@ -188,8 +182,8 @@ const createNowRoutineActions = async (req, res, next) => {
       .then((result) => {
         getNewRoutineFinId(result.id)
         logger.info('RoutineFin 생성완료')
-      })
-      .catch((err) => { if (err) next(new Error('RoutineFin 생성 db 에러')) });
+      });
+
     logger.info("newRoutineFinId", newRoutineFinId)
 
     for await (const [index, value] of lastActionFins.entries()) {
@@ -201,7 +195,6 @@ const createNowRoutineActions = async (req, res, next) => {
         date: null
       })
         .then(() => logger.info('ActionFin 생성완료'))
-        .catch((err) => { if (err) next(new Error('ActionFin 생성 db 에러')) });
     }
     return res.send({ result: true, msg: "현재 루틴을 재시작합니다" });
 
@@ -233,7 +226,7 @@ const allPresetRoutine = async (req, res, next) => {
   try {
     if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
-    const routines = await Routine.findAll({  
+    const routines = await Routine.findAll({
       where: { userId, preSet: 1, isDel: 0 },
       include: [
         {

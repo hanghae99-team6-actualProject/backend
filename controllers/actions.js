@@ -146,10 +146,7 @@ const upExpFinOneAction = async (userId) => {
     await Character.update(
       { exp: Sequelize.literal(`exp + ${actionExpGrowth}`) },
       { where: { userId, expMax: 0 } }
-    ).catch((err) => {
-      logger.error(err);
-      if (err) throw new Error('upExpFinOneAction 함수 실행 에러 발생');
-    });
+    )
     return true;
   } else {
     logger.info('캐릭 루틴 경험치 함수 엘스 진입');
@@ -167,10 +164,7 @@ const upExpAllAction = async (userId, routineId) => {
       //아래에서 routine경험치 상수로 박아주는게아니라, 별도로 변수 지정값 리턴 받아서 합산
       { exp: Sequelize.literal(`exp + ${actionExpGrowth} + ${routineExp}`) },
       { where: { userId, expMax: 0 } }
-    ).catch((err) => {
-      logger.error(err);
-      if (err) throw new Error('upExpAllAction 함수 실행 에러 발생');
-    });
+    )
     return true;
   } else {
     logger.info('캐릭 루틴 경험치 함수 엘스 진입');
@@ -206,24 +200,15 @@ const doneAction = async (req, res, next) => {
         routineFinId: lastRoutineFinId,
         actionId
       }
-    })
-    //현재 actionFin이 이미 완료되었는지 검증
-    if (thisActionFin.date !== null && thisActionFin.date) {
-      return next(new Error('이미 완료된 액션인데 왜 들어왔을까요?'));
-    }
+    });
+    if (!thisActionFin) return next(new Error('현재 액션이 없습니다'));
 
     //액션에 맞는 ActionFin의 실 데이터 생성
     logger.info('setActionFinDate 진입');
     await setActionFinDate(actionId, lastRoutineFinId, finDate)
-      .catch((err) => {
-        if (err) next(new Error('setActionFinDate db 에러'));
-      });
 
     //date가 null인 액션들의 count확인
     const count = await countNullAction(lastRoutineFinId)
-      .catch((err) => {
-        if (err) next(new Error('date null인 ActionFin count db 에러'));
-      });
 
     logger.info('date: null인 카운트', count);
 
@@ -246,9 +231,7 @@ const doneAction = async (req, res, next) => {
     } else {
       logger.info('액션과 루틴이 함께 완료된 경우');
       //루틴에는 finDate추가
-      await setRoutineFinDate(routineId, finDate).catch((err) => {
-        if (err) return next(new Error('setRoutineFinDate db 에러'));
-      });
+      await setRoutineFinDate(routineId, finDate)
 
       //액션과 루틴이 함께 완료되었을때 경험치
       if (await upExpAllAction(userId, routineId)) {

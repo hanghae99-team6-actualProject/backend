@@ -11,10 +11,7 @@ const bye = async (req, res, next) => {
     User.destroy({ where: { id } })
       .then(() => {
         res.send({ result: true, msg: "회원 탈퇴가 완료되었습니다" })
-      })
-      .catch((err) => {
-        if (err) return next(new Error('User db삭제 에러'))
-      })
+      });
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -30,10 +27,7 @@ const collection = async (req, res, next) => {
         userId: id,
         exp: 10000,
       },
-    }).catch((err) => {
-      logger.error(err);
-      if (err) return next(new Error('Character db 검색 에러'));
-    })
+    });
     return res.send({ result: true, character: usersCharacter, msg: '성공' });
   } catch (err) {
     return next(err);
@@ -51,10 +45,7 @@ const updateUser = async (req, res, next) => {
     User.update({ userEmail, nickName, userPw }, { where: { id } })
       .then(() => {
         return res.send({ result: true, msg: '유저 정보가 수정되었습니다' });
-      })
-      .catch((err) => {
-        if (err) return next(new Error('유저 정보 수정 db 에러'));
-      })
+      });
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -146,9 +137,7 @@ const myMoim = async (req, res, next) => {
           ]
         },
       ]
-    }).catch((err) => {
-      if (err) next(err);
-    })
+    });
 
     if (hostType === 1) {
       logger.info('호스트인 경우')
@@ -171,7 +160,6 @@ const myMoim = async (req, res, next) => {
       logger.info('참여자인 경우')
       logger.info(allMyMoim.length);
       if (allMyMoim.length === 0) {
-        logger.info('참여한 모임이 없습니다.');
         return res.status(200).send({
           result: "true4",
           msg: '내가 참여한 모임이 없습니다.'
@@ -212,8 +200,6 @@ const myComments = async (req, res, next) => {
           attributes: ['nickName'],
         }
       ]
-    }).catch((err) => {
-      if (err) next(new Error('나의 댓글 리스트 조회 db 에러'));
     });
 
     logger.info('검색결과를 확인', myCommentList.length);
