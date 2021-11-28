@@ -44,18 +44,17 @@ const logout = (req, res, next) => {
 //로컬 로그인 API
 const localLogin = async (req, res, next) => {
   try {
+    console.log('로그인 진입')
     const { userEmail, userPw } = req.body;
     const providerId = `local${userEmail}`;
 
     const user = await User.findOne({ where: { providerId } });
-
     if (!user) {
       throw new Error('존재하지 않는 아이디입니다.');
     }
-    if (!compare(userPw, user.userPw)) {
+    if (!await compare(userPw, user.userPw)) {
       throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
-    }
-
+    };
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
       expiresIn: "14d",
