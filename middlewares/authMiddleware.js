@@ -70,7 +70,6 @@ const authMiddleware = async (req, res, next) => {
         //accessToken 발급
         const providerId = thisUser?.providerId;
 
-
         const newAccessToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
           expiresIn: "1h",
           issuer: 'mingijuk'
@@ -84,7 +83,7 @@ const authMiddleware = async (req, res, next) => {
         });
       }
       if (accessVerified && !refreshVerified) {
-        const providerId = accessVerified?.providerId;
+        const providerId = accessVerified.providerId;
 
         //refreshToken 발급
         const newRefreshToken = jwt.sign({ providerId }, env.JWT_SECRET_KEY, {
@@ -107,7 +106,6 @@ const authMiddleware = async (req, res, next) => {
       }
       if (accessVerified && refreshVerified) {
         const providerId = accessVerified.providerId;
-        console.log(providerId);
 
         const thisUser = await User.findOne({ where: { providerId } })
         if (!thisUser) throw new Error('accessVerified에러, db에 유저가 없습니다.')

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const env = require('../env')
 const { User, Character } = require('../models');
 const userValidation = require('./utils/joi');
-const { encryptPw, pwCompare } = require('./utils/bcrypt');
+const { encrypt, compare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
 const {
   createRoutineFn
@@ -45,17 +45,16 @@ const logout = (req, res, next) => {
 const localLogin = async (req, res, next) => {
   try {
     const { userEmail, userPw } = req.body;
-    const providerId = `local${userEmail}`
+    const providerId = encrypt(userEmail);
 
     const user = await User.findOne({ where: { providerId } });
 
     if (!user) {
       throw new Error('존재하지 않는 아이디입니다.');
     }
-    if (!pwCompare(userPw, user.userPw)) {
+    if (!compare(userPw, user.userPw)) {
       throw new Error('아이디 또는 비밀번호가 틀렸습니다.');
     }
-    // const token = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY);
 
     // refresh token 발급 (2주)
     const refreshToken = jwt.sign({ providerId: user.providerId }, env.JWT_SECRET_KEY, {
@@ -86,7 +85,7 @@ const signup = async (req, res, next) => {
   try {
     const { userEmail, userPw, userPwChk, nickName } = await userValidation.validateAsync(req.body);
 
-    const providerId = `local${userEmail}`
+    const providerId = encrypt(userEmail);
 
     if (!userEmail || !userPw || !nickName || userEmail === null || userPw === null || nickName === null) {
       throw new Error('입력 정보가 존재하지 않습니다. 개발팀에 문의해주세요');
@@ -104,8 +103,8 @@ const signup = async (req, res, next) => {
     const exp = 0;
     const role = 'base_user';
 
-    // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encryptPw(userPw)
-    await User.create({ providerId, userEmail, userPw: encryptPw(userPw), nickName, provider, exp, role })
+    // 모든 조건 통과 시 비밀번화 단방향 암호화 및 user 생성 encrypt(userPw)
+    await User.create({ providerId, userEmail, userPw: encrypt(userPw), nickName, provider, exp, role })
       .then(async (result) => {
         const userId = result.id;
         const presetRoutine1 = presetConst.presetRoutine1;
