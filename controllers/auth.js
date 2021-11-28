@@ -45,7 +45,7 @@ const logout = (req, res, next) => {
 const localLogin = async (req, res, next) => {
   try {
     const { userEmail, userPw } = req.body;
-    const providerId = encrypt(userEmail);
+    const providerId = `local${userEmail}`;
 
     const user = await User.findOne({ where: { providerId } });
 
@@ -85,7 +85,7 @@ const signup = async (req, res, next) => {
   try {
     const { userEmail, userPw, userPwChk, nickName } = await userValidation.validateAsync(req.body);
 
-    const providerId = encrypt(userEmail);
+    const providerId = `local${userEmail}`;
 
     if (!userEmail || !userPw || !nickName || userEmail === null || userPw === null || nickName === null) {
       throw new Error('입력 정보가 존재하지 않습니다. 개발팀에 문의해주세요');
