@@ -17,7 +17,6 @@ function timeSet() {
 //메인 루틴, 액션, 유저 조회
 const getOngoing = async (req, res, next) => {
   logger.info("getRoutine router 진입");
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id: userId } = res.locals.user;
 
   try {
@@ -38,9 +37,9 @@ const getOngoing = async (req, res, next) => {
           include: [{
             model: ActionFin
           }]
-        },{
-            model:RoutineFin
-          }]
+        }, {
+          model: RoutineFin
+        }]
       })
 
       if (!userMainRoutine) return res.status(200).send({
@@ -70,7 +69,6 @@ const getOngoing = async (req, res, next) => {
 };
 
 const getTrackerHistory = async (req, res, next) => {
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
 
@@ -121,13 +119,10 @@ const getTrackerHistory = async (req, res, next) => {
 };
 
 const getGraphHistory = async (req, res, next) => {
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   const { id } = res.locals.user;
   const authId = id
 
   const { fromYearAgo } = timeSet();
-  console.log('@@@@@@@@@@@@프롬이어어고!')
-  console.log(fromYearAgo)
 
   try {
     const finUser = await User.findOne({

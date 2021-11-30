@@ -4,7 +4,9 @@ const NaverStrategy = require('passport-naver').Strategy;
 const KakaoStrategy = require('passport-kakao').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const env = require('./env')
-
+const {
+  createRoutineFn
+} = require('./controllers/utils/routineFn');
 const { User } = require('./models');
 
 module.exports = (app) => {
@@ -124,6 +126,16 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+          .then(async (result) => {
+            const userId = result.id;
+            const presetRoutine1 = presetConst.presetRoutine1;
+            const presetRoutine2 = presetConst.presetRoutine2;
+
+            await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
+            await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
+
+            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
+          })
         console.log("유저가 없어 회원가입됩니다", user);
       }
       else {
