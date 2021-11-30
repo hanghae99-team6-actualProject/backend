@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { User, Character, Moim, MoimUser, Comment, Routine, Action, Like } = require('../models');
 const myError = require('./utils/httpErrors');
+const { userUpdateValidation } = require('./utils/joi');
 const logger = require('../logger');
 
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
@@ -38,9 +39,9 @@ const updateUser = async (req, res, next) => {
     if (Object.keys(req.body).length === 0) {
       return next(new Error('수정할 정보가 없습니다.'));
     }
-    const { userEmail, nickName, userPw } = req.body;
+    const { userPw, nickName } = await userUpdateValidation.validateAsync(req.body);
 
-    User.update({ userEmail, nickName, userPw }, { where: { id } })
+    User.update({ nickName, userPw }, { where: { id } })
       .then(() => {
         return res.send({ result: true, msg: '유저 정보가 수정되었습니다' });
       });

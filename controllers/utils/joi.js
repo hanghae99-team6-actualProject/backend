@@ -13,5 +13,11 @@ const userValidation = joi.object({
   nickName: joi.string().min(1).max(8).required()
     .error(new Error('닉네임은 1~8자로 입력하세요.')),
 });
+const userUpdateValidation = joi.object({
+  nickName: joi.string().min(1).max(8)
+    .error(new Error('닉네임은 1~8자로 입력하세요.')),
+  userPw: joi.string().min(8).max(16).pattern(new RegExp(pwFilter))
+    .error(new Error('비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.')),
+});
 
-module.exports = userValidation;
+module.exports = { userValidation, userUpdateValidation };

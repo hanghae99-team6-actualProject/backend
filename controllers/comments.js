@@ -68,6 +68,10 @@ const createComment = async (req, res, next) => {
     const { moimId } = req.params;
     const { contents } = req.body;
 
+    if (contents.length > 50) {
+      return next(myError(400, "글자수는 50자 이하만 가능합니다"));
+    }
+
     await Comment.create({
       userId,
       moimId,

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const env = require('../env')
 const { User, Character } = require('../models');
-const userValidation = require('./utils/joi');
+const { userValidation } = require('./utils/joi');
 const { encrypt, compare } = require('./utils/bcrypt');
 const myError = require('./utils/httpErrors')
 const {

@@ -248,13 +248,21 @@ const createMoim = async (req, res, next) => {
     const userId = res.locals.user.id;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
 
+    if (contents.length > 500) {
+      return next(myError(400, "글자수는 500자 이하만 가능합니다"));
+    }
+
     // 생성 중복검사
-    const isMoim = await Moim.findAll({
+    const isMoim = await Moim.findOne({
       where: {
         title: title,
         contents: contents,
       }
     })
+
+    if (isMoim) {
+      return next(myError(400, "동일한 모임이 존재합니다."))
+    }
 
     // 모임 db데이터 생성
     await Moim.create({

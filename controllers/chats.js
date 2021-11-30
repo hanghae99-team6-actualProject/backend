@@ -211,6 +211,10 @@ const saveChat = async (req, res, next) => {
     console.log(req.params);
     console.log('contents', contents);
 
+    if (contents.length > 250) {
+      return next(myError(400, "글자수는 250자 이하만 가능합니다"));
+    }
+
     const targetMoimUser = await MoimUser.findOne({
       where: { userId: userId, moimId: moimId }
     });
