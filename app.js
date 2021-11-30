@@ -194,4 +194,4 @@ app.use(errorHandler)
 
 userCron.destroyUser();
 
-module.exports = { httpServer, io, moimNamespace };
+module.exports = { httpServer, io };
