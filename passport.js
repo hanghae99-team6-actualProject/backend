@@ -38,8 +38,6 @@ module.exports = (app) => {
 
             await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
             await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
-
-            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
           })
         console.log("유저가 없어 회원가입됩니다", user);
       }
@@ -98,8 +96,6 @@ module.exports = (app) => {
 
             await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
             await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
-
-            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
           })
         console.log("유저가 없어 회원가입됩니다", user);
       }
@@ -157,8 +153,6 @@ module.exports = (app) => {
 
             await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
             await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
-
-            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
           })
         console.log("유저가 없어 회원가입됩니다", user);
       }
