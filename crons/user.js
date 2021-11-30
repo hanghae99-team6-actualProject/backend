@@ -3,11 +3,12 @@ const { User, Sequelize } = require("../models");
 const Op = Sequelize.Op;
 
 const destroyUser = () => {
-  cron.schedule('0 */1 * * *', function () {
+  cron.schedule('*/1 * * * *', function () {
     User.destroy({
       where: {
         deletedAt: {
-          [Op.not]: null
+          [Op.not]: null,
+          
         }
       },
       force: true

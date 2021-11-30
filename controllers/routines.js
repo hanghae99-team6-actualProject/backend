@@ -36,6 +36,7 @@ const getRoutine = async (req, res, next) => {
         },
         {
           model: Action,
+          where : { isDel : 0 },
           include: [
             {
               model: ActionFin
