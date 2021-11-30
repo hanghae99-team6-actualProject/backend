@@ -7,6 +7,7 @@ const env = require('./env')
 const {
   createRoutineFn
 } = require('./controllers/utils/routineFn');
+const presetConst = require('./constants/presetRoutines')
 const { User } = require('./models');
 
 module.exports = (app) => {
