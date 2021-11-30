@@ -1,5 +1,4 @@
 const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
-const { moimNamespace } = require('../app');
 const myError = require('./utils/httpErrors')
 
 //방만들기 함수
