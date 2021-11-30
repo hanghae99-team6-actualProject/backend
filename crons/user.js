@@ -25,9 +25,9 @@ const destroyUser = () => {
         },
         force: true
       });
-      ogger.info('매일 자정마다 실행 :', new Date().toString());
+      logger.info('매일 자정마다 실행 :', new Date().toString());
     } catch (error) {
-      ogger.info(error);
+      logger.info(error);
     }
   });
 }
