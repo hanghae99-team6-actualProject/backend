@@ -163,7 +163,7 @@ if (env.NODE_ENV === 'production') {
 }
 
 sequelize
-  .sync({ force: false }) //데이터 구조 변경하고 싶을 때, true
+  .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
   .then(() => {
     logger.info('------ SQL Restructure Complete ------');
   })
