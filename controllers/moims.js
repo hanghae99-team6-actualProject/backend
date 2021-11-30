@@ -27,6 +27,7 @@ const getAllMoim = async (req, res, next) => {
     logger.info('getAllMoim router 진입');
 
     const allMoims = await Moim.findAll({
+      order: [['createdAt', 'DESC']],
       include: [
         {
           model: MoimUser,
