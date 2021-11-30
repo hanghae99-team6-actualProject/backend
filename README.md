@@ -1,5 +1,8 @@
-# backend
-# '밍기적'을 소개합니다.
+# 👟 밍기적 백앤드
+
+[FrontEnd Github](https://github.com/hanghae99-team6-actualProject/frontend) 좌측 링크를 클릭하시면 프론트앤드 깃허브를 확인할 수 있습니다.
+
+# 1. '밍기적'을 소개합니다.
 
 오랜 시간 좌식 생활을 하시거나 운동을 시작하지만 작심삼일로 끝나곤 하나요?
 
@@ -7,7 +10,7 @@
 
 귀여운 몬스터와 함께 작지만 소중한 기적, 밍기적을 일으켜 일상에 활력을 불어넣으세요!
 
-# Feature
+# 2. Feature
 
 - 운동 기록하고 루틴을  구성할 수 있습니다.
     - 액션과 루틴개념을 기반으로 운동을 기록할 수 있습니다.
@@ -35,11 +38,11 @@
     - 운동 이력을 막대그래프로 시각화해서 쉽게 확인할 수 있는 Graph History 주 단위로 표시됩니다.
     완수한 액션 수 또는 루틴 수를 기준으로 각각 확인할 수 있습니다.
 
-# Architecture
+# 3. Architecture
 
 - Image
 
-# Backend Tech Stack
+# 4. Main Tech Stacks
 
 - Java Script
 - Node.js (Express)
@@ -47,31 +50,24 @@
 - Redis
 - Soket IO
 
-# Packages (except Teck Stacks)
+# 5. Packages (except Teck Stacks)
 
-- bcrypt : JWT 토큰 암호화
-- cors : CORS 핸들링
-- dotenv : 환경변수 핸들링
-- helmet : 웹서비스 보안
-- hpp : 웹서비스 보안
-- http-errors : http 에러 생성 후 응답 위해 활용
-- joi : 유저 회원가입 시 입력값 유효성 체크
-- jsonwebtoken : 로그인 시 JWT 발급
-- morgan : HTTP 요청 로그 관리
-- node-cron : 회원 탈퇴한 유저 정보 스케줄 삭제
-- passport : 소셜로그인
-- winston : 전체 서비스 로그 관리
+- bcrypt    JWT 토큰 암호화
+- cors  CORS 핸들링
+- dotenv    환경변수 핸들링
+- helmet    웹서비스 보안
+- hpp   웹서비스 보안
+- http-errors   http 에러 생성 후 응답 위해 활용
+- joi   유저 회원가입 시 입력값 유효성 체크
+- jsonwebtoken  로그인 시 JWT 발급
+- morgan    HTTP 요청 로그 관리
+- node-cron 회원 탈퇴한 유저 정보 스케줄 삭제
+- passport  소셜로그인
+- winston   전체 서비스 로그 관리
 
-# Members
+# 6. Members
 
-- Frontend Developer
-    - 석지선
-    - 이경아
-    - 윤진선
 - Backend Developer
     - 김영우
     - 양주혁
     - 임성찬
-- Designer
-    - 김수빈
-    - 김예진
