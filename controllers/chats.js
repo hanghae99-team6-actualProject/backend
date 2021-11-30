@@ -1,3 +1,10 @@
+var redis = require('redis');
+var client = redis.createClient();
+client.on('error', function (err) {
+  console.log('Error' + err);
+});
+
+const { resolveInclude } = require('ejs');
 const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
 const myError = require('./utils/httpErrors')
 
@@ -216,22 +223,42 @@ const saveChat = async (req, res, next) => {
     }
 
     const targetMoimUser = await MoimUser.findOne({
-      where: { userId: userId, moimId: moimId }
+      where: { userId: userId, moimId: moimId },
+      include: [
+        {
+          model:User,
+          attributes: ['nickName']
+        }
+      ]
     });
 
-    console.log('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
+    // console.log('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
     console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.id);
+    console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.User.nickName);
 
     if (!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
     }
 
-    const saveChat = await Chat.create({
-      moimUserId: targetMoimUser.id,
-      moimChatRoomId: chatRoomId,
-      contents: contents,
-    })
-    console.log('saveChat', saveChat);
+    
+    // const saveChat = await Chat.create({
+    //   moimUserId: targetMoimUser.id,
+    //   moimChatRoomId: chatRoomId,
+    //   contents: contents,
+    // })
+    // console.log('saveChat', saveChat);
+
+    // await client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_chat${i}`, `${contents}` )
+    await client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_chat`, `${contents}` )
+
+    await client.hgetall(`${chatRoomId}`, async (err, results) => {
+      console.log(results);
+    });
+    
+    return res.send({
+      msg: "일단 멈춤",
+    });
+
 
     const saveChatElements = {
       "id": saveChat.id,
