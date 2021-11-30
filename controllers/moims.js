@@ -248,6 +248,10 @@ const createMoim = async (req, res, next) => {
     const userId = res.locals.user.id;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
 
+    if (title.length > 30) {
+      return next(myError(400, "글자수는 30자 이하만 가능합니다"));
+    }
+
     if (contents.length > 500) {
       return next(myError(400, "글자수는 500자 이하만 가능합니다"));
     }
