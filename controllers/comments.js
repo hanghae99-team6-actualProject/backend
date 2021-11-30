@@ -5,8 +5,6 @@ const logger = require('../logger');
 const getAllComments = async (req, res, next) => {
   try {
     logger.info('getAllComments router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const allComments = await Comment.findAll({
       include: [
         {
@@ -31,8 +29,6 @@ const getAllComments = async (req, res, next) => {
 const getTargetMoimComments = async (req, res, next) => {
   try {
     logger.info('getTargetMoimComments router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const { moimId } = req.params;
 
     const targetMoimComments = await Comment.findAll({
@@ -68,8 +64,6 @@ const getTargetMoimComments = async (req, res, next) => {
 const createComment = async (req, res, next) => {
   try {
     logger.info('createComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     const { contents } = req.body;
@@ -95,8 +89,6 @@ const createComment = async (req, res, next) => {
 const updateComment = async (req, res, next) => {
   try {
     logger.info('updateComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { commentId } = req.params;
     const { contents } = req.body;
@@ -133,8 +125,6 @@ const updateComment = async (req, res, next) => {
 const deleteComment = async (req, res, next) => {
   try {
     logger.info('deleteComment router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { commentId } = req.params;
 
@@ -171,8 +161,6 @@ const deleteComment = async (req, res, next) => {
 const myComments = async (req, res, next) => {
   try {
     logger.info('myComments 라우터 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
     const userId = res.locals.user.id;
 
     const myCommentList = await Comment.findAll({

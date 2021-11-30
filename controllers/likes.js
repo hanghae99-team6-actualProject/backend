@@ -6,8 +6,6 @@ const logger = require('../logger');
 //내가 좋아요한 모임 목록
 const getLikedMoims = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
     const { id: userId } = res.locals.user;
     const likedMoims = await Like.findAll({
       where: {
@@ -56,7 +54,6 @@ const getLikedMoims = async (req, res, next) => {
 //좋아요 생성 API
 const createLike = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id: userId } = res.locals.user;
     const { moimId } = req.params;
     const userLike = await Like.findOne({ where: { userId, moimId } });
@@ -74,7 +71,6 @@ const createLike = async (req, res, next) => {
 //좋아요 삭제 API
 const deleteLike = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const { id: userId } = res.locals.user;
     const { moimId } = req.params;
     const userLike = await Like.findOne({ userId });

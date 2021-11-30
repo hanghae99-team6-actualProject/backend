@@ -6,7 +6,6 @@ const logger = require('../logger');
 //paranoid세팅으로 임시 삭제이기 때문에 node-cron에서 주기적으로 실제 삭제
 const bye = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id } = res.locals.user;
     User.destroy({ where: { id } })
       .then(() => {
@@ -20,7 +19,6 @@ const bye = async (req, res, next) => {
 
 const collection = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { id } = res.locals.user;
     const usersCharacter = await Character.findAll({
       where: {
@@ -54,7 +52,6 @@ const updateUser = async (req, res, next) => {
 
 //메인 루틴 설정 API
 const setMainRoutine = async (req, res, next) => {
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
   logger.info("setMainRoutine router 진입");
   const { id: userId } = res.locals.user;
   const { routineId } = req.body;
@@ -86,8 +83,6 @@ const setMainRoutine = async (req, res, next) => {
 const myMoim = async (req, res, next) => {
   try {
     logger.info('myMoin 라우터 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
     const userId = res.locals.user.id;
     const userType = req.body.userType;
     const hostType = Number(userType);
@@ -183,8 +178,6 @@ const myMoim = async (req, res, next) => {
 const myComments = async (req, res, next) => {
   try {
     logger.info('myMoin 라우터 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
     const userId = res.locals.user.id;
 
     const myCommentList = await Comment.findAll({

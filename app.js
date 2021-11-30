@@ -80,7 +80,7 @@ moimNamespace.on('connection', (socketMoim) => {
     });
   });
 
-  socketMoim.on('leaveRoom',async (userNickName, targetRoomId) => {
+  socketMoim.on('leaveRoom', async (userNickName, targetRoomId) => {
     // 프론트로부터 전달 받은 roomId를 타겟으로 하여 방에서 leave시킨다
     console.log(userNickName)
     console.log(targetRoomId)
@@ -170,18 +170,6 @@ sequelize
   .catch((error) => {
     logger.error(error);
   });
-
-
-// async () => {
-//   await sequelize
-//   .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
-//   .then(() => {
-//     logger.info('------ SQL Restructure Complete ------');
-//   })
-//   .catch((error) => {
-//     logger.error(error);
-//   });
-// }
 
 
 if (env.NODE_ENV === 'production') {

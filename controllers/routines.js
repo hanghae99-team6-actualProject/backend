@@ -24,8 +24,6 @@ async function modifyAction(routineId, userId, routineFinId, actions) {
 //루틴 조회 API
 const getRoutine = async (req, res, next) => {
   logger.info("getRoutine router 진입");
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
   const { id } = res.locals.user;
   const authId = id
 
@@ -62,8 +60,6 @@ const getRoutine = async (req, res, next) => {
 //루틴 생성 API
 const createRoutine = async (req, res, next) => {
   logger.info("createRoutine router 진입");
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
   const { id } = res.locals.user;
   const authId = id
   const isMain = 0
@@ -92,8 +88,6 @@ const createRoutine = async (req, res, next) => {
 //루틴 수정 API
 const modifyRoutine = async (req, res, next) => {
   logger.info("modifyRoutine router 진입");
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
   const { id } = res.locals.user;
   const authId = id
 
@@ -132,8 +126,6 @@ const modifyRoutine = async (req, res, next) => {
 //루틴 삭제 API
 const deleteRoutine = async (req, res, next) => {
   logger.info("deleteRoutine router 진입");
-  if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
   try {
     const { routineId } = req.params;
     await Action.update(
@@ -159,7 +151,6 @@ const deleteRoutine = async (req, res, next) => {
 //현재 루틴 마지막 cycle이 전부 완료되었을 때 새로운 cycle만들기
 const createNowRoutineActions = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const { routineId } = req.params;
     const lastCycle = await thisCycle(routineId);
     const routineFinId = await findLastRoutineFinId(routineId, lastCycle);
@@ -206,7 +197,6 @@ const createNowRoutineActions = async (req, res, next) => {
 //현재 루틴 마지막 Cycle의 액션 findate초기화
 const resetNowRoutineActions = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const { routineId } = req.params;
     const routineFinId = await findLastRoutineFinId(routineId);
 
@@ -224,7 +214,6 @@ const resetNowRoutineActions = async (req, res, next) => {
 // 프리셋 루틴 불러오기 API
 const allPresetRoutine = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
     const routines = await Routine.findAll({
       where: { userId, preSet: 1, isDel: 0 },

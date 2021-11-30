@@ -243,7 +243,6 @@ const getMoreMoimByLocation = async (req, res, next) => {
 const createMoim = async (req, res, next) => {
   try {
     logger.info('createMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
     const userId = res.locals.user.id;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
@@ -281,8 +280,6 @@ const createMoim = async (req, res, next) => {
 const detailMoim = async (req, res, next) => {
   try {
     logger.info('detailMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const { moimId } = req.params;
 
     const targetMoim = await Moim.findOne({
@@ -333,8 +330,6 @@ const detailMoim = async (req, res, next) => {
 const updateMoim = async (req, res, next) => {
   try {
     logger.info('updateMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     const { title, contents, imgSrc, location, filter, startAt, finishAt } = req.body;
@@ -389,8 +384,6 @@ const updateMoim = async (req, res, next) => {
 const deleteMoim = async (req, res, next) => {
   try {
     logger.info('deleteMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
@@ -430,8 +423,6 @@ const deleteMoim = async (req, res, next) => {
 const enterMoim = async (req, res, next) => {
   try {
     logger.info('enterMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     //모임 기간이 지났는지 확인
@@ -469,8 +460,6 @@ const enterMoim = async (req, res, next) => {
 const exitMoim = async (req, res, next) => {
   try {
     logger.info('enterMoim router 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
-
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
@@ -512,8 +501,6 @@ const exitMoim = async (req, res, next) => {
 const myMoims = async (req, res, next) => {
   try {
     logger.info('myMoims 라우터 진입');
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
-
     const userId = res.locals.user.id;
     const userType = req.body.userType;
     const hostType = Number(userType)

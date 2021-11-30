@@ -66,7 +66,7 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
 const deleteActionFn = async (routineId) => {
   await Action.update(
     { isDel: 1 },
-    { where: { routineId }},
+    { where: { routineId } },
   )
   console.log('action 및 연관 actionfin 삭제 완료')
   // 액션의 isDel에 1값이 추가되면서 데이터는 보존, 삭제 처리
@@ -84,7 +84,7 @@ const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => 
   const routineFin = await RoutineFin.create({
     routineId: routines.id,
     cycle: 1
-  }).catch((err) => { next(new Error('RoutineFin 생성 중 db 에러')) }) //이것이 실패하면 116번째 줄부터 .then으로 해보자
+  });
 
   const { id: routineId } = routines;
   const { id: routineFinId } = routineFin;

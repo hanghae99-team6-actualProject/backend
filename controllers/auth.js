@@ -29,7 +29,6 @@ const me = async (req, res, next) => {
 //로그아웃 API
 const logout = (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const { providerId } = res.locals.user;
 
     User.update({ refreshToken: "" }, { where: { providerId } })
@@ -70,7 +69,7 @@ const localLogin = async (req, res, next) => {
     await User.update(
       { refreshToken },
       { where: { providerId } }
-    ).catch((err) => { if (err) return next(myError(401, 'User.update refreshToken db 에러')) });
+    );
 
     return res.status(200).send({ result: true, accessToken, refreshToken, msg: '로그인되었습니다.' });
   } catch (err) {
@@ -114,9 +113,6 @@ const signup = async (req, res, next) => {
 
         return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
       })
-      .catch((err) => {
-        if (err) return next(new Error("User 생성 db 에러"));
-      });
     //회원가입시 프리셋 루틴을 모든 유저에게 생성해주기!
   } catch (err) {
     logger.error(err);

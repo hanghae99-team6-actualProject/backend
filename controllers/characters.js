@@ -5,7 +5,6 @@ const logger = require('../logger');
 
 const createCharacter = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
     // 현재 유저가 만랩 캐릭터가 있는 것인지 확인
@@ -92,7 +91,6 @@ const createCharacter = async (req, res, next) => {
 
 const getCharacter = async (req, res, next) => {
   try {
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'))
     const userId = res.locals.user.id;
 
     logger.info(userId, "유저아이디!");

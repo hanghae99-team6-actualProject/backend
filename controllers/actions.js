@@ -188,7 +188,6 @@ const setRoutineFinDate = async (routineId, finDate) => {
 const doneAction = async (req, res, next) => {
   try {
     // 프론트로부터 완료된 액션에 대한 정보 획득, 파라미터로 유저정보 획득
-    if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
     const userId = res.locals.user.id;
     const { actionId, routineId } = req.body;
     const cycle = await thisCycle(routineId);

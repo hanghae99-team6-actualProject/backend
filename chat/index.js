@@ -5,7 +5,6 @@ var socket = io();
 socket.on('connect', async (req, res, next) => {
   // try {
   //   console.log('프론트 javascript 진입');
-  //   if (!res.locals.user) return next(myError(401, '로그인되어있지 않습니다'));
 
   //   const userId = res.locals.user.id;
   //   socket.emit('newUserConnect', userId);
@@ -13,7 +12,7 @@ socket.on('connect', async (req, res, next) => {
   // } catch(err) {
 
   // }
-  
+
   var name = prompt('대화명을 입력해주세요.', '');
   console.log(name);
 
@@ -74,7 +73,7 @@ var chatInput = document.getElementById('chatInput');
 sendBtn.addEventListener('click', async (req, res, next) => { //미들웨어 추가
   var msg = chatInput.value;
 
-  if (!msg) return false; 
+  if (!msg) return false;
 
   //메세지 전달 이벤트 발생!
   socket.emit('sendMsg', {
