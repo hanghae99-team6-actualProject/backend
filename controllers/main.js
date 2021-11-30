@@ -23,7 +23,8 @@ const getOngoing = async (req, res, next) => {
     const presetMainRoutine = await Routine.findAll({
       where: { userId: null, isMain: 1, isDel: 0 },
       include: [{
-        model: Action
+        model: Action,
+        where: { isDel: 0 }
       }]
     });
     if (presetMainRoutine.length === 1) {
@@ -34,6 +35,7 @@ const getOngoing = async (req, res, next) => {
         where: { userId, isMain: 1, isDel: 0 },
         include: [{
           model: Action,
+          where: { isDel: 0 },
           include: [{
             model: ActionFin
           }]
