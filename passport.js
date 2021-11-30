@@ -30,6 +30,16 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+          .then(async (result) => {
+            const userId = result.id;
+            const presetRoutine1 = presetConst.presetRoutine1;
+            const presetRoutine2 = presetConst.presetRoutine2;
+
+            await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
+            await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
+
+            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
+          })
         console.log("유저가 없어 회원가입됩니다", user);
       }
       else {
@@ -48,14 +58,16 @@ module.exports = (app) => {
         issuer: 'mingijuk'
       });
 
-      await User.update({ refreshToken }, { where: { providerId: providerId.toString() } });
+      await User.update(
+        { refreshToken },
+        { where: { providerId: providerId.toString() } }
+      );
 
       done(null, profile, {
         refreshToken,
         accessToken
       });
     } catch (err) {
-      console.log(err);
       return done(err);
     }
   }))
@@ -78,6 +90,16 @@ module.exports = (app) => {
       let user = await User.findOne({ where: { providerId } });
       if (!user) {
         user = await User.create({ providerId, userEmail, nickName, provider, exp, role })
+          .then(async (result) => {
+            const userId = result.id;
+            const presetRoutine1 = presetConst.presetRoutine1;
+            const presetRoutine2 = presetConst.presetRoutine2;
+
+            await createRoutineFn(userId, presetRoutine1.routineName, 0, 1, presetRoutine1.actions);
+            await createRoutineFn(userId, presetRoutine2.routineName, 0, 1, presetRoutine2.actions);
+
+            return res.status(201).send({ msg: '회원 가입을 축하드립니다.' });
+          })
         console.log("유저가 없어 회원가입됩니다", user);
       }
       else {
@@ -95,15 +117,16 @@ module.exports = (app) => {
         expiresIn: "1h",
         issuer: 'mingijuk'
       });
-      console.log('providerId', providerId)
 
-      await User.update({ refreshToken }, { where: { providerId: providerId.toString() } });
+      await User.update(
+        { refreshToken },
+        { where: { providerId: providerId.toString() } }
+      );
       done(null, profile, {
         refreshToken,
         accessToken
       })
     } catch (err) {
-      console.log(err);
       return done(err);
     }
   }))
@@ -153,12 +176,16 @@ module.exports = (app) => {
         issuer: 'mingijuk'
       });
 
+      await User.update(
+        { refreshToken },
+        { where: { providerId: providerId.toString() } }
+      );
+
       done(null, profile, {
         refreshToken,
         accessToken
       })
     } catch (err) {
-      console.log(err);
       return done(err);
     }
   }))
