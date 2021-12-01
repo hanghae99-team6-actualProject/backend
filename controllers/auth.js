@@ -49,13 +49,17 @@ const localLogin = async (req, res, next) => {
     const providerId = `local${userEmail}`;
 
     if (await User.findOne({
-      where: providerId,
-      deletedAt: {
-        [Op.not]: null
+      where: {
+        providerId,
+        deletedAt: {
+          [Op.not]: null
+        }
       }
     })) {
       throw new Error('탈퇴된 회원입니다.');
     }
+
+
     const user = await User.findOne({ where: { providerId } });
     if (!user) {
       throw new Error('존재하지 않는 아이디입니다.');

@@ -29,10 +29,13 @@ module.exports = (app) => {
       if (!providerId) {
         next(null, false, { msg: 'providerId 검증 오류' });
       }
+
       if (await User.findOne({
-        where: providerId,
-        deletedAt: {
-          [Op.not]: null
+        where: {
+          providerId,
+          deletedAt: {
+            [Op.not]: null
+          }
         }
       })) {
         next(null, false, { msg: '회원 탈퇴 후 14일 이전에는 동일 ID 사용이 불가능합니다.' });
@@ -96,9 +99,11 @@ module.exports = (app) => {
         next(null, false, { msg: 'providerId 검증 오류' });
       }
       if (await User.findOne({
-        where: providerId,
-        deletedAt: {
-          [Op.not]: null
+        where: {
+          providerId,
+          deletedAt: {
+            [Op.not]: null
+          }
         }
       })) {
         next(null, false, { msg: '회원 탈퇴 후 14일 이전에는 동일 ID 사용이 불가능합니다.' });
@@ -161,9 +166,11 @@ module.exports = (app) => {
         next(null, false, { msg: 'providerId 검증 오류' });
       }
       if (await User.findOne({
-        where: providerId,
-        deletedAt: {
-          [Op.not]: null
+        where: {
+          providerId,
+          deletedAt: {
+            [Op.not]: null
+          }
         }
       })) {
         next(null, false, { msg: '회원 탈퇴 후 14일 이전에는 동일 ID 사용이 불가능합니다.' });
