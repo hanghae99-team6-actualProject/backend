@@ -9,7 +9,7 @@ const {
 } = require('./utils/routineFn');
 const presetConst = require('../constants/presetRoutines')
 const logger = require('../logger');
-const { Op } = require('sequelize/types');
+const { Op } = require('sequelize');
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {

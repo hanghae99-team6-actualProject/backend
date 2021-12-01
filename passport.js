@@ -9,6 +9,7 @@ const {
 } = require('./controllers/utils/routineFn');
 const presetConst = require('./constants/presetRoutines')
 const { User } = require('./models');
+const { Op } = require('sequelize');
 
 module.exports = (app) => {
   app.use(passport.initialize());
