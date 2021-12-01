@@ -216,9 +216,9 @@ const loadTargetChat = async (req, res, next) => {
     //   return results
     // });
 
-    await loadChatList( chatRoomId, function(object) {
-      // console.log("여기가 함수 안", object);
-      const resultss = Object.entries(object).map((element )=> {
+    await loadChatList( chatRoomId, function(obj) {
+      // console.log("여기가 함수 안", obj);
+      const chats = Object.entries(obj).map((element )=> {
         const key = element[0].split('_');
         const value = element[1];
         return { id: key[3], nickName: key[0], url: key[1], contents: value, createAt: key[2]}
@@ -226,7 +226,7 @@ const loadTargetChat = async (req, res, next) => {
 
       return res.status(200).send({
         result: true,
-        resultss,
+        chats,
         msg: '특정 채팅방 모든 대화 불러오기에 성공했습니다.',
       });
     });
