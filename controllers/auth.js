@@ -103,9 +103,11 @@ const signup = async (req, res, next) => {
     }
     //이미 탈퇴한 회원인지 확인
     if (await User.findOne({
-      where: providerId,
-      deletedAt: {
-        [Op.not]: null
+      where: {
+        providerId,
+        deletedAt: {
+          [Op.not]: null
+        }
       }
     })) {
       throw new Error('회원 탈퇴 후 14일 이전에는 동일 ID 사용이 불가능합니다.');
