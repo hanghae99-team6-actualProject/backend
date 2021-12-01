@@ -180,7 +180,15 @@ const setActionFinDate = async (actionId, routineFinId, finDate) => {
 
 //루틴 완료시 루틴에 finDate 업데이트
 const setRoutineFinDate = async (routineId, finDate) => {
-  await RoutineFin.update({ date: finDate }, { where: { routineId } });
+  const { fromToday } = timeSet();
+  await RoutineFin.update({ date: finDate }, {
+    where: {
+      date: {
+        [Op.gte]: fromToday
+      },
+      routineId
+    }
+  });
   logger.info('RoutineFin의 date 업데이트 완료');
 };
 
