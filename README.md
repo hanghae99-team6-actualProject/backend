@@ -42,7 +42,10 @@
 
 - Image
 
-# 4. Main Tech Stacks
+# 4. Database ERD
+![projectDB](https://user-images.githubusercontent.com/54808299/144186220-7906f526-7d02-4f92-98fe-5b8517ae17f0.png)
+
+# 5. Main Tech Stacks
 
 - Java Script
 - Node.js (Express)
@@ -50,7 +53,7 @@
 - Redis
 - Soket IO
 
-# 5. Packages (except Teck Stacks)
+# 6. Packages (except Teck Stacks)
 
 - bcrypt    JWT 토큰 암호화
 - cors  CORS 핸들링
@@ -65,7 +68,7 @@
 - passport  소셜로그인
 - winston   전체 서비스 로그 관리
 
-# 6. Members
+# 7. Members
 
 - Backend Developer
     - 김영우
