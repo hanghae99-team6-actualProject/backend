@@ -8,6 +8,12 @@ const { resolveInclude } = require('ejs');
 const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
 const myError = require('./utils/httpErrors')
 
+//시간
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+// console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+
 //방만들기 함수
 const createNewRoom = async (moimId, userId) => {
   const setNewRoom = await MoimChatRoom.create({
@@ -210,11 +216,17 @@ const loadTargetChat = async (req, res, next) => {
     //   return results
     // });
 
-    loadChatList( chatRoomId, function(object) {
+    await loadChatList( chatRoomId, function(object) {
       // console.log("여기가 함수 안", object);
+      const resultss = Object.entries(object).map((element )=> {
+        const key = element[0].split('_');
+        const value = element[1];
+        return { id: key[3], nickName: key[0], url: key[1], contents: value, createAt: key[2]}
+      });
+
       return res.status(200).send({
         result: true,
-        object,
+        resultss,
         msg: '특정 채팅방 모든 대화 불러오기에 성공했습니다.',
       });
     });
@@ -229,7 +241,8 @@ const saveChat = async (req, res, next) => {
     console.log('saveChating router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
-    const { contents } = req.body;
+    const { contents, url } = req.body;
+
 
     console.log("userId", userId);
     console.log(req.params);
@@ -257,6 +270,9 @@ const saveChat = async (req, res, next) => {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
     }
 
+    //현재시간
+    let createAt = moment().format('YYYY-MM-DD HH:mm:ss')
+    console.log('현재 한국 시간', createAt);
     
     // const saveChat = await Chat.create({
     //   moimUserId: targetMoimUser.id,
@@ -269,17 +285,12 @@ const saveChat = async (req, res, next) => {
       console.log(result);
       const chatNum = Number(result) + 1;
       client.hmset(`${chatRoomId}`, 'chatNum', chatNum);
-      client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_${chatNum}`, `${contents}`)
+      client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_${url}_${createAt}_${chatNum}`, `${contents}`)
     });
     
     // await client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_chat`, `${contents}` )
 
-      client.hgetall(`${chatRoomId}`, async (err, results) => {
-        console.log('채팅방'+ chatRoomId +'의 대화 목록', results);
-        return results
-      });
 
-    
 
     // const saveChatElements = {
     //   "id": saveChat.id,
@@ -294,6 +305,11 @@ const saveChat = async (req, res, next) => {
     //   saveChatElements,
     //   msg: "채팅 내용 저장에 성공했습니다."
     // });
+
+    return res.status(200).send({
+      result: true,
+      msg: "채팅 내용 저장에 성공했습니다."
+    });
 
   } catch (err) {
     return next(err);
