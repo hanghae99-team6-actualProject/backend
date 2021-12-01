@@ -9,6 +9,7 @@ const {
 } = require('./utils/routineFn');
 const presetConst = require('../constants/presetRoutines')
 const logger = require('../logger');
+const { Op } = require('sequelize');
 
 //본인 정보 확인 API
 const me = async (req, res, next) => {
@@ -46,6 +47,18 @@ const localLogin = async (req, res, next) => {
     console.log('로그인 진입')
     const { userEmail, userPw } = req.body;
     const providerId = `local${userEmail}`;
+
+    if (await User.findOne({
+      where: {
+        providerId,
+        deletedAt: {
+          [Op.not]: null
+        }
+      }
+    })) {
+      throw new Error('탈퇴된 회원입니다.');
+    }
+
 
     const user = await User.findOne({ where: { providerId } });
     if (!user) {
@@ -87,6 +100,17 @@ const signup = async (req, res, next) => {
 
     if (!userEmail || !userPw || !nickName || userEmail === null || userPw === null || nickName === null) {
       throw new Error('입력 정보가 존재하지 않습니다. 개발팀에 문의해주세요');
+    }
+    //이미 탈퇴한 회원인지 확인
+    if (await User.findOne({
+      where: {
+        providerId,
+        deletedAt: {
+          [Op.not]: null
+        }
+      }
+    })) {
+      throw new Error('회원 탈퇴 후 14일 이전에는 동일 ID 사용이 불가능합니다.');
     }
     // 중복 확인
     if (await User.findOne({ where: { providerId } })) {
