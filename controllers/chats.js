@@ -4,7 +4,6 @@ client.on('error', function (err) {
   console.log('Error' + err);
 });
 
-// const { resolveInclude } = require('ejs');
 const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
 const myError = require('./utils/httpErrors')
 

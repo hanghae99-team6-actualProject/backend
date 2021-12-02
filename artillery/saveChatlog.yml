@@ -7,18 +7,27 @@ config:
         - "userId"
         - "userPw"
         - "userNick"
+      order: sequence
     -
       path: "payload/count.csv"
       fields:
         - "count"
+      order: sequence
     -
       path: "payload/repeated_count.csv"
       fields:
         - "repeated_count"
+      order: sequence
   phases:
-    - duration: 5
-      arrivalRate: 1
-      name: warm-up
+    - duration: 20
+      arrivalRate: 5
+      name: First phase - Warm up
+    - duration: 30
+      arrivalRate: 10
+      name: Second phase - Ramp up load
+    - duration: 50
+      arrivalRate: 15
+      name: Second phase - Sustained load
 before:
   flow:
     - log: "Get tokens"
@@ -42,7 +51,7 @@ before:
 scenarios:
   - name: "make-moim & chat & save-chatlog"
     flow:
-      - post: #모임생성
+      - post: #모임 생성
           url: "/moims"
           headers:
             accessToken: "Bearer {{ accessToken }}"
@@ -52,24 +61,21 @@ scenarios:
             contents : "{{count}}번 모임 컨텐츠"
             imgSrc : "testImgSrcData"
             location : "서울 영등포구 여의도동"
-          capture:
-            - json: "$.results[0].id"
-              as: "productId"
       - post: #채팅방 생성
           url: "/moims/{{count}}/chatRoom"
           headers:
             accessToken: "Bearer {{ accessToken }}"
             refreshToken: "Bearer {{ refreshToken }}"
-      # - post: #채팅 내용 저장
-      #     url: "/moims/{{repeat_count}}/{{repeat_count}}"
-      #     headers:
-      #       accessToken: "Bearer {{ accessToken }}"
-      #       refreshToken: "Bearer {{ refreshToken }}"
-      #     json:
-      #       contents : "{{count}}채팅 테스트 컨텐츠"
-      #       url : "testImgSrcData"
-      # - get: #채팅 조회
-      #     url: "/moims/{{count}}/{{count}}"
-      #     headers:
-      #       accessToken: "Bearer {{ accessToken }}"
-      #       refreshToken: "Bearer {{ refreshToken }}"
+      - post: #채팅 내용 저장
+          url: "/moims/{{repeated_count}}/{{repeated_count}}"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
+          json:
+            contents : "{{count}}채팅 테스트 컨텐츠"
+            url : "testImgSrcData"
+      - get: #채팅 조회
+          url: "/moims/{{count}}/{{count}}"
+          headers:
+            accessToken: "Bearer {{ accessToken }}"
+            refreshToken: "Bearer {{ refreshToken }}"
