@@ -54,9 +54,15 @@
 
 - Java Script
 - Node.js (Express)
-- MySQL (Sequelize)
-- Redis
+- MySQL (Sequelize, RDS)
+- Redis (Elastic Cache)
 - Soket IO
+- CodePipeline
+- CloudWatch
+- CodeBuild
+- CodeDeploy
+- ECS
+- Docker
 
 # Other Packages
 
