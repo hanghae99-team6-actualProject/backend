@@ -79,7 +79,7 @@ const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => 
     isMain,
     preSet,
     isDel: 0,
-  }).catch((err) => { next(new Error('Routine 생성 중 db 에러')) })
+  });
 
   const routineFin = await RoutineFin.create({
     routineId: routines.id,
