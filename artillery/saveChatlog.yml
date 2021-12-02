@@ -25,7 +25,7 @@ config:
     - duration: 30
       arrivalRate: 10
       name: Second phase - Ramp up load
-    - duration: 50
+    - duration: 40
       arrivalRate: 15
       name: Second phase - Sustained load
 before:
