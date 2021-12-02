@@ -124,6 +124,12 @@
 
 # Improvements
 - Cron
+<img width="386" alt="스크린샷 2021-12-03 오전 8 06 15" src="https://user-images.githubusercontent.com/54808299/144517227-b8b23019-4669-4ea5-8c26-425c25fe2eea.png">
+    서비스 특성 상 유저 정보를 활용하는 요소가 많으므로 유저 삭제 시 함께 제거되는 데이터의 범위가 넓으므로 보수적으로 데이터를 처리할 필요성이 있다고 판단했습니다.
+    
+    User 테이블에 paranoid 속성을 적용하여 회원탈퇴 시 soft-delete 하고 node-cron을 활용하여 한 달이상 soft-delete된 유저를 hard-delete 하도록 스케줄링 처리하였습니다.
+    
+    이를 통해 일시적인 변심 또는 실수로 회원탈퇴한 경우 복구할 수 있는 안전장치를 마련할 수 있었습니다.
 
 - 영우님
 
