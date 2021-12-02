@@ -44,24 +44,25 @@
       완수한 동작 수 또는 루틴 수를 기준으로 각각 확인할 수 있습니다.
 
 # Architecture
-
-<img width="1054" alt="스크린샷 2021-12-03 오전 12 14 04" src="https://user-images.githubusercontent.com/54808299/144449458-9e9f0555-ff06-4994-af4d-c665591069d9.png">
+![백엔드 아키텍쳐](https://user-images.githubusercontent.com/42149645/144510755-e25f839f-9f2c-421f-846a-371b1245ab19.PNG)<br/>
 
 # Database ERD
-![projectDB](https://user-images.githubusercontent.com/54808299/144186220-7906f526-7d02-4f92-98fe-5b8517ae17f0.png)
+![projectDB](https://user-images.githubusercontent.com/54808299/144186220-7906f526-7d02-4f92-98fe-5b8517ae17f0.png)<br/>
 
 # Backend Tech Stacks
 
-- Java Script
 - Node.js (Express)
-- MySQL (Sequelize, RDS)
-- Redis (Elastic Cache)
+- MySQL
+- RDS
+- Redis
+- ElastiCache
 - Soket IO
-- CodePipeline
-- CloudWatch
 - CodeBuild
 - CodeDeploy
+- CodePipeline
+- CloudWatch
 - ECS
+- ECR
 - Docker
 
 # Other Packages
@@ -93,9 +94,11 @@
         <img width="282" alt="스크린샷 2021-12-03 오전 5 47 29" src="https://user-images.githubusercontent.com/59440469/144501427-b3624b91-4bf8-4f0b-9b35-015179ea3726.png"><br/>
         <img width="591" alt="스크린샷 2021-12-03 오전 5 47 49" src="https://user-images.githubusercontent.com/59440469/144501431-6217c1d5-afea-4fe6-99df-5677af9d0399.png"><br/><br/>
         - 결론: 테스트 결과, 기존 대비 약 1/4 가량의 Latancy가 측정되어 큰 감소치를 볼 수 있었고 이는 장기적인 측면에서 안정적인 DB를 구성할 수 있는 이유로 판단할 수 있습니다.<br/><br/>
-
-
-
+- CloudWatch<br/>
+    - AWS CloudWatch를 이용한 부하 경보 발생 테스트 결과<br/><br/>
+![클라우드와치](https://user-images.githubusercontent.com/42149645/144510121-1b3b67b7-fe09-4a2a-b046-507092128d8d.PNG)<br/><br/>
+![클라우드와치2](https://user-images.githubusercontent.com/42149645/144509487-a96a1542-5fe4-4e29-959e-b0ccabd2bdb9.PNG)<br/><br/>
+    - 부하 경보를 발생할 수 있는 장치를 만들었으며 실제 테스트를 시도하여 경보를 발생시킨 후 autoscaling 실행 또한 확인하였습니다.<br/><br/>
 
 # Members
 
