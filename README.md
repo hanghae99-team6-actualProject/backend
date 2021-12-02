@@ -122,6 +122,13 @@
 ![클라우드와치2](https://user-images.githubusercontent.com/42149645/144509487-a96a1542-5fe4-4e29-959e-b0ccabd2bdb9.PNG)<br/><br/>
     - 부하 경보를 발생할 수 있는 장치를 만들었으며 실제 테스트를 시도하여 경보를 발생시킨 후 autoscaling 실행 또한 확인하였습니다.<br/><br/>
 
+# Improvements
+- Cron
+
+- 영우님
+
+- redis
+
 # Members
 
 - Frontend Developer
