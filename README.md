@@ -127,7 +127,10 @@
 
 - 영우님
 
-- redis
+- Chat DataBase<br/>
+  - 
+
+- Socket.Io
 
 # Members
 
