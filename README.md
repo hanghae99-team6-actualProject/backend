@@ -18,6 +18,8 @@
     <br />
     <br />
 </div>
+<br />
+
 # 👟 밍기적 백앤드
 
 [FrontEnd Github](https://github.com/hanghae99-team6-actualProject/frontend) 좌측 링크를 통해 프론트앤드 깃허브를 확인할 수 있습니다.
