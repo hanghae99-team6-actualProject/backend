@@ -22,15 +22,14 @@ const me = async (req, res, next) => {
       }
     })
     // const hostedMoimusers = await MoimUser.findAll({
-    //   where:{userId:id, host: 1}
+    //   where: { userId: id, host: 1 }
     // })
-    // for await(let val of hostedMoimusers){
-    //   const target = Moim
-    //   await Moim.find({
-    //     where: 
+    // for await (let val of hostedMoimusers) {
+    //   const target = await Moim.find({
+    //     where: { '$MoimUser.id$': val.id }
     //   })
+    //   console.log(target);
     // }
-    // Moim.destroy({ where:})
     res.status(200).send({ result: true, user, character });
   } catch (err) {
     next(err);
