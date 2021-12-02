@@ -95,15 +95,15 @@ const upDayRoutineExp = async (userId, routineId) => {
   });
 
   try {
-    logger.info('액션 + 루틴 한계 경험치 진입');
+    console.log('액션 + 루틴 한계 경험치 진입');
     if ((await totalExpChk.length) == 0) {
-      logger.info('액션 + 루틴 IF문 진입');
-      logger.info(totalExpChk.length);
+      console.log('액션 + 루틴 IF문 진입');
+      console.log(totalExpChk.length);
       return false;
     }
-    logger.info('액션 + 루틴 엘스로 진입');
+    console.log('액션 + 루틴 엘스로 진입');
     await calcRoutineExp(userId, routineId);
-    logger.info(`루틴exp계산 결과 : ${routineExp}`);
+    console.log(`루틴exp계산 결과 : ${routineExp}`);
 
     await ExpDayLog.update(
       {
@@ -133,8 +133,8 @@ const calcRoutineExp = async (userId, routineId) => {
     where: { userId, routineId, isDel: 0 },
   }).then((result) => {
     routineExp = result.count * `${routineExpGrowth}`;
-    logger.info('루틴 경험치 계산 진입');
-    logger.info(`${routineExp} ----- ${result.count}`);
+    console.log('루틴 경험치 계산 진입');
+    console.log(`${routineExp} ----- ${result.count}`);
   });
 };
 
@@ -142,14 +142,14 @@ const calcRoutineExp = async (userId, routineId) => {
 const upExpFinOneAction = async (userId) => {
   // 당일 한계 경험치 체크함수
   if (await upDayActionExp(userId)) {
-    logger.info('캐릭 액션 경험치 함수 진입');
+    console.log('캐릭 액션 경험치 함수 진입');
     await Character.update(
       { exp: Sequelize.literal(`exp + ${actionExpGrowth}`) },
       { where: { userId, expMax: 0 } },
     );
     return true;
   }
-  logger.info('캐릭 루틴 경험치 함수 엘스 진입');
+  console.log('캐릭 루틴 경험치 함수 엘스 진입');
   return false;
 };
 
@@ -157,7 +157,7 @@ const upExpFinOneAction = async (userId) => {
 const upExpAllAction = async (userId, routineId) => {
   // 당일 한계 경험치 체크함수 - routineId 같이 던지고 해당 함수 내에서 처리
   if (await upDayRoutineExp(userId, routineId)) {
-    logger.info('캐릭 루틴 경험치 함수 진입');
+    console.log('캐릭 루틴 경험치 함수 진입');
     await calcRoutineExp(userId, routineId);
     await Character.update(
       // 아래에서 routine경험치 상수로 박아주는게아니라, 별도로 변수 지정값 리턴 받아서 합산
@@ -166,14 +166,14 @@ const upExpAllAction = async (userId, routineId) => {
     );
     return true;
   }
-  logger.info('캐릭 루틴 경험치 함수 엘스 진입');
+  console.log('캐릭 루틴 경험치 함수 엘스 진입');
   return false;
 };
 
 // 액션 완료시 액션에 finDate 업데이트
 const setActionFinDate = async (actionId, routineFinId, finDate) => {
   await ActionFin.update({ date: finDate }, { where: { actionId, routineFinId } });
-  logger.info('ActionFin의 date 업데이트 완료');
+  console.log('ActionFin의 date 업데이트 완료');
 };
 
 // 루틴 완료시 루틴에 finDate 업데이트
@@ -187,7 +187,7 @@ const setRoutineFinDate = async (routineId, finDate) => {
       routineId,
     },
   });
-  logger.info('RoutineFin의 date 업데이트 완료');
+  console.log('RoutineFin의 date 업데이트 완료');
 };
 
 const doneAction = async (req, res, next) => {
@@ -208,17 +208,17 @@ const doneAction = async (req, res, next) => {
     if (!thisActionFin) return next(new Error('현재 액션이 없습니다'));
 
     // 액션에 맞는 ActionFin의 실 데이터 생성
-    logger.info('setActionFinDate 진입');
+    console.log('setActionFinDate 진입');
     await setActionFinDate(actionId, lastRoutineFinId, finDate);
 
     // date가 null인 액션들의 count확인
     const count = await countNullAction(lastRoutineFinId);
 
-    logger.info('date: null인 카운트', count);
+    console.log('date: null인 카운트', count);
 
     // Action들 속 ActionFin의 Date가 null인 것의 개수가 0보다 크다 === 루틴에 완료되지 않은 액션이 있다.
     if (count > 0) {
-      logger.info('액션만 완료된 경우');
+      console.log('액션만 완료된 경우');
 
       // 액션이 완료되었을때 경험치
       if (await upExpFinOneAction(userId)) {
@@ -232,7 +232,7 @@ const doneAction = async (req, res, next) => {
         msg: 'Action 완료 날짜 표시, 경험치 지급 불가 ( 사유 : 일일 한계 초과 )',
       });
     }
-    logger.info('액션과 루틴이 함께 완료된 경우');
+    console.log('액션과 루틴이 함께 완료된 경우');
     // 루틴에는 finDate추가
     await setRoutineFinDate(routineId, finDate);
 

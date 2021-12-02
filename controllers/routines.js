@@ -20,12 +20,12 @@ async function modifyAction(routineId, userId, routineFinId, actions) {
 
   await createActionFn(routineId, userId, routineFinId, actions);
 
-  logger.info('action 수정 완료');
+  console.log('action 수정 완료');
 }
 
 // 루틴 조회 API
 const getRoutine = async (req, res, next) => {
-  logger.info('getRoutine router 진입');
+  console.log('getRoutine router 진입');
   const { id } = res.locals.user;
   const authId = id;
 
@@ -61,7 +61,7 @@ const getRoutine = async (req, res, next) => {
 
 // 루틴 생성 API
 const createRoutine = async (req, res, next) => {
-  logger.info('createRoutine router 진입');
+  console.log('createRoutine router 진입');
   const { id } = res.locals.user;
   const authId = id;
   const isMain = 0;
@@ -89,7 +89,7 @@ const createRoutine = async (req, res, next) => {
 
 // 루틴 수정 API
 const modifyRoutine = async (req, res, next) => {
-  logger.info('modifyRoutine router 진입');
+  console.log('modifyRoutine router 진입');
   const { id } = res.locals.user;
   const authId = id;
 
@@ -126,14 +126,14 @@ const modifyRoutine = async (req, res, next) => {
 
 // 루틴 삭제 API
 const deleteRoutine = async (req, res, next) => {
-  logger.info('deleteRoutine router 진입');
+  console.log('deleteRoutine router 진입');
   try {
     const { routineId } = req.params;
     await Action.update(
       { isDel: 1 },
       { where: { routineId } },
     );
-    logger.info('routine 종속 action 및 actionFin 삭제완료');
+    console.log('routine 종속 action 및 actionFin 삭제완료');
 
     await Routine.update(
       { isDel: 1 },
@@ -159,7 +159,7 @@ const createNowRoutineActions = async (req, res, next) => {
 
     const count = await countNullAction(routineFinId);
 
-    logger.info('count', count);
+    console.log('count', count);
     if (count > 0) return next(myError(400, '이전 액션이 모두 완료되지 않았습니다'));
 
     const lastActionFins = await ActionFin.findAll(
@@ -172,10 +172,10 @@ const createNowRoutineActions = async (req, res, next) => {
     })
       .then((result) => {
         getNewRoutineFinId(result.id);
-        logger.info('RoutineFin 생성완료');
+        console.log('RoutineFin 생성완료');
       });
 
-    logger.info('newRoutineFinId', newRoutineFinId);
+    console.log('newRoutineFinId', newRoutineFinId);
 
     for await (const [index, value] of lastActionFins.entries()) {
       const { actionId } = value;
@@ -185,7 +185,7 @@ const createNowRoutineActions = async (req, res, next) => {
         routineFinId: newRoutineFinId,
         date: null,
       })
-        .then(() => logger.info('ActionFin 생성완료'));
+        .then(() => console.log('ActionFin 생성완료'));
     }
     return res.send({ result: true, msg: '현재 루틴을 재시작합니다' });
   } catch (err) {
@@ -230,7 +230,7 @@ const allPresetRoutine = async (req, res, next) => {
       ],
     });
 
-    logger.info('전체 프리셋 루틴 불러오기 완료');
+    console.log('전체 프리셋 루틴 불러오기 완료');
 
     return res.status(200).send({
       result: true,

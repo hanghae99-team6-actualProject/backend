@@ -15,9 +15,9 @@ const makeMoimUser = async (userId, moimId, userType, next) => {
       host: userType,
     });
     if (userType === 1) {
-      logger.info('host 유저생성 완료');
+      console.log('host 유저생성 완료');
     } else if (userType === 0) {
-      logger.info('nomal 유저생성 완료');
+      console.log('nomal 유저생성 완료');
     }
   } catch (err) {
     logger.error(err);
@@ -27,7 +27,7 @@ const makeMoimUser = async (userId, moimId, userType, next) => {
 
 const getAllMoim = async (req, res, next) => {
   try {
-    logger.info('getAllMoim router 진입');
+    console.log('getAllMoim router 진입');
 
     const allMoims = await Moim.findAll({
       order: [['createdAt', 'DESC']],
@@ -69,7 +69,7 @@ const getAllMoim = async (req, res, next) => {
 
 const getMoimByLocation = async (req, res, next) => {
   try {
-    logger.info('getMoimByLocation router 진입');
+    console.log('getMoimByLocation router 진입');
     const { filter } = req.body;
     console.log(req.body);
 
@@ -112,7 +112,7 @@ const getMoimByLocation = async (req, res, next) => {
 
 const getMoreMoim = async (req, res, next) => {
   try {
-    logger.info('getMoreMoim router 진입');
+    console.log('getMoreMoim router 진입');
 
     let { lastId } = req.params;
     lastId = Number(lastId);
@@ -177,7 +177,7 @@ const getMoreMoim = async (req, res, next) => {
 
 const getMoreMoimByLocation = async (req, res, next) => {
   try {
-    logger.info('getMoimByLocation router 진입');
+    console.log('getMoimByLocation router 진입');
     let { lastId } = req.params;
     const { filter } = req.body;
     lastId = Number(lastId);
@@ -244,7 +244,7 @@ const getMoreMoimByLocation = async (req, res, next) => {
 
 const createMoim = async (req, res, next) => {
   try {
-    logger.info('createMoim router 진입');
+    console.log('createMoim router 진입');
 
     const userId = res.locals.user.id;
     const {
@@ -298,7 +298,7 @@ const createMoim = async (req, res, next) => {
 
 const detailMoim = async (req, res, next) => {
   try {
-    logger.info('detailMoim router 진입');
+    console.log('detailMoim router 진입');
     const { moimId } = req.params;
 
     const targetMoim = await Moim.findOne({
@@ -328,12 +328,12 @@ const detailMoim = async (req, res, next) => {
       ],
     });
 
-    logger.info('디테일이 필요한 모임 정보', targetMoim);
+    console.log('디테일이 필요한 모임 정보', targetMoim);
     if (!targetMoim) {
       return next(new Error('모임 정보가 존재하지 않습니다. 먼저 모임 등록을 하시기바랍니다.'));
     }
 
-    logger.info('타겟 모임 조회 완료');
+    console.log('타겟 모임 조회 완료');
     return res.status(200).send({
       result: true,
       targetMoim,
@@ -347,7 +347,7 @@ const detailMoim = async (req, res, next) => {
 
 const updateMoim = async (req, res, next) => {
   try {
-    logger.info('updateMoim router 진입');
+    console.log('updateMoim router 진입');
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     const {
@@ -390,7 +390,7 @@ const updateMoim = async (req, res, next) => {
           msg: '모임 정보 수정에 성공했습니다.',
         }));
     } else {
-      logger.info('수정할 모임이 없습니다.');
+      console.log('수정할 모임이 없습니다.');
       next(new Error('수정할 모임이 없습니다.')); // 이렇게 쓰는 것이 맞는가?!
     }
   } catch (err) {
@@ -401,7 +401,7 @@ const updateMoim = async (req, res, next) => {
 
 const deleteMoim = async (req, res, next) => {
   try {
-    logger.info('deleteMoim router 진입');
+    console.log('deleteMoim router 진입');
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
@@ -438,7 +438,7 @@ const deleteMoim = async (req, res, next) => {
 
 const enterMoim = async (req, res, next) => {
   try {
-    logger.info('enterMoim router 진입');
+    console.log('enterMoim router 진입');
     const userId = res.locals.user.id;
     const { moimId } = req.params;
     // 모임 기간이 지났는지 확인
@@ -475,7 +475,7 @@ const enterMoim = async (req, res, next) => {
 
 const exitMoim = async (req, res, next) => {
   try {
-    logger.info('enterMoim router 진입');
+    console.log('enterMoim router 진입');
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
@@ -514,7 +514,7 @@ const exitMoim = async (req, res, next) => {
 
 const myMoims = async (req, res, next) => {
   try {
-    logger.info('myMoims 라우터 진입');
+    console.log('myMoims 라우터 진입');
     const userId = res.locals.user.id;
     const { userType } = req.body;
     const hostType = Number(userType);
@@ -556,27 +556,27 @@ const myMoims = async (req, res, next) => {
     });
 
     if (hostType === 1) {
-      logger.info('호스트인 경우');
-      logger.info(allMyMoims.length);
+      console.log('호스트인 경우');
+      console.log(allMyMoims.length);
       if (allMyMoims.length === 0) {
-        logger.info('개설한 모임이 없습니다.');
+        console.log('개설한 모임이 없습니다.');
         return res.status(200).send({
           result: 'true2',
           msg: '내가 만든 모임이 없습니다.',
         });
       }
 
-      logger.info('조회 완료');
+      console.log('조회 완료');
       return res.status(200).send({
         result: 'true1',
         allMyMoims,
         msg: '내가 만든 모임 정보 불러오기에 성공했습니다.',
       });
     } if (hostType === 0) {
-      logger.info('참여자인 경우');
-      logger.info(allMyMoims.length);
+      console.log('참여자인 경우');
+      console.log(allMyMoims.length);
       if (allMyMoims.length === 0) {
-        logger.info('참여한 모임이 없습니다.');
+        console.log('참여한 모임이 없습니다.');
         return res.status(200).send({
           result: 'true4',
           msg: '내가 참여한 모임이 없습니다.',

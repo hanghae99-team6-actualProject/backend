@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     actionType: DataTypes.STRING,
     actionCnt: DataTypes.INTEGER,
     actionNum: DataTypes.INTEGER,
-    actionType: DataTypes.STRING,
     isDel: DataTypes.INTEGER,
   }, {
     sequelize,

@@ -61,8 +61,8 @@ const createCharacter = async (req, res, next) => {
         }
       }
 
-      logger.info(newCrtName, '랜덤화 한 새로운 캐릭터의 이름');
-      logger.info(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스');
+      console.log(newCrtName, '랜덤화 한 새로운 캐릭터의 이름');
+      console.log(newCrtIndex, '랜덤화 한 새로운 캐릭터의 인덱스');
 
       await Character.create({
         userId: Number(userId),
@@ -89,7 +89,7 @@ const getCharacter = async (req, res, next) => {
   try {
     const userId = res.locals.user.id;
 
-    logger.info(userId, '유저아이디!');
+    console.log(userId, '유저아이디!');
     // 현재 유저의 캐릭터 (만랩이 아님)
     const userCharacter = await Character.findAll({
       where: { userId, expMax: 0 },

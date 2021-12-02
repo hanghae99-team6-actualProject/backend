@@ -29,7 +29,6 @@ const kakaoCallback = (req, res, next) => {
     'kakao',
     { failureRedirect: '/' },
     (err, profile, info) => {
-      logger.info('카카오 로그인 콜백 진입');
       if (err) return next(err);
       const { refreshToken, accessToken } = info;
 
@@ -43,7 +42,6 @@ const googleCallback = (req, res, next) => {
     'google',
     { failureRedirect: '/' },
     (err, profile, info) => {
-      logger.info('네이버 로그인 콜백 진입');
       if (err) return next(err);
       const { refreshToken, accessToken } = info;
 

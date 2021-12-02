@@ -3,11 +3,9 @@ const {
 } = require('../../models');
 const myError = require('./httpErrors');
 
-// 현재 루틴의 가장 최신 RoutineFin의 id를 찾아줍니다!
+// 현재 Routine의 가장 최신 RoutineFin의 id 검색 함수.
 const findLastRoutineFinId = async (routineId, getCycle) => {
   const cycle = getCycle || await thisCycle(routineId);
-  console.log(routineId);
-  console.log(cycle);
   const lastRoutineFin = await RoutineFin.findOne({
     where: {
       routineId,
@@ -18,7 +16,7 @@ const findLastRoutineFinId = async (routineId, getCycle) => {
   return lastRoutineFin.id;
 };
 
-// 현재 루틴의 가장 최신 사이클을 찾아줍니다!
+// 현재 Routine의 가장 최신 cycle 검색 함수
 const thisCycle = async (routineId) => {
   let cycle = 0;
   const getcycle = (input) => {
@@ -33,9 +31,8 @@ const countNullAction = async (routineFinId) => await ActionFin.count({
   where: { routineFinId, date: null },
 });
 
-// --Action 생성,  함수--
+// Action 생성 함수
 const createActionFn = async (routineId, userId, routineFinId, actions) => {
-  console.log(actions);
   for await (const [index, value] of actions.entries()) {
     console.log(index, value);
     const { actionName, actionCnt, actionType } = value;
@@ -59,7 +56,7 @@ const createActionFn = async (routineId, userId, routineFinId, actions) => {
   console.log('action 생성 완료');
 };
 
-// --Action 삭제 함수--
+// Action 삭제 함수
 const deleteActionFn = async (routineId) => {
   await Action.update(
     { isDel: 1 },
@@ -69,6 +66,7 @@ const deleteActionFn = async (routineId) => {
   // 액션의 isDel에 1값이 추가되면서 데이터는 보존, 삭제 처리
 };
 
+// RoutineFn 생성 함수
 const createRoutineFn = async (authId, routineName, isMain, preSet, actions) => {
   const routines = await Routine.create({
     userId: authId,

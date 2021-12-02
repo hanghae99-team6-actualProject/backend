@@ -74,7 +74,7 @@ const updateUser = async (req, res, next) => {
 
 // 메인 루틴 설정 API
 const setMainRoutine = async (req, res, next) => {
-  logger.info('setMainRoutine router 진입');
+  console.log('setMainRoutine router 진입');
   const { id: userId } = res.locals.user;
   const { routineId } = req.body;
 
@@ -84,7 +84,7 @@ const setMainRoutine = async (req, res, next) => {
       where: { id: routineId },
       include: { model: Action },
     });
-    logger.info('thisRoutine', thisRoutine);
+    console.log('thisRoutine', thisRoutine);
 
     // 이전 isMain이 1인 루틴 전부 0으로 수정
     await Routine.update({ isMain: 0 }, {
@@ -103,7 +103,7 @@ const setMainRoutine = async (req, res, next) => {
 
 const myMoim = async (req, res, next) => {
   try {
-    logger.info('myMoin 라우터 진입');
+    console.log('myMoin 라우터 진입');
     const userId = res.locals.user.id;
     const { userType } = req.body;
     const hostType = Number(userType);
@@ -156,25 +156,25 @@ const myMoim = async (req, res, next) => {
     });
 
     if (hostType === 1) {
-      logger.info('호스트인 경우');
-      logger.info(allMyMoim.length);
+      console.log('호스트인 경우');
+      console.log(allMyMoim.length);
       if (allMyMoim.length === 0) {
-        logger.info('개설한 모임이 없습니다.');
+        console.log('개설한 모임이 없습니다.');
         return res.status(200).send({
           result: 'true2',
           msg: '내가 만든 모임이 없습니다.',
         });
       }
 
-      logger.info('조회 완료');
+      console.log('조회 완료');
       return res.status(200).send({
         result: 'true1',
         allMyMoim,
         msg: '내가 만든 모임 정보 불러오기에 성공했습니다.',
       });
     } if (hostType === 0) {
-      logger.info('참여자인 경우');
-      logger.info(allMyMoim.length);
+      console.log('참여자인 경우');
+      console.log(allMyMoim.length);
       if (allMyMoim.length === 0) {
         return res.status(200).send({
           result: 'true4',
@@ -196,7 +196,7 @@ const myMoim = async (req, res, next) => {
 
 const myComments = async (req, res, next) => {
   try {
-    logger.info('myMoin 라우터 진입');
+    console.log('myMoin 라우터 진입');
     const userId = res.locals.user.id;
 
     const myCommentList = await Comment.findAll({
@@ -214,7 +214,7 @@ const myComments = async (req, res, next) => {
       ],
     });
 
-    logger.info('검색결과를 확인', myCommentList.length);
+    console.log('검색결과를 확인', myCommentList.length);
     if (myCommentList.length === 0) {
       return res.status(200).send({
         result: 'true2',
@@ -222,7 +222,7 @@ const myComments = async (req, res, next) => {
       });
     }
 
-    logger.info('댓글 조회 완료');
+    console.log('댓글 조회 완료');
     return res.status(200).send({
       result: 'true1',
       myCommentList,

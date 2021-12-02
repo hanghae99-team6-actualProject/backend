@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const env = require('../env');
 const {
-  User, Character, MoimUser, Moim, sequelize,
+  User, Character,
 } = require('../models');
 const { userValidation } = require('./utils/joi');
 const { encrypt, compare } = require('./utils/bcrypt');
@@ -47,7 +47,7 @@ const logout = (req, res, next) => {
 // 로컬 로그인 API
 const localLogin = async (req, res, next) => {
   try {
-    logger.info('로그인 진입');
+    console.log('로그인 진입');
     const { userEmail, userPw } = req.body;
     const providerId = `local${userEmail}`;
 

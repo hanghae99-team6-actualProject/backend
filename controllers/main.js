@@ -19,7 +19,7 @@ function timeSet() {
 
 // 메인 루틴, 액션, 유저 조회
 const getOngoing = async (req, res, next) => {
-  logger.info('getRoutine router 진입');
+  console.log('getRoutine router 진입');
   const { id: userId } = res.locals.user;
 
   try {

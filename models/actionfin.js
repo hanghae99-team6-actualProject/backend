@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.ActionFin.belongsTo(models.Action, { foreignKey: 'actionId', targetKey: 'id' });
-      // models.ActionFin.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
       models.ActionFin.belongsTo(models.RoutineFin, { foreignKey: 'routineFinId', targetKey: 'id' });
     }
   }

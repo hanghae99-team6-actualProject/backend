@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       models.RoutineFin.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
-      // models.RoutineFin.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
       models.RoutineFin.hasMany(models.ActionFin, { foreignKey: 'routineFinId', sourceKey: 'id' });
     }
   }
