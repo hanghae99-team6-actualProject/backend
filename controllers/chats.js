@@ -1,5 +1,14 @@
 var redis = require('redis');
-var client = redis.createClient();
+// var client = redis.createClient();
+var client = redis.createClient({
+  host: 'mingijuk1-redis-001.vbxg1n.0001.apn2.cache.amazonaws.com',
+  port: 6379,
+});
+
+client.on('connect', function () {
+  console.log('Connected Redis');
+});
+
 client.on('error', function (err) {
   console.log('Error' + err);
 });
