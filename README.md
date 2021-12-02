@@ -1,6 +1,7 @@
 # 👟 밍기적 백앤드
 
-[FrontEnd Github](https://github.com/hanghae99-team6-actualProject/frontend) 좌측 링크를 클릭하시면 프론트앤드 깃허브를 확인할 수 있습니다.
+[FrontEnd Github](https://github.com/hanghae99-team6-actualProject/frontend) 좌측 링크를 통해 프론트앤드 깃허브를 확인할 수 있습니다.
+[밍기적 Notion](https://twilight-cardigan-0a3.notion.site/9cf811e7752d49b8a4be427d6dd16970) 좌측 링크를 통해 밍기적 노션페이지를 확인할 수 있습니다.
 
 # '밍기적'을 소개합니다.
 
@@ -40,7 +41,7 @@
 
 # Architecture
 
-<img width="968" alt="architecture" src="https://user-images.githubusercontent.com/54808299/144190937-0b12b9f4-9376-4b89-970e-c563ef88a60a.png">
+<img width="1054" alt="스크린샷 2021-12-03 오전 12 14 04" src="https://user-images.githubusercontent.com/54808299/144449458-9e9f0555-ff06-4994-af4d-c665591069d9.png">
 
 # Database ERD
 ![projectDB](https://user-images.githubusercontent.com/54808299/144186220-7906f526-7d02-4f92-98fe-5b8517ae17f0.png)
