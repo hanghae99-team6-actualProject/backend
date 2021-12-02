@@ -113,7 +113,11 @@ if (env.NODE_ENV === 'production') {
 }
 
 sequelize
+<<<<<<< HEAD
   .sync({ force: false })
+=======
+  .sync({ force: true }) //데이터 구조 변경하고 싶을 때, true
+>>>>>>> feature/redis-test
   .then(() => {
     logger.info('------ SQL Restructure Complete ------');
   })

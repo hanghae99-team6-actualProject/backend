@@ -1,9 +1,37 @@
+<<<<<<< HEAD
 const {
   User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice,
 } = require('../models');
 const myError = require('./utils/httpErrors');
 
 // 방만들기 함수
+=======
+var redis = require('redis');
+// var client = redis.createClient();
+var client = redis.createClient({
+  host: 'mingijuk1-redis-001.vbxg1n.0001.apn2.cache.amazonaws.com',
+  port: 6379,
+});
+
+client.on('connect', function () {
+  console.log('Connected Redis');
+});
+
+client.on('error', function (err) {
+  console.log('Error' + err);
+});
+
+const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
+const myError = require('./utils/httpErrors')
+
+//시간
+const moment = require('moment');
+require('moment-timezone');
+moment.tz.setDefault("Asia/Seoul");
+// console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+
+//방만들기 함수
+>>>>>>> feature/redis-test
 const createNewRoom = async (moimId, userId) => {
   const setNewRoom = await MoimChatRoom.create({
     moimId,
@@ -11,6 +39,14 @@ const createNewRoom = async (moimId, userId) => {
   });
 
   return setNewRoom;
+};
+
+//채팅 로드 함수
+const loadChatList = async (chatRoomId, callback) => {
+  client.hgetall(`${chatRoomId}`, function(err, object) {
+    // console.log('정의 안의 object', object)
+    callback(object);
+  });
 };
 
 const createChatRoom = async (req, res, next) => {
@@ -29,6 +65,7 @@ const createChatRoom = async (req, res, next) => {
     if (isroom.length > 0) { // 현재 방이 존재하는 경우 >> 입장하기로 들어가야함 >> 그냥 바로 프론트에 입장하기로 쏴줌
       const roomId = isroom[0].dataValues.id;
 
+
       return res.status(200).send({
         result: 'true2',
         isroom,
@@ -44,8 +81,14 @@ const createChatRoom = async (req, res, next) => {
     // const moimNamespace = req.app.get('moimNamespace');
     // moimNamespace.emit('createNewRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
 
+<<<<<<< HEAD
     return res.status(200).send({ // 상태 메세지를 보내거나 리다이렉트를 해야한다.
       result: 'true1',
+=======
+    await client.hmset(`${newRoom.id}`,'chatNum', 0);
+    return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
+      result: "true1",
+>>>>>>> feature/redis-test
       newRoom,
       roomId: newRoom.id,
       msg: '채팅방 생성이 완료되었습니다.',
@@ -170,6 +213,7 @@ const loadTargetChat = async (req, res, next) => {
     console.log(req.params);
 
     // 특정 채팅방의 속한 모든 대화를 끌어온다.
+<<<<<<< HEAD
     const chats = await Chat.findAll({
       where: { moimChatRoomId: chatRoomId },
       include: [
@@ -191,6 +235,44 @@ const loadTargetChat = async (req, res, next) => {
       chats,
       msg: '특정 채팅방 모든 대화 불러오기에 성공했습니다.',
     });
+=======
+    // const chats = await Chat.findAll({
+    //   where: { moimChatRoomId: chatRoomId },
+    //   include: [
+    //     {
+    //       model: MoimUser,
+    //       attributes: ['id', 'userId', 'host'],
+    //       include: [
+    //         {
+    //           model: User,
+    //           attributes: ['nickName'],
+    //         },
+    //       ],
+    //     },
+    //   ]
+    // })
+    
+    // client.hgetall(`${chatRoomId}`, async (err, results) => {
+    //   console.log('채팅방'+ chatRoomId +'의 대화 목록', results);
+    //   return results
+    // });
+
+    await loadChatList( chatRoomId, function(obj) {
+      // console.log("여기가 함수 안", obj);
+      const chats = Object.entries(obj).map((element )=> {
+        const key = element[0].split('_');
+        const value = element[1];
+        return { id: key[3], nickName: key[0], url: key[1], contents: value, createAt: key[2]}
+      });
+
+      return res.status(200).send({
+        result: true,
+        chats,
+        msg: '특정 채팅방 모든 대화 불러오기에 성공했습니다.',
+      });
+    });
+
+>>>>>>> feature/redis-test
   } catch (err) {
     return next(err);
   }
@@ -201,7 +283,8 @@ const saveChat = async (req, res, next) => {
     console.log('saveChating router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
-    const { contents } = req.body;
+    const { contents, url } = req.body;
+
 
     console.log('userId', userId);
     console.log(req.params);
@@ -212,16 +295,28 @@ const saveChat = async (req, res, next) => {
     }
 
     const targetMoimUser = await MoimUser.findOne({
+<<<<<<< HEAD
       where: { userId, moimId },
+=======
+      where: { userId: userId, moimId: moimId },
+      include: [
+        {
+          model:User,
+          attributes: ['nickName']
+        }
+      ]
+>>>>>>> feature/redis-test
     });
 
-    console.log('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
+    // console.log('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
     console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.id);
+    console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.User.nickName);
 
     if (!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
     }
 
+<<<<<<< HEAD
     const saveChat = await Chat.create({
       moimUserId: targetMoimUser.id,
       moimChatRoomId: chatRoomId,
@@ -241,6 +336,47 @@ const saveChat = async (req, res, next) => {
       saveChat,
       saveChatElements,
       msg: '채팅 내용 저장에 성공했습니다.',
+=======
+    //현재시간
+    let createAt = moment().format('YYYY-MM-DD HH:mm:ss')
+    console.log('현재 한국 시간', createAt);
+    
+    // const saveChat = await Chat.create({
+    //   moimUserId: targetMoimUser.id,
+    //   moimChatRoomId: chatRoomId,
+    //   contents: contents,
+    // })
+    // console.log('saveChat', saveChat);
+
+    client.hget(`${chatRoomId}`, 'chatNum', async (err, result) => {
+      console.log(result);
+      const chatNum = Number(result) + 1;
+      client.hmset(`${chatRoomId}`, 'chatNum', chatNum);
+      client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_${url}_${createAt}_${chatNum}`, `${contents}`)
+    });
+    
+    // await client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_chat`, `${contents}` )
+
+
+
+    // const saveChatElements = {
+    //   "id": saveChat.id,
+    //   "moimUserId": saveChat.moimUserId,
+    //   "moimChatRoomId": saveChat.moimChatRoomId,
+    //   "contents": saveChat.contents,
+    // }
+
+    // return res.status(200).send({
+    //   result: true,
+    //   saveChat,
+    //   saveChatElements,
+    //   msg: "채팅 내용 저장에 성공했습니다."
+    // });
+
+    return res.status(200).send({
+      result: true,
+      msg: "채팅 내용 저장에 성공했습니다."
+>>>>>>> feature/redis-test
     });
   } catch (err) {
     return next(err);
