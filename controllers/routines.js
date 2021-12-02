@@ -1,5 +1,7 @@
-const { Routine, Action, RoutineFin, ActionFin, User } = require("../models");
-const { Op } = require("sequelize");
+const { Op } = require('sequelize');
+const {
+  Routine, Action, RoutineFin, ActionFin, User,
+} = require('../models');
 
 const myError = require('./utils/httpErrors');
 const {
@@ -8,24 +10,24 @@ const {
   countNullAction,
   createActionFn,
   deleteActionFn,
-  createRoutineFn
+  createRoutineFn,
 } = require('./utils/routineFn');
 const logger = require('../logger');
 
-//Action 수정 함수
+// Action 수정 함수
 async function modifyAction(routineId, userId, routineFinId, actions) {
   await deleteActionFn(routineId);
 
   await createActionFn(routineId, userId, routineFinId, actions);
 
-  logger.info('action 수정 완료')
+  logger.info('action 수정 완료');
 }
 
-//루틴 조회 API
+// 루틴 조회 API
 const getRoutine = async (req, res, next) => {
-  logger.info("getRoutine router 진입");
+  logger.info('getRoutine router 진입');
   const { id } = res.locals.user;
-  const authId = id
+  const authId = id;
 
   try {
     const routines = await Routine.findAll({
@@ -36,38 +38,37 @@ const getRoutine = async (req, res, next) => {
         },
         {
           model: Action,
-          where : { isDel : 0 },
+          where: { isDel: 0 },
           include: [
             {
-              model: ActionFin
+              model: ActionFin,
             },
-          ]
+          ],
         },
-      ]
+      ],
     });
 
     return res.status(200).send({
       result: true,
       routines,
-      msg: "조회완료"
+      msg: '조회완료',
     });
-
   } catch (err) {
     logger.error(err);
     next(err);
   }
 };
 
-//루틴 생성 API
+// 루틴 생성 API
 const createRoutine = async (req, res, next) => {
-  logger.info("createRoutine router 진입");
+  logger.info('createRoutine router 진입');
   const { id } = res.locals.user;
-  const authId = id
-  const isMain = 0
+  const authId = id;
+  const isMain = 0;
   const { routineName, actions } = req.body;
 
   try {
-    //루틴 DB체크
+    // 루틴 DB체크
     const routines = await Routine.findAll({
       where: { userId: authId, routineName, isDel: 0 },
     });
@@ -86,17 +87,17 @@ const createRoutine = async (req, res, next) => {
   }
 };
 
-//루틴 수정 API
+// 루틴 수정 API
 const modifyRoutine = async (req, res, next) => {
-  logger.info("modifyRoutine router 진입");
+  logger.info('modifyRoutine router 진입');
   const { id } = res.locals.user;
-  const authId = id
+  const authId = id;
 
   const { routineId } = req.params;
   const { routineName, actions } = req.body;
 
   try {
-    //루틴 DB체크
+    // 루틴 DB체크
     const routineExsist = await Routine.findAll({
       where: { id: routineId, isDel: 0 },
     });
@@ -110,46 +111,44 @@ const modifyRoutine = async (req, res, next) => {
           where: {
             id: routineId,
           },
-        }
+        },
       );
       const routineFinId = await findLastRoutineFinId(routineId);
       await modifyAction(routineId, authId, routineFinId, actions);
       return res.status(200).send({ result: true, msg: '루틴이 수정되었습니다.' });
-    } else {
-      throw new Error('수정 대상 루틴이 없습니다.');
     }
+    throw new Error('수정 대상 루틴이 없습니다.');
   } catch (err) {
     logger.error(err);
     next(err);
   }
 };
 
-//루틴 삭제 API
+// 루틴 삭제 API
 const deleteRoutine = async (req, res, next) => {
-  logger.info("deleteRoutine router 진입");
+  logger.info('deleteRoutine router 진입');
   try {
     const { routineId } = req.params;
     await Action.update(
       { isDel: 1 },
-      { where: { routineId } }
+      { where: { routineId } },
     );
-    logger.info('routine 종속 action 및 actionFin 삭제완료')
+    logger.info('routine 종속 action 및 actionFin 삭제완료');
 
     await Routine.update(
       { isDel: 1 },
-      { where: { id: routineId } }
+      { where: { id: routineId } },
     )
       .then(() => {
         res.status(200).send({ result: true, routineId, msg: '루틴이 삭제되었습니다.' });
       });
-
   } catch (err) {
     logger.error(err);
     return next(err);
   }
 };
 
-//현재 루틴 마지막 cycle이 전부 완료되었을 때 새로운 cycle만들기
+// 현재 루틴 마지막 cycle이 전부 완료되었을 때 새로운 cycle만들기
 const createNowRoutineActions = async (req, res, next) => {
   try {
     const { routineId } = req.params;
@@ -161,41 +160,40 @@ const createNowRoutineActions = async (req, res, next) => {
     const count = await countNullAction(routineFinId);
 
     logger.info('count', count);
-    if (count > 0) return next(myError(400, "이전 액션이 모두 완료되지 않았습니다"));
+    if (count > 0) return next(myError(400, '이전 액션이 모두 완료되지 않았습니다'));
 
     const lastActionFins = await ActionFin.findAll(
-      { where: { routineFinId } }
+      { where: { routineFinId } },
     );
     await RoutineFin.create({
       routineId,
       date: null,
-      cycle: lastCycle + 1
+      cycle: lastCycle + 1,
     })
       .then((result) => {
-        getNewRoutineFinId(result.id)
-        logger.info('RoutineFin 생성완료')
+        getNewRoutineFinId(result.id);
+        logger.info('RoutineFin 생성완료');
       });
 
-    logger.info("newRoutineFinId", newRoutineFinId)
+    logger.info('newRoutineFinId', newRoutineFinId);
 
     for await (const [index, value] of lastActionFins.entries()) {
       const { actionId } = value;
 
       await ActionFin.create({
-        actionId: actionId,
+        actionId,
         routineFinId: newRoutineFinId,
-        date: null
+        date: null,
       })
-        .then(() => logger.info('ActionFin 생성완료'))
+        .then(() => logger.info('ActionFin 생성완료'));
     }
-    return res.send({ result: true, msg: "현재 루틴을 재시작합니다" });
-
+    return res.send({ result: true, msg: '현재 루틴을 재시작합니다' });
   } catch (err) {
     return next(err);
   }
-}
+};
 
-//현재 루틴 마지막 Cycle의 액션 findate초기화
+// 현재 루틴 마지막 Cycle의 액션 findate초기화
 const resetNowRoutineActions = async (req, res, next) => {
   try {
     const { routineId } = req.params;
@@ -203,14 +201,13 @@ const resetNowRoutineActions = async (req, res, next) => {
 
     const targetActionFins = await ActionFin.update(
       { date: null },
-      { where: { routineFinId } }
+      { where: { routineFinId } },
     );
-    res.send({ ActionFins: targetActionFins })
-  }
-  catch (err) {
+    res.send({ ActionFins: targetActionFins });
+  } catch (err) {
     return next(err);
   }
-}
+};
 
 // 프리셋 루틴 불러오기 API
 const allPresetRoutine = async (req, res, next) => {
@@ -227,13 +224,13 @@ const allPresetRoutine = async (req, res, next) => {
           include: [
             {
               model: ActionFin,
-            }
-          ]
-        }
+            },
+          ],
+        },
       ],
     });
 
-    logger.info("전체 프리셋 루틴 불러오기 완료");
+    logger.info('전체 프리셋 루틴 불러오기 완료');
 
     return res.status(200).send({
       result: true,
@@ -246,7 +243,6 @@ const allPresetRoutine = async (req, res, next) => {
   }
 };
 
-
 module.exports = {
   getRoutine,
   createRoutine,
@@ -254,5 +250,5 @@ module.exports = {
   deleteRoutine,
   createNowRoutineActions,
   resetNowRoutineActions,
-  allPresetRoutine
+  allPresetRoutine,
 };

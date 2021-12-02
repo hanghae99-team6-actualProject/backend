@@ -1,5 +1,5 @@
-'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class ExpDayLog extends Model {
     /**
@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.ExpDayLog.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
     }
-  };
+  }
   ExpDayLog.init({
     userId: DataTypes.INTEGER,
     date: DataTypes.DATE,
     totalExp: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'ExpDayLog'
+    modelName: 'ExpDayLog',
   });
   return ExpDayLog;
 };

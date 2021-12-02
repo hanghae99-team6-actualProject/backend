@@ -1,6 +1,7 @@
 const cron = require('node-cron');
-const { User, Sequelize } = require("../models");
-const Op = Sequelize.Op;
+const { User, Sequelize } = require('../models');
+
+const { Op } = Sequelize;
 
 function timeSet() {
   const today = new Date();
@@ -13,7 +14,7 @@ function timeSet() {
 }
 
 const destroyUser = () => {
-  cron.schedule('0 0 * * *', function () {
+  cron.schedule('0 0 * * *', () => {
     try {
       const { fromMonthAgo, today } = timeSet();
       User.destroy({
@@ -21,16 +22,16 @@ const destroyUser = () => {
           deletedAt: {
             [Op.not]: null,
             [Op.notBetween]: [fromMonthAgo, today],
-          }
+          },
         },
-        force: true
+        force: true,
       });
       logger.info('매일 자정마다 실행 :', new Date().toString());
     } catch (error) {
       logger.info(error);
     }
   });
-}
+};
 
 module.exports = {
   destroyUser,

@@ -1,12 +1,9 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    
-    // Add seed commands here. 
+    // Add seed commands here.
     // Example:
     const routines = await queryInterface.sequelize.query(
-      `SELECT id from Routines;`
+      'SELECT id from Routines;',
     );
     const routineRows = routines[0];
 
@@ -44,5 +41,5 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('routinefins', null, {});
-  }
+  },
 };

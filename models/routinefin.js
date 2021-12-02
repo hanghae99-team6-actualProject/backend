@@ -1,4 +1,3 @@
-'use strict';
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -13,11 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       // models.RoutineFin.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id' });
       models.RoutineFin.hasMany(models.ActionFin, { foreignKey: 'routineFinId', sourceKey: 'id' });
     }
-  };
+  }
   RoutineFin.init({
     routineId: DataTypes.INTEGER,
     cycle: DataTypes.INTEGER,
-    date: DataTypes.DATE
+    date: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'RoutineFin',

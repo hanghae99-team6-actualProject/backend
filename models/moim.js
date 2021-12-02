@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Moim extends Model {
     /**
@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Moim.hasMany(models.Like, { foreignKey: 'moimId', sourceKey: 'id' });
       models.Moim.hasMany(models.Notice, { foreignKey: 'moimId', sourceKey: 'id' });
     }
-  };
+  }
   Moim.init({
     title: DataTypes.STRING,
     contents: DataTypes.STRING,
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     location: DataTypes.STRING,
     filter: DataTypes.STRING,
     startAt: DataTypes.DATE,
-    finishAt: DataTypes.DATE
+    finishAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Moim',

@@ -1,4 +1,3 @@
-'use strict';
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -13,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Routine.hasMany(models.Action, { foreignKey: 'routineId', sourceKey: 'id' });
       models.Routine.hasMany(models.RoutineFin, { foreignKey: 'routineId', sourceKey: 'id' });
     }
-  };
+  }
   Routine.init({
     userId: DataTypes.INTEGER,
     routineName: DataTypes.STRING,

@@ -32,7 +32,7 @@ const presetConst = {
       actionType: 'stretching',
       actionCnt: 10,
       actionNum: 5,
-    },]
+    }],
   },
   presetRoutine2:
   {
@@ -62,8 +62,8 @@ const presetConst = {
       actionType: 'body_exercise',
       actionCnt: 10,
       actionNum: 4,
-    }]
+    }],
   },
-}
+};
 
 module.exports = presetConst;

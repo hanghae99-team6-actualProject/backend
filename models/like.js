@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Like extends Model {
     /**
@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       models.Like.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
       models.Like.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
     }
-  };
+  }
   Like.init({
     userId: DataTypes.INTEGER,
-    moimId: DataTypes.INTEGER
+    moimId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Like',

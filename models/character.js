@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Character extends Model {
     /**
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       models.Character.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
     }
-  };
+  }
   Character.init({
     userId: DataTypes.INTEGER,
     preSet: DataTypes.INTEGER,

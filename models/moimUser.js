@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class MoimUser extends Model {
     /**
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       models.MoimUser.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', onDelete: 'cascade' });
       models.MoimUser.belongsTo(models.Moim, { foreignKey: 'moimId', targetKey: 'id', onDelete: 'cascade' });
     }
-  };
+  }
   MoimUser.init({
     userId: DataTypes.INTEGER,
     moimId: DataTypes.INTEGER,

@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Chat extends Model {
     /**
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Chat.belongsTo(models.MoimUser, { foreignKey: 'moimUserId', targetKey: 'id', onDelete: 'cascade' });
       models.Chat.belongsTo(models.MoimChatRoom, { foreignKey: 'moimChatRoomId', targetKey: 'id', onDelete: 'cascade' });
     }
-  };
+  }
   Chat.init({
     moimUserId: {
       require: true,

@@ -10,8 +10,8 @@ const getAllComments = async (req, res, next) => {
         {
           model: User,
           attributes: ['nickName'],
-        }
-      ]
+        },
+      ],
     });
 
     logger.info('전체 댓글 불러오기 완료');
@@ -37,9 +37,9 @@ const getTargetMoimComments = async (req, res, next) => {
         {
           model: User,
           attributes: ['nickName'],
-        }
-      ]
-    })
+        },
+      ],
+    });
 
     if (targetMoimComments.length === 0) {
       logger.info('특정 모임에 댓글이 없음');
@@ -69,7 +69,7 @@ const createComment = async (req, res, next) => {
     const { contents } = req.body;
 
     if (contents.length > 50) {
-      return next(myError(400, "글자수는 50자 이하만 가능합니다"));
+      return next(myError(400, '글자수는 50자 이하만 가능합니다'));
     }
 
     await Comment.create({
@@ -77,13 +77,11 @@ const createComment = async (req, res, next) => {
       moimId,
       contents,
     })
-      .then((result) => {
-        return res.status(200).send({
-          result: true,
-          newCommentId: result.id,
-          msg: '댓글 작성에 성공했습니다.',
-        });
-      });
+      .then((result) => res.status(200).send({
+        result: true,
+        newCommentId: result.id,
+        msg: '댓글 작성에 성공했습니다.',
+      }));
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -97,11 +95,11 @@ const updateComment = async (req, res, next) => {
     const { commentId } = req.params;
     const { contents } = req.body;
 
-    //1. 먼저 매칭 찾기
+    // 1. 먼저 매칭 찾기
     const isComment = await Comment.findOne({
       where: {
         id: commentId,
-        userId: userId,
+        userId,
       },
     });
 
@@ -112,14 +110,12 @@ const updateComment = async (req, res, next) => {
 
     await Comment.update(
       { contents },
-      { where: { id: commentId, userId: userId } }
+      { where: { id: commentId, userId } },
     )
-      .then(() => {
-        return res.status(200).send({
-          result: true,
-          msg: '댓글 수정에 성공했습니다.',
-        });
-      });
+      .then(() => res.status(200).send({
+        result: true,
+        msg: '댓글 수정에 성공했습니다.',
+      }));
   } catch (err) {
     logger.error(err);
     return next(err);
@@ -135,7 +131,7 @@ const deleteComment = async (req, res, next) => {
     const isComment = await Comment.findOne({
       where: {
         id: commentId,
-        userId: userId,
+        userId,
       },
     });
 
@@ -153,14 +149,11 @@ const deleteComment = async (req, res, next) => {
         msg: '댓글 삭제에 성공했습니다.',
       });
     });
-
   } catch (err) {
     logger.error(err);
     return next(err);
   }
 };
-
-
 
 const myComments = async (req, res, next) => {
   try {
@@ -168,7 +161,7 @@ const myComments = async (req, res, next) => {
     const userId = res.locals.user.id;
 
     const myCommentList = await Comment.findAll({
-      where: { userId: userId },
+      where: { userId },
       attributes: ['id', 'userId', 'moimId', 'contents', 'createdAt'],
       include: [
         {
@@ -178,30 +171,29 @@ const myComments = async (req, res, next) => {
         {
           model: User,
           attributes: ['nickName'],
-        }
-      ]
+        },
+      ],
     });
 
     logger.info('검색결과를 확인', myCommentList.length);
     if (myCommentList.length === 0) {
       return res.status(200).send({
         result: 'true2',
-        msg: '내가 단 댓글이 없습니다. 댓글을 먼저 달아주세요.'
-      })
+        msg: '내가 단 댓글이 없습니다. 댓글을 먼저 달아주세요.',
+      });
     }
 
-    logger.info('댓글 조회 완료')
+    logger.info('댓글 조회 완료');
     return res.status(200).send({
       result: 'true1',
       myCommentList,
-      msg: '나의 댓글 목록 정보 조회에 성공했습니다.'
+      msg: '나의 댓글 목록 정보 조회에 성공했습니다.',
     });
-
   } catch (err) {
     logger.error(err);
     return next(err);
   }
-}
+};
 
 module.exports = {
   getAllComments,
@@ -209,5 +201,5 @@ module.exports = {
   createComment,
   updateComment,
   deleteComment,
-  myComments
+  myComments,
 };

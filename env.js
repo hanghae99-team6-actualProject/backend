@@ -23,5 +23,5 @@ env = {
   NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
 
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-}
+};
 module.exports = env;

@@ -1,6 +1,7 @@
 const logger = require('./logger');
-const env = require('./env')
-const {httpServer} = require('./app');
+const env = require('./env');
+const { httpServer } = require('./app');
+
 const port = env.EXPRESS_PORT;
 // const server = require('./socket');
 const path = require('path');

@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       models.User.hasMany(models.MoimUser, { foreignKey: 'userId', sourceKey: 'id' });
       models.User.hasMany(models.Comment, { foreignKey: 'userId', sourceKey: 'id' });
     }
-  };
+  }
   User.init({
     providerId: {
       allowNull: false,
@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     role: DataTypes.ENUM('admin', 'base_user', 'guest'),
     deletedAt: {
       allowNull: true,
-      type: DataTypes.DATE
-    }
+      type: DataTypes.DATE,
+    },
   }, {
     sequelize,
     modelName: 'User',

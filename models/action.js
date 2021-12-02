@@ -1,7 +1,7 @@
-'use strict';
 const {
-  Model
+  Model,
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Action extends Model {
     /**
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       models.Action.belongsTo(models.Routine, { foreignKey: 'routineId', targetKey: 'id' });
       models.Action.hasMany(models.ActionFin, { foreignKey: 'actionId', targetKey: 'id' });
     }
-  };
+  }
   Action.init({
     userId: DataTypes.INTEGER,
     routineId: DataTypes.INTEGER,

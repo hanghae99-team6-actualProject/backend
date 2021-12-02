@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const models = require('./models');
-const Op = Sequelize.Op;
+
+const { Op } = Sequelize;
 
 // // Creat ------------------------------------------------------------------------
 
@@ -52,10 +53,7 @@ const Op = Sequelize.Op;
 
 // actionCreate(routineId, userId, actions)
 
-
 // // -----------------------------------------------------------------------------
-
-
 
 // // 가짜 데이터 만들기 - User_DB
 // models.User.create({
@@ -69,7 +67,6 @@ const Op = Sequelize.Op;
 //   console.log("============여기까지!======================");
 // });
 
-
 // models.User.create({
 //   providerId: "4",
 //   userEmail: 'tset4@test.com',
@@ -82,7 +79,6 @@ const Op = Sequelize.Op;
 //   nickName: 'test5',
 //   userPw: '5555',
 // }).then((result) => console.log('Data1 is Created!'));
-
 
 // 가짜 데이터 만들기 - Routine_DB
 // 프리셋 데이터
@@ -111,7 +107,7 @@ const Op = Sequelize.Op;
 //   preSet: preSet,
 // }).then((result) => console.log('Data is Created!'));
 
- // 그냥 유저가 만든 루틴
+// 그냥 유저가 만든 루틴
 // var finDate = new Date();
 // models.Routine.create({
 //   userId : 1,
@@ -127,7 +123,6 @@ const Op = Sequelize.Op;
 //   preSet : 1,
 // }).then((result) => console.log('Data is Created!'));
 
-
 // // 가짜 데이터 만들기 - Action_DB
 // for(let i=0; i < 6; i++){
 //   var userId = 2;
@@ -141,7 +136,7 @@ const Op = Sequelize.Op;
 //     routineId : routineId,
 //     actionName : actionName,
 //     actionCnt : actionCnt,
-  
+
 //     actionNum : actionNum,
 //   })
 // }
@@ -441,7 +436,6 @@ const Op = Sequelize.Op;
 //   actionNum : actionNum,
 // }).then((result) => console.log('Data is Created!'));
 
-
 // var userId = 1;
 // var routineId = 5;
 // var actionName = "발목 돌리기";
@@ -603,11 +597,6 @@ const Op = Sequelize.Op;
 
 // actionCreate(routineId, userId, actions)
 
-
-
-
-
-
 // // Read ------------------------------------------------------------------------
 
 // models.Users.findAll().then(console.log);
@@ -615,20 +604,14 @@ const Op = Sequelize.Op;
 // const userId = 1;
 // const routineId = 5;
 
-// models.Action.findOne({ 
+// models.Action.findOne({
 //   where: { userId: userId, routineId: routineId },
 //   attributes: ['actionNum'],
 //   order: [['actionNum', 'DESC']],
-//   limit : 1,    
+//   limit : 1,
 // }).then((result) => console.log(result));
 
 // // -----------------------------------------------------------------------------
-
-
-
-
-
-
 
 // // Update -----------------------------------------------------------------------
 
@@ -648,14 +631,9 @@ const Op = Sequelize.Op;
 
 // // -----------------------------------------------------------------------------
 
-
-
-
-
-
 // // Delete -----------------------------------------------------------------------
 
-// const target = 2; 
+// const target = 2;
 // models.ActionFin.destroy({ where: { actionid: { [Op.gte]: 4 } }}).then((result) =>
 //   console.log(result,"결과"),
 //   console.log(`${target} data was deleted!`),

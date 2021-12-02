@@ -1,20 +1,17 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    
     // Add seed commands here.
     // Example:
     const actions = await queryInterface.sequelize.query(
-      `SELECT id from Actions;`
+      'SELECT id from Actions;',
     );
 
     const routineFins = await queryInterface.sequelize.query(
-      `SELECT id from RoutineFins;`
+      'SELECT id from RoutineFins;',
     );
 
     const actionRows = actions[0];
-    const actionRowsLength = actions[0].length
+    const actionRowsLength = actions[0].length;
     const routineFinRows = routineFins[0];
 
     await queryInterface.bulkInsert('actionfins', [
@@ -85,11 +82,11 @@ module.exports = {
         date: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
+      },
     ], {});
   },
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('actionfins', null, {});
-  }
+  },
 };

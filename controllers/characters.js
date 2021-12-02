@@ -16,7 +16,7 @@ const createCharacter = async (req, res, next) => {
 
     // 현재 유저가 키우고 있는 캐릭터가 있는지 확인
     const nowCrt = await Character.findAll({
-      where: { userId: userId, expMax: 0 },
+      where: { userId, expMax: 0 },
     });
 
     const isCrtMax = crtMax.length !== 0;
@@ -25,15 +25,14 @@ const createCharacter = async (req, res, next) => {
     // 만랩X, 현재 성장중인 캐릭터가 있는 경우
     if (isNowCrt) {
       throw new Error('현재 성장중인 캐릭터가 있습니다.');
-    }
-    else {
+    } else {
       let newCrtName;
       let newCrtIndex;
 
       // 아무런 캐릭터가 없는 경우
       // 프리셋 캐릭터 풀에서 난수로 지급
       if (!isCrtMax) {
-        console.log("여긴 캐릭터가 하나도 없는 경우!");
+        console.log('여긴 캐릭터가 하나도 없는 경우!');
         newCrtName = crtConst.preSetList[Math.floor(Math.random() * crtConst.preSetList.length)];
         // 캐릭터 뽑기 중 인덱스 번호 주기
         if (newCrtName === '무지') {
@@ -41,18 +40,17 @@ const createCharacter = async (req, res, next) => {
         } else {
           newCrtIndex = crtConst.preSetList.indexOf(newCrtName, 1) + 1;
         }
-      }
-      else {
+      } else {
         // 만랩달성 + 현재 키우는 캐릭터 없음
         // 과거 만랩 캐릭터를 리스트 형식으로 만들기
         const collcetionMaxCrt = crtMax.map((val) => val.characterName);
 
-        //만랩컬랙션과 프리셋을 비교하여 없는 부분 추출
-        let notCollection = crtConst.preSetList.filter(
-          (x) => !collcetionMaxCrt.includes(x)
+        // 만랩컬랙션과 프리셋을 비교하여 없는 부분 추출
+        const notCollection = crtConst.preSetList.filter(
+          (x) => !collcetionMaxCrt.includes(x),
         );
 
-        //안해본 캐릭터의 풀(notCollection)을 랜덤화하여 한개의 값 추출
+        // 안해본 캐릭터의 풀(notCollection)을 랜덤화하여 한개의 값 추출
         newCrtName = notCollection[Math.floor(Math.random() * notCollection.length)];
 
         // 캐릭터 뽑기 중 인덱스 번호 주기
@@ -73,37 +71,34 @@ const createCharacter = async (req, res, next) => {
         exp: 0,
         expMax: 0,
       })
-        .then((r) => {
-          return res.status(200).send({
-            result: true,
-            characterName: r.characterName,
-            characterIndex: newCrtIndex,
-            msg: '신규 캐릭터가 생성되었습니다.',
-          });
-        })
+        .then((r) => res.status(200).send({
+          result: true,
+          characterName: r.characterName,
+          characterIndex: newCrtIndex,
+          msg: '신규 캐릭터가 생성되었습니다.',
+        }));
     }
   } catch (err) {
     logger.error(err);
-    //'캐릭터 만들기에 실패했습니다. 관리자에게 문의하세요.',
+    // '캐릭터 만들기에 실패했습니다. 관리자에게 문의하세요.',
     return next(err);
   }
-}
+};
 
 const getCharacter = async (req, res, next) => {
   try {
     const userId = res.locals.user.id;
 
-    logger.info(userId, "유저아이디!");
+    logger.info(userId, '유저아이디!');
     // 현재 유저의 캐릭터 (만랩이 아님)
     const userCharacter = await Character.findAll({
       where: { userId, expMax: 0 },
       raw: true,
     });
-    return res.send({ result: true, character: userCharacter, msg: "유저의 현재 캐릭터 확인" })
-  }
-  catch (err) {
+    return res.send({ result: true, character: userCharacter, msg: '유저의 현재 캐릭터 확인' });
+  } catch (err) {
     return next(err);
   }
-}
+};
 
-module.exports = { createCharacter, getCharacter }
+module.exports = { createCharacter, getCharacter };

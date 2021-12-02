@@ -76,7 +76,7 @@
 //     // console.log('서버 입장시 메세지', msg);
 //     console.log(msg);
 
-//     moimNamespace.to(roomId).emit('updateMsg', { 
+//     moimNamespace.to(roomId).emit('updateMsg', {
 //       name: 'SERVER',
 //       msg: msg,
 //     });

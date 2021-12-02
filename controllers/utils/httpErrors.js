@@ -1,7 +1,5 @@
-var createError = require('http-errors');
+const createError = require('http-errors');
 
-const myError = (status, message) => {
-  return createError(status, message);
-}
+const myError = (status, message) => createError(status, message);
 
 module.exports = myError;

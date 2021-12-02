@@ -1,17 +1,20 @@
-var express = require('express');
-var router = express.Router();
-const authMiddleware = require('../middlewares/authMiddleware')
+const express = require('express');
 
-//controller import
-const { getRoutine,
+const router = express.Router();
+const authMiddleware = require('../middlewares/authMiddleware');
+
+// controller import
+const {
+  getRoutine,
   createRoutine,
   modifyRoutine,
   deleteRoutine,
   createNowRoutineActions,
   resetNowRoutineActions,
-  allPresetRoutine } = require('../controllers/routines');
+  allPresetRoutine,
+} = require('../controllers/routines');
 
-//API
+// API
 router.post('/create/:routineId', authMiddleware, createNowRoutineActions);
 router.put('/reset/:routineId', authMiddleware, resetNowRoutineActions);
 // 프리셋 루틴 전체 목록 불러오기

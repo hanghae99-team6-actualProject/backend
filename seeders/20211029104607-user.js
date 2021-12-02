@@ -1,9 +1,7 @@
-'use strict';
-const { encrypt } = require('../controllers/utils/bcrypt')
+const { encrypt } = require('../controllers/utils/bcrypt');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-
     //  Add seed commands here.
     //  Example:
     await queryInterface.bulkInsert('users', [
@@ -50,5 +48,5 @@ module.exports = {
     //  Add commands to revert seed here.
     //  Example:
     await queryInterface.bulkDelete('users', null, {});
-  }
+  },
 };

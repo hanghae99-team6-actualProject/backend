@@ -1,8 +1,8 @@
 // //let characterFool = ['1', '2', '3'];
 // let crtFool = ['1', '2', '3'];
 
-const { compareSync } = require("bcrypt");
-const { calendarFormat } = require("moment");
+const { compareSync } = require('bcrypt');
+const { calendarFormat } = require('moment');
 
 // //let result = characterFool[Math.floor(Math.random()*characterFool.length)];
 // let newcrtInfo1 = [Math.floor(Math.random()*crtFool.length)]; // = 인덱스 출력
@@ -11,7 +11,6 @@ const { calendarFormat } = require("moment");
 // //console.log(result);
 // console.log(newcrtInfo1);
 // console.log(newcrtInfo);
-
 
 // crtPreSetList = ['asd', '라이언', '어피치'];
 // collcetionMaxCrt = ['라이언'];
@@ -36,8 +35,6 @@ const { calendarFormat } = require("moment");
 // const asdqwe = '어피치';
 // const targetIndex = crtPreSetList.indexOf(asdqwe, 1);
 // console.log(targetIndex);
-
-
 
 // let a = 1;
 // let b = 4;
