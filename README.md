@@ -85,16 +85,29 @@
 - Jest
 
 - Artillery
+
+
     - 부하테스트를 통한 DB유형 선정
+
+
         <img width="308" alt="스크린샷 2021-12-03 오전 5 46 29" src="https://user-images.githubusercontent.com/59440469/144500713-d0e2b321-8abf-4317-b5b0-917087c3f5bb.png">
 
         - 기존 MySQL 사용시 채팅 데이터 부하 테스트 결과
+
+
         <img width="290" alt="스크린샷 2021-12-03 오전 5 48 22" src="https://user-images.githubusercontent.com/59440469/144501209-9ae555aa-8c8d-4056-adaf-cd6587f296e9.png">
+        
+        
         <img width="590" alt="스크린샷 2021-12-03 오전 5 48 37" src="https://user-images.githubusercontent.com/59440469/144501306-8dcfcd5c-08d3-414d-b8ef-6f44b81ef086.png">
 
         - Redis DB 사용시 채팅 데이터 부하 테스트 결과
+
+
         <img width="282" alt="스크린샷 2021-12-03 오전 5 47 29" src="https://user-images.githubusercontent.com/59440469/144501427-b3624b91-4bf8-4f0b-9b35-015179ea3726.png">
+        
+        
         <img width="591" alt="스크린샷 2021-12-03 오전 5 47 49" src="https://user-images.githubusercontent.com/59440469/144501431-6217c1d5-afea-4fe6-99df-5677af9d0399.png">
+
 
         - 결론: 테스트 결과 약 1/4 가량의 Latancy 감소의 효과를 볼 수 있었고 이는 장기적인 측면에서 안정적인 DB를 구성할 수 있는 이유가 된다.
 
