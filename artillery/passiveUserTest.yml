@@ -2,7 +2,7 @@ config:
   target: "http://localhost:8080/api"
   payload:
     -
-      path: "payload/account.csv"
+      path: "./payload/account.csv"
       fields:
         - "userId"
         - "userPw"
@@ -21,14 +21,14 @@ before:
     - post:
         url: "/auth/signup"
         json:
-          userEmail : "passiveUserTest1@naver.com"
+          userEmail : "passId@naver.com"
           userPw : "Password!001"
           userPwChk : "Password!001"
-          nickName : "passiveUserNick001"
+          nickName : "passNick"
     - post:
         url: "/auth/local"
         json:
-          userEmail : "passiveUserTest1@naver.com"
+          userEmail : "passId@naver.com"
           userPw : "Password!001"
         capture:
           - json: "$.accessToken"
