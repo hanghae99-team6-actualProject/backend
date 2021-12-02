@@ -92,7 +92,7 @@
         - Redis DB 사용시 채팅 데이터 부하 테스트 결과<br/><br/>
         <img width="282" alt="스크린샷 2021-12-03 오전 5 47 29" src="https://user-images.githubusercontent.com/59440469/144501427-b3624b91-4bf8-4f0b-9b35-015179ea3726.png"><br/>
         <img width="591" alt="스크린샷 2021-12-03 오전 5 47 49" src="https://user-images.githubusercontent.com/59440469/144501431-6217c1d5-afea-4fe6-99df-5677af9d0399.png"><br/><br/>
-        - 결론: 테스트 결과 약 1/4 가량의 Latancy 감소의 효과를 볼 수 있었고 이는 장기적인 측면에서 안정적인 DB를 구성할 수 있는 이유가 된다.<br/><br/>
+        - 결론: 테스트 결과, 기존 대비 약 1/4 가량의 Latancy가 측정되어 큰 감소치를 볼 수 있었고 이는 장기적인 측면에서 안정적인 DB를 구성할 수 있는 이유로 판단할 수 있습니다.<br/><br/>
 
 
 
