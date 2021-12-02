@@ -82,7 +82,6 @@
 |winston|^3.3.3|전체 서비스 로그 관리|
 
 # Test
-- Jest
 
 - Artillery
 
@@ -90,7 +89,7 @@
     - 부하테스트를 통한 DB유형 선정<br/><br/>
         <img width="308" alt="스크린샷 2021-12-03 오전 5 46 29" src="https://user-images.githubusercontent.com/59440469/144500713-d0e2b321-8abf-4317-b5b0-917087c3f5bb.png"><br/><br/>
         - 기존 MySQL 사용시 채팅 데이터 부하 테스트 결과<br/><br/>
-        <img width="290" alt="스크린샷 2021-12-03 오전 5 48 22" src="https://user-images.githubusercontent.com/59440469/144501209-9ae555aa-8c8d-4056-adaf-cd6587f296e9.png"><br/>        
+        <img width="290" alt="스크린샷 2021-12-03 오전 5 48 22" src="https://user-images.githubusercontent.com/59440469/144501209-9ae555aa-8c8d-4056-adaf-cd6587f296e9.png"><br/>
         <img width="590" alt="스크린샷 2021-12-03 오전 5 48 37" src="https://user-images.githubusercontent.com/59440469/144501306-8dcfcd5c-08d3-414d-b8ef-6f44b81ef086.png"><br/><br/>
         - Redis DB 사용시 채팅 데이터 부하 테스트 결과<br/><br/>
         <img width="282" alt="스크린샷 2021-12-03 오전 5 47 29" src="https://user-images.githubusercontent.com/59440469/144501427-b3624b91-4bf8-4f0b-9b35-015179ea3726.png"><br/>
