@@ -87,9 +87,7 @@
 - Artillery
 
 
-    - 부하테스트를 통한 DB유형 선정
-
-
+    - 부하테스트를 통한 DB유형 선정<br/><br/>
         <img width="308" alt="스크린샷 2021-12-03 오전 5 46 29" src="https://user-images.githubusercontent.com/59440469/144500713-d0e2b321-8abf-4317-b5b0-917087c3f5bb.png">
 
 
