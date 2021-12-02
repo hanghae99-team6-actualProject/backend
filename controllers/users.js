@@ -12,6 +12,14 @@ const bye = async (req, res, next) => {
       .then(() => {
         res.send({ result: true, msg: "회원 탈퇴가 완료되었습니다" })
       });
+    // const hostedMoimusers = await MoimUser.findAll({
+    //   where:{userId:id, host: 1}
+    // })
+    // for await(let val of hostedMoimusers){
+    //   const target = Moim
+    //   await Moim.destroy({where:})
+    // }
+    // Moim.destroy({where:})
   } catch (err) {
     logger.error(err);
     return next(err);

@@ -19,7 +19,7 @@ const naverCallback = (req, res, next) => {
       if (err) return next(err);
       const { refreshToken, accessToken } = info;
 
-      res.redirect(`https://ming-gi-jeog.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
+      res.redirect(`https://mingizuk.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
     }
   )(req, res, next);
 }
@@ -33,7 +33,7 @@ const kakaoCallback = (req, res, next) => {
       if (err) return next(err);
       const { refreshToken, accessToken } = info;
 
-      res.redirect(`https://ming-gi-jeog.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
+      res.redirect(`https://mingizuk.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
     }
   )(req, res, next);
 }
@@ -47,7 +47,7 @@ const googleCallback = (req, res, next) => {
       if (err) return next(err);
       const { refreshToken, accessToken } = info;
 
-      res.redirect(`https://ming-gi-jeog.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
+      res.redirect(`https://mingizuk.web.app/sociallogin/refreshToken=${refreshToken}&accessToken=${accessToken}`)
     }
   )(req, res, next);
 }
