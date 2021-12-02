@@ -1,3 +1,23 @@
+<div id="top"></div>
+<br />
+
+<a href="http://mingizuk.com/" target="_blank">![스크린샷 2021-12-01 오전 2 50 04](https://user-images.githubusercontent.com/49370511/144100873-45697049-1869-47b0-b7e3-1a76402c8fe9.png)</a>
+<br />
+
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+  </a>
+
+  <h2 align="center"><strong>밍기적</strong></h2>
+
+  <p align="center">
+    귀여운 몬스터와 함께 작지만 소중한 기적, 밍기적을 일으켜 일상에 활력을 불어넣으세요!
+    <br />
+     <br />
+    <a href="http://mingizuk.com/" target="_blank"><strong>🙌  밍기적 하러 가기 🙌</strong></a>
+    <br />
+    <br />
+</div>
 # 👟 밍기적 백앤드
 
 [FrontEnd Github](https://github.com/hanghae99-team6-actualProject/frontend) 좌측 링크를 통해 프론트앤드 깃허브를 확인할 수 있습니다.
