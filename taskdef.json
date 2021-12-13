@@ -137,7 +137,7 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:18",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:latest",
   "family": "mingijuk-cluster13-task",
   "requiresAttributes": [
     {
@@ -196,7 +196,7 @@
   "networkMode": "bridge",
   "runtimePlatform": null,
   "cpu": null,
-  "revision": 18,
+  "revision": 19,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
