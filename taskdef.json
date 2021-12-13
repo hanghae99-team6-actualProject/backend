@@ -5,7 +5,15 @@
     {
       "dnsSearchDomains": null,
       "environmentFiles": null,
-      "logConfiguration": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/mingijuk-cluster13-task",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
       "entryPoint": null,
       "portMappings": [
         {
@@ -115,7 +123,7 @@
       "extraHosts": null,
       "pseudoTerminal": null,
       "user": null,
-      "readonlyRootFilesystem": null,
+      "readonlyRootFilesystem": true,
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
@@ -129,14 +137,38 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:latest",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:18",
   "family": "mingijuk-cluster13-task",
   "requiresAttributes": [
     {
       "targetId": null,
       "targetType": null,
       "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
       "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
     },
     {
       "targetId": null,
@@ -164,7 +196,7 @@
   "networkMode": "bridge",
   "runtimePlatform": null,
   "cpu": null,
-  "revision": 1,
+  "revision": 18,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
