@@ -1,33 +1,11 @@
 version: 0.2
 
-# Linux 사용자만 사용할 수 있습니다.이 buildspec 파일의 명령을 실행하는 Linux 사용자를 지정합니다.run-as를 지정하지 않으면 모든 명령이 root로 실행됩니다.
-# run-as: 'ec2-user'
-
-# 필수 시퀀스입니다. 빌드의 각 단계 동안 CodeBuild가 실행하는 명령을 나타냅니다
 phases:
-  # 설치 중에 CodeBuild가 실행하는 명령을 나타냅니다. 빌드 환경에서 패키지를 설치하는 경우에만 install 단계를 사용하는 것이 좋습니다. 예를 들어, Mocha나 RSpec 같은 코드 테스팅 프레임워크를 설치하기 위해 이 단계를 사용할 수 있습니다.
-  # install:
-  #   runtime-versions:
-  #     nodejs: 12
-  # 빌드 전에 CodeBuild가 실행하는 명령을 나타냅니다. 예를 들어, Amazon ECR에 로그인하기 위해 이 단계를 사용할 수 있습니다. 또는 npm 종속성을 설치할 수도 있습니다.
   pre_build:
     commands:
-      # - TAG="$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
-      # - IMAGE_URI=${REPOSITORY_URI}:${TAG}
-      # - docker build -t $IMAGE_URI .
-      # - docker run --rm amazon/aws-cli --version
-      # - $(aws ecr get-login --no-include-email --region ap-northeast-2)
-      # - $(aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 303022694345.dkr.ecr.ap-northeast-2.amazonaws.com)
       - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 303022694345.dkr.ecr.ap-northeast-2.amazonaws.com
-      # - $(aws ecr get-login --no-include-email --region ap-northeast-2)
-  # 빌드 후에 CodeBuild가 실행하는 명령을 나타냅니다(있는 경우). 예를 들어, Maven을 사용하여 빌드 결과물을 JAR 또는 WAR 파일에 패키지할 수 있으며, Amazon ECR에 Docker 이미지를 푸시할 수도 있습니다.
   build:
     commands:
-      # - docker images
-      #- docker run helloworld echo "Hello, World!"
-      # - IMAGE_TAG="$(date '+%Y%m%d%H%M%S')"
-      # - echo $IMAGE_TAG
-      # - npm run test
       - docker build --tag mingijuk-ecr .
       - docker tag mingijuk-ecr:latest 303022694345.dkr.ecr.ap-northeast-2.amazonaws.com/mingijuk-ecr:latest
   post_build:
@@ -36,31 +14,8 @@ phases:
       - echo Pushing docker image
       - docker push 303022694345.dkr.ecr.ap-northeast-2.amazonaws.com/mingijuk-ecr:latest
       - printf '{"name":"%s","imageUri":"%s"}' mingijuk-ecr 303022694345.dkr.ecr.ap-northeast-2.amazonaws.com/mingijuk-ecr:latest > imageDetail.json
-      # - sed -i 's/<APP_NAME>/new-ecr/g' appspec.yml taskdef.json
-      # - sed -i 's/<SERVICE_PORT>/8080/g' appspec.yml taskdef.json
-      # - sed -i 's/<AWS_ACCOUNT_ID>/303022694345/g' taskdef.json
-      # - sed -i 's/<MEMORY_RESV>/500/g' taskdef.json
-      # - sed -i 's/<IMAGE_NAME>/303022694345\.dkr\.ecr\.ap-northeast-2\.amazonaws.com\/new-ecr\:latest/g' taskdef.json
-# CodeBuild가 빌드 출력을 찾을 수 있는 위치 및 CodeBuild가 Amazon S3 출력 버킷에 업로드하기 위해 빌드 출력을 준비하는 방식에 대한 정보를 나타냅니다.
 artifacts:
-  # files:
-  #   - imageDetail.json
-  # 빌드 환경의 빌드 출력 결과물을 포함하는 위치를 나타냅니다.
   files:
     - imageDetail.json
     - appspec.yaml
     - taskdef.json
-    # - taskdef.json
-    # - imagedefinitions.json
-#    - "image*.json"
-#    - "appspec.yml"
-#    - "taskdef.json"
-#  econdary-artifacts:
-#    DefinitionArtifact:
-#      files:
-#        - appspec.yml
-#        - taskdef.json
-#    ImageArtifact:
-#      files:
-#        - imageDetail.json
-# name: build-$(date +%Y-%m-%d)
