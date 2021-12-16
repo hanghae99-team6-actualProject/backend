@@ -129,7 +129,7 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:latest",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:303022694345:task-definition/mingijuk-cluster13-task:17",
   "family": "mingijuk-cluster13-task",
   "requiresAttributes": [
     {
