@@ -1,5 +1,5 @@
 var redis = require('redis');
-var client = redis.createClient();
+console.log(redis);
 var client = redis.createClient({
   host: 'mingijuk1-redis-001.vbxg1n.0001.apn2.cache.amazonaws.com',
   port: 6379,
@@ -35,7 +35,7 @@ const createNewRoom = async (moimId, userId) => {
 
 //채팅 로드 함수
 const loadChatList = async (chatRoomId, callback) => {
-  client.hgetall(`${chatRoomId}`, function(err, object) {
+  client.hgetall(`${chatRoomId}`, function (err, object) {
     // logger.info('정의 안의 object', object)
     callback(object);
   });
@@ -73,7 +73,7 @@ const createChatRoom = async (req, res, next) => {
     // const moimNamespace = req.app.get('moimNamespace');
     // moimNamespace.emit('createNewRoom', newRoom ); // 새로운 방 생성이라는 이벤트를 던져준다
 
-    await client.hmset(`${newRoom.id}`,'chatNum', 0);
+    await client.hmset(`${newRoom.id}`, 'chatNum', 0);
     return res.status(200).send({ //상태 메세지를 보내거나 리다이렉트를 해야한다.
       result: "true1",
       newRoom,
@@ -221,18 +221,18 @@ const loadTargetChat = async (req, res, next) => {
     //     },
     //   ]
     // })
-    
+
     // client.hgetall(`${chatRoomId}`, async (err, results) => {
     //   logger.info('채팅방'+ chatRoomId +'의 대화 목록', results);
     //   return results
     // });
 
-    await loadChatList( chatRoomId, function(obj) {
+    await loadChatList(chatRoomId, function (obj) {
       // logger.info("여기가 함수 안", obj);
-      const chats = Object.entries(obj).map((element )=> {
+      const chats = Object.entries(obj).map((element) => {
         const key = element[0].split('_');
         const value = element[1];
-        return { id: key[3], nickName: key[0], url: key[1], contents: value, createAt: key[2]}
+        return { id: key[3], nickName: key[0], url: key[1], contents: value, createAt: key[2] }
       });
 
       return res.status(200).send({
@@ -268,7 +268,7 @@ const saveChat = async (req, res, next) => {
       where: { userId: userId, moimId: moimId },
       include: [
         {
-          model:User,
+          model: User,
           attributes: ['nickName']
         }
       ]
@@ -285,7 +285,7 @@ const saveChat = async (req, res, next) => {
     //현재시간
     let createAt = moment().format('YYYY-MM-DD HH:mm:ss')
     logger.info('현재 한국 시간', createAt);
-    
+
     // const saveChat = await Chat.create({
     //   moimUserId: targetMoimUser.id,
     //   moimChatRoomId: chatRoomId,
@@ -299,7 +299,7 @@ const saveChat = async (req, res, next) => {
       client.hmset(`${chatRoomId}`, 'chatNum', chatNum);
       client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_${url}_${createAt}_${chatNum}`, `${contents}`)
     });
-    
+
     // await client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_chat`, `${contents}` )
 
 
