@@ -6,21 +6,22 @@ var client = redis.createClient({
 });
 
 client.on('connect', function () {
-  console.log('Connected Redis');
+  logger.info('Connected Redis');
 });
 
 client.on('error', function (err) {
-  console.log('Error' + err);
+  logger.info('Error' + err);
 });
 
 const { User, MoimUser, Chat, MoimChatRoom, MoimChatUser, Notice } = require('../models');
 const myError = require('./utils/httpErrors')
+const logger = require('../logger');
 
 //시간
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
-// console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+// logger.info(moment().format('YYYY-MM-DD HH:mm:ss'));
 
 //방만들기 함수
 const createNewRoom = async (moimId, userId) => {
@@ -35,14 +36,14 @@ const createNewRoom = async (moimId, userId) => {
 //채팅 로드 함수
 const loadChatList = async (chatRoomId, callback) => {
   client.hgetall(`${chatRoomId}`, function(err, object) {
-    // console.log('정의 안의 object', object)
+    // logger.info('정의 안의 object', object)
     callback(object);
   });
 };
 
 const createChatRoom = async (req, res, next) => {
   try {
-    console.log('createChatRomm router 진입');
+    logger.info('createChatRomm router 진입');
     const userId = res.locals.user.id;
     const { moimId } = req.params;
 
@@ -50,7 +51,7 @@ const createChatRoom = async (req, res, next) => {
       where: { moimId }
     });
 
-    console.log("이즈룸", isroom);
+    logger.info("이즈룸", isroom);
     // var newRoom = []; //함수 안에서 밖으로 빼내기 위한 변수, 새로운 채팅방을 담는다
 
     if (isroom.length > 0) { //현재 방이 존재하는 경우 >> 입장하기로 들어가야함 >> 그냥 바로 프론트에 입장하기로 쏴줌
@@ -66,7 +67,7 @@ const createChatRoom = async (req, res, next) => {
     }
 
     const newRoom = await createNewRoom(moimId, userId) // 함수로 새로운 채팅방을 만드는 동작을 정의
-    console.log("newRoomInfo", newRoom);
+    logger.info("newRoomInfo", newRoom);
 
     // // const io = req.app.get('io');
     // const moimNamespace = req.app.get('moimNamespace');
@@ -81,14 +82,14 @@ const createChatRoom = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return next(err);
   }
 }
 
 const enterChatRoom = async (req, res, next) => {
   try {
-    console.log('makeChatRomm router 진입');
+    logger.info('makeChatRomm router 진입');
     const userId = res.locals.user.id;
     const { moimUserId, nickName } = req.body;
     const { moimId } = req.params;
@@ -128,13 +129,14 @@ const enterChatRoom = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const exitChatRoom = async (req, res, next) => {
   try {
-    console.log('exitChatRomm router 진입');
+    logger.info('exitChatRomm router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
     const { moimUserId } = req.body;
@@ -162,8 +164,8 @@ const exitChatRoom = async (req, res, next) => {
 
 const deleteChatRoom = async (req, res, next) => {
   try {
-    console.log('outChatRomm router 진입');
-    // console.log("파람스",req.params);
+    logger.info('outChatRomm router 진입');
+    // logger.info("파람스",req.params);
     const { moimId, chatRoomId } = req.params;
 
     // isHost 는 나중에
@@ -175,7 +177,7 @@ const deleteChatRoom = async (req, res, next) => {
       { where: { id: chatRoomId } },
     )
 
-    console.log(deleteChatRoom[0]);
+    logger.info(deleteChatRoom[0]);
 
     if (deleteChatRoom[0] !== 1) {
       return next(myError(500, '삭제할 채팅방이 DB에 존재하지 않습니다.'));
@@ -192,15 +194,16 @@ const deleteChatRoom = async (req, res, next) => {
     })
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const loadTargetChat = async (req, res, next) => {
   try {
-    console.log('loadChating router 진입');
+    logger.info('loadChating router 진입');
     const { moimId, chatRoomId } = req.params
-    console.log(req.params);
+    logger.info(req.params);
 
     // 특정 채팅방의 속한 모든 대화를 끌어온다.
     // const chats = await Chat.findAll({
@@ -220,12 +223,12 @@ const loadTargetChat = async (req, res, next) => {
     // })
     
     // client.hgetall(`${chatRoomId}`, async (err, results) => {
-    //   console.log('채팅방'+ chatRoomId +'의 대화 목록', results);
+    //   logger.info('채팅방'+ chatRoomId +'의 대화 목록', results);
     //   return results
     // });
 
     await loadChatList( chatRoomId, function(obj) {
-      // console.log("여기가 함수 안", obj);
+      // logger.info("여기가 함수 안", obj);
       const chats = Object.entries(obj).map((element )=> {
         const key = element[0].split('_');
         const value = element[1];
@@ -240,21 +243,22 @@ const loadTargetChat = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const saveChat = async (req, res, next) => {
   try {
-    console.log('saveChating router 진입');
+    logger.info('saveChating router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
     const { contents, url } = req.body;
 
 
-    console.log("userId", userId);
-    console.log(req.params);
-    console.log('contents', contents);
+    logger.info("userId", userId);
+    logger.info(req.params);
+    logger.info('contents', contents);
 
     if (contents.length > 250) {
       return next(myError(400, "글자수는 250자 이하만 가능합니다"));
@@ -270,9 +274,9 @@ const saveChat = async (req, res, next) => {
       ]
     });
 
-    // console.log('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
-    console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.id);
-    console.log('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.User.nickName);
+    // logger.info('현재 화면을 보고있는 타겟 유저 정보', targetMoimUser);
+    logger.info('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.id);
+    logger.info('현재 화면을 보고있는 타겟 유저 정보 id', targetMoimUser.User.nickName);
 
     if (!targetMoimUser) {
       return next(myError(500, '해당 모임의 참여자가 아닙니다'));
@@ -280,17 +284,17 @@ const saveChat = async (req, res, next) => {
 
     //현재시간
     let createAt = moment().format('YYYY-MM-DD HH:mm:ss')
-    console.log('현재 한국 시간', createAt);
+    logger.info('현재 한국 시간', createAt);
     
     // const saveChat = await Chat.create({
     //   moimUserId: targetMoimUser.id,
     //   moimChatRoomId: chatRoomId,
     //   contents: contents,
     // })
-    // console.log('saveChat', saveChat);
+    // logger.info('saveChat', saveChat);
 
     client.hget(`${chatRoomId}`, 'chatNum', async (err, result) => {
-      console.log(result);
+      logger.info(result);
       const chatNum = Number(result) + 1;
       client.hmset(`${chatRoomId}`, 'chatNum', chatNum);
       client.hmset(`${chatRoomId}`, `${targetMoimUser.User.nickName}_${url}_${createAt}_${chatNum}`, `${contents}`)
@@ -320,15 +324,16 @@ const saveChat = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const getAllNotice = async (req, res, next) => {
   try {
-    console.log('getAllNotice router 진입');
+    logger.info('getAllNotice router 진입');
     const allNotice = await Notice.findAll({});
-    console.log("전체 공지", allNotice);
+    logger.info("전체 공지", allNotice);
 
     return res.status(200).send({
       resutl: true,
@@ -337,14 +342,14 @@ const getAllNotice = async (req, res, next) => {
     });
 
   } catch (err) {
-    console.log(err);
+    logger.info(err);
     return next(err);
   }
 }
 
 const makeNotice = async (req, res, next) => {
   try {
-    console.log('makeNotice router 진입');
+    logger.info('makeNotice router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
     const { contents } = req.body;
@@ -383,13 +388,14 @@ const makeNotice = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const getTargetNotice = async (req, res, next) => {
   try {
-    console.log('getTargetNotice router 진입');
+    logger.info('getTargetNotice router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId } = req.params;
 
@@ -404,13 +410,14 @@ const getTargetNotice = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const updateNotice = async (req, res, next) => {
   try {
-    console.log('updateNotice router 진입');
+    logger.info('updateNotice router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId, noticeId } = req.params;
     const { contents } = req.body;
@@ -447,13 +454,14 @@ const updateNotice = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
 
 const deleteNotice = async (req, res, next) => {
   try {
-    console.log('deleteNotice router 진입');
+    logger.info('deleteNotice router 진입');
     const userId = res.locals.user.id;
     const { moimId, chatRoomId, noticeId } = req.params;
 
@@ -484,6 +492,7 @@ const deleteNotice = async (req, res, next) => {
     });
 
   } catch (err) {
+    logger.error(err);
     return next(err);
   }
 }
