@@ -131,7 +131,7 @@
 - [ECS](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/ECS.md)    
 - [Passport & JWT](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Passport%26JWT.md)  
 - [env 라우팅](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/env%20%EB%9D%BC%EC%9A%B0%ED%8C%85.md)     
-- [Chat DataBase](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Redis.md)  <br/>
+- [Redis](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Redis.md)  <br/>
 - [Socket.Io](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Socket.Io.md)  <br/>
 
 # Members
