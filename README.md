@@ -126,8 +126,7 @@
 # Improvements
 - [Cron](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Cron.md)  
 - [CodePipeline](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/CodePipeline.md)    
-- [RDS](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/RDS.md)  
-- [ElastiCache](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/ElastiCache.md)    
+- [RDS & ElastiCache](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/RDS.md)  
 - [ECS](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/ECS.md)    
 - [Passport & JWT](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/Passport%26JWT.md)  
 - [env 라우팅](https://github.com/hanghae99-team6-actualProject/Appendix-back/blob/main/env%20%EB%9D%BC%EC%9A%B0%ED%8C%85.md)     
